@@ -1,0 +1,14 @@
+.venv
+.git
+__pycache__
+**/__pycache__
+*.pyc
+*.pdf
+docs
+tests
+output
+tmp
+public
+.env
+.env.*
+requirements-desktop.txt

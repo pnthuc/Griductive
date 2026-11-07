@@ -1,13 +1,11 @@
-.............................................................................
+...................................................................................
 ----------------------------------------------------------------------
-Ran 77 tests in 23.681s
+Ran 83 tests in 25.013s
 
 OK
 
-Rule registration refactor:
-- Executed docs/EXTENDING.md examples: encoding, deduction and linked wording passed.
-- Core imports without PySide6 passed.
-- DPLL source is byte-identical to the pre-refactor backup.
-- All 6 puzzle SHA256 fingerprints are unchanged.
-- All 12 benchmark runs are SOLVED and UNIQUE.
-- All benchmark counters except runtime match the pre-refactor results.
+Python web verification:
+- 83 tests passed, including stateless replay and real Dash callback tests.
+- Browser: Hint, CONTRADICTED, accepted reveal, 3x3 Auto Solve and 5x5 Hint passed.
+- 5x5-02 stateless playthrough: SOLVED, 22 moves; slowest request 1.51 seconds.
+- pip check passed; existing engine and puzzle source unchanged.

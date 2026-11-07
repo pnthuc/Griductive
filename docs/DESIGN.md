@@ -75,3 +75,25 @@ Add meaningful integration coverage registering a new region and clue through
 the new API, including conditional composition, CNF/evaluator equivalence,
 validation, text/HTML reference keys, isolated catalogs and duplicate errors.
 Migrate callers directly and remove old internal modules after checks pass.
+
+## Python web deployment
+
+The user requires web UI source and game logic to be Python. Dash components,
+style dictionaries and Python callbacks form the browser UI in web.py; there
+are no handwritten HTML, CSS or JavaScript files. Framework-generated browser
+code is served by Dash. The existing desktop remains available.
+
+web_game.py reconstructs each request from the puzzle and public move history,
+re-verifying every move through GameEngine.submit before revealing its clue.
+No process-global mutable sessions, shared player state or trusted browser
+verdicts. Browser state holds only accepted moves and selections; bundled
+solutions and unrevealed clues stay server-side. A user-uploaded puzzle stays
+in that user's tab and is validated through the existing loader.
+
+Vercel runs the Flask server exposed in app.py, with only Dash/Flask runtime
+dependencies. build_web.py copies existing images to public/images for the CDN.
+Each server operation has a 45-second cooperative deadline inside a 60-second
+function. Hint/rejection/timeout preserve progress. Auto Solve requests one
+proved move at a time; journal export contains the real reconstructed trace.
+Uploaded JSON is limited to 128 KB. Test stateless replay, forged history,
+hidden-data boundaries, real Dash callbacks and the existing desktop suite.

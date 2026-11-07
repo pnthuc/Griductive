@@ -1,6 +1,41 @@
 # Griductive - Lab 2
 
-Game Python/PySide6, dùng CNF và DPLL tự cài đặt, đồ họa pixel phố biển.
+Game Python, dùng CNF và DPLL tự cài đặt, đồ họa pixel phố biển.
+Hai giao diện dùng chung engine: desktop PySide6 và web Dash. Bản web khai báo
+giao diện, style và callback bằng Python, không có file HTML/CSS/JavaScript tự viết.
+
+## Chạy bản web
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -B app.py
+```
+
+Mở http://127.0.0.1:8050. Có chọn màn, mở JSON, phán quyết thủ công, gợi ý,
+giải từng bước/tự động, chọn vùng highlight và tải nhật ký JSON. Tiến độ được
+giữ riêng cho mỗi tab bằng session storage. Mỗi yêu cầu dựng lại phiên và kiểm
+chứng lịch sử bằng engine; không tin trạng thái do trình duyệt tự khai báo,
+không đưa solution hoặc clue chưa mở của các màn có sẵn xuống trình duyệt.
+
+`griductive/web.py` chứa các component và callback Dash;
+`griductive/web_game.py` điều phối phiên độc lập với UI. Thư viện Dash tự sinh
+mã để trình duyệt hiển thị; mọi luật chơi và suy luận chạy bằng Python trên server.
+
+## Deploy Vercel
+
+Chọn framework Flask, dùng `app.py` làm entrypoint. `vercel.json` và
+`.python-version` đã cấu hình Python 3.12, giới hạn request 60 giây và build
+`python build_web.py`. Build chỉ sao chép atlas/background có sẵn sang `public/images`
+để CDN phục vụ ảnh lớn. Không cần Node/React build hay cơ sở dữ liệu.
+Dependencies web ở `requirements.txt`; PySide6 không được cài vào bản deploy.
+
+```powershell
+npx vercel login
+npx vercel deploy --prod
+```
+
+Đăng nhập Vercel để sở hữu project và giữ deployment lâu dài. Có thể import
+repo GitHub `pnthuc/Griductive` trên Vercel để tự deploy khi push.
 
 ## Chạy game
 
@@ -14,7 +49,7 @@ Cài mới:
 
 ```powershell
 python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements-desktop.txt
 .\.venv\Scripts\python.exe -B main.py
 ```
 
@@ -69,6 +104,8 @@ xem thử sprite, ảnh concept và kế hoạch đã dùng xong được dọn 
 không cần NumPy hay công cụ sinh ảnh để chạy game.
 
 ## Kiểm tra và chạy lại thực nghiệm
+
+Để chạy cả test web và desktop, cài cả hai file requirements trước.
 
 ```powershell
 .\.venv\Scripts\python.exe -B -m unittest discover -s tests
