@@ -1,0 +1,563 @@
+{
+  "schema_version": 1,
+  "puzzle_id": "case-5x5-01",
+  "title": "Đêm hội bên hải đăng",
+  "size": 5,
+  "characters": [
+    {
+      "name": "Ada",
+      "profession": "Bác sĩ",
+      "portrait": 0,
+      "cell": "A1"
+    },
+    {
+      "name": "Ben",
+      "profession": "Họa sĩ",
+      "portrait": 1,
+      "cell": "B1"
+    },
+    {
+      "name": "Cara",
+      "profession": "Nhà báo",
+      "portrait": 2,
+      "cell": "C1"
+    },
+    {
+      "name": "Dara",
+      "profession": "Luật sư",
+      "portrait": 3,
+      "cell": "D1"
+    },
+    {
+      "name": "Eli",
+      "profession": "Giáo sư",
+      "portrait": 4,
+      "cell": "E1"
+    },
+    {
+      "name": "Finn",
+      "profession": "Đầu bếp",
+      "portrait": 5,
+      "cell": "A2"
+    },
+    {
+      "name": "Gwen",
+      "profession": "Thủ thư",
+      "portrait": 6,
+      "cell": "B2"
+    },
+    {
+      "name": "Hugo",
+      "profession": "Thợ máy",
+      "portrait": 7,
+      "cell": "C2"
+    },
+    {
+      "name": "Isla",
+      "profession": "Làm vườn",
+      "portrait": 8,
+      "cell": "D2"
+    },
+    {
+      "name": "Jasper",
+      "profession": "Nhiếp ảnh gia",
+      "portrait": 9,
+      "cell": "E2"
+    },
+    {
+      "name": "Kira",
+      "profession": "Kiến trúc sư",
+      "portrait": 10,
+      "cell": "A3"
+    },
+    {
+      "name": "Leon",
+      "profession": "Thợ đồng hồ",
+      "portrait": 11,
+      "cell": "B3"
+    },
+    {
+      "name": "Mina",
+      "profession": "Nhạc công",
+      "portrait": 12,
+      "cell": "C3"
+    },
+    {
+      "name": "Nolan",
+      "profession": "Lính cứu hỏa",
+      "portrait": 13,
+      "cell": "D3"
+    },
+    {
+      "name": "Opal",
+      "profession": "Người bán hoa",
+      "portrait": 14,
+      "cell": "E3"
+    },
+    {
+      "name": "Pavel",
+      "profession": "Thợ may",
+      "portrait": 15,
+      "cell": "A4"
+    },
+    {
+      "name": "Quinn",
+      "profession": "Phi công",
+      "portrait": 16,
+      "cell": "B4"
+    },
+    {
+      "name": "Rosa",
+      "profession": "Thợ bánh",
+      "portrait": 17,
+      "cell": "C4"
+    },
+    {
+      "name": "Silas",
+      "profession": "Thám tử",
+      "portrait": 18,
+      "cell": "D4"
+    },
+    {
+      "name": "Tessa",
+      "profession": "Kỹ sư",
+      "portrait": 19,
+      "cell": "E4"
+    },
+    {
+      "name": "Umar",
+      "profession": "Người bán sách",
+      "portrait": 20,
+      "cell": "A5"
+    },
+    {
+      "name": "Vera",
+      "profession": "Y tá",
+      "portrait": 21,
+      "cell": "B5"
+    },
+    {
+      "name": "Wade",
+      "profession": "Thủy thủ",
+      "portrait": 22,
+      "cell": "C5"
+    },
+    {
+      "name": "Xenia",
+      "profession": "Giáo viên âm nhạc",
+      "portrait": 23,
+      "cell": "D5"
+    },
+    {
+      "name": "Yuri",
+      "profession": "Nhà thực vật học",
+      "portrait": 24,
+      "cell": "E5"
+    }
+  ],
+  "solution": {
+    "A1": "INNOCENT",
+    "B1": "CRIMINAL",
+    "C1": "INNOCENT",
+    "D1": "CRIMINAL",
+    "E1": "CRIMINAL",
+    "A2": "CRIMINAL",
+    "B2": "INNOCENT",
+    "C2": "INNOCENT",
+    "D2": "INNOCENT",
+    "E2": "INNOCENT",
+    "A3": "INNOCENT",
+    "B3": "CRIMINAL",
+    "C3": "INNOCENT",
+    "D3": "CRIMINAL",
+    "E3": "INNOCENT",
+    "A4": "CRIMINAL",
+    "B4": "INNOCENT",
+    "C4": "INNOCENT",
+    "D4": "INNOCENT",
+    "E4": "CRIMINAL",
+    "A5": "INNOCENT",
+    "B5": "CRIMINAL",
+    "C5": "CRIMINAL",
+    "D5": "INNOCENT",
+    "E5": "INNOCENT"
+  },
+  "initially_revealed": [
+    "E2",
+    "A4",
+    "E5"
+  ],
+  "clues": {
+    "A1": {
+      "type": "COMPARISON",
+      "left": {
+        "type": "NEIGHBORS",
+        "cell": "A5"
+      },
+      "right": {
+        "type": "EXPLICIT",
+        "cells": [
+          "D5",
+          "A4",
+          "B1"
+        ]
+      },
+      "op": ">=",
+      "id": "A1"
+    },
+    "B1": {
+      "type": "EXACTLY",
+      "k": 1,
+      "region": {
+        "type": "NEIGHBORS",
+        "cell": "E4"
+      },
+      "id": "B1"
+    },
+    "C1": {
+      "type": "AT_MOST",
+      "k": 2,
+      "region": {
+        "type": "DIFFERENCE",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "B5"
+        },
+        "right": {
+          "type": "COLUMN",
+          "column": "B"
+        }
+      },
+      "id": "C1"
+    },
+    "D1": {
+      "type": "EXACTLY",
+      "k": 1,
+      "region": {
+        "type": "CORNERS"
+      },
+      "id": "D1"
+    },
+    "E1": {
+      "type": "COMPARISON",
+      "left": {
+        "type": "NEIGHBORS",
+        "cell": "E2"
+      },
+      "right": {
+        "type": "EXPLICIT",
+        "cells": [
+          "D4",
+          "E3",
+          "E1",
+          "B5"
+        ]
+      },
+      "op": ">",
+      "id": "E1"
+    },
+    "A2": {
+      "type": "EXACTLY",
+      "k": 2,
+      "region": {
+        "type": "ROW",
+        "row": 3
+      },
+      "id": "A2"
+    },
+    "B2": {
+      "type": "EXACTLY",
+      "k": 2,
+      "region": {
+        "type": "ROW",
+        "row": 5
+      },
+      "id": "B2"
+    },
+    "C2": {
+      "type": "EXACTLY",
+      "k": 1,
+      "region": {
+        "type": "ROW",
+        "row": 2
+      },
+      "id": "C2"
+    },
+    "D2": {
+      "type": "EXACTLY",
+      "k": 1,
+      "region": {
+        "type": "DIFFERENCE",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "A2"
+        },
+        "right": {
+          "type": "ROW",
+          "row": 3
+        }
+      },
+      "id": "D2"
+    },
+    "E2": {
+      "type": "EXACTLY",
+      "k": 2,
+      "region": {
+        "type": "DIFFERENCE",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "B3"
+        },
+        "right": {
+          "type": "ROW",
+          "row": 3
+        }
+      },
+      "id": "E2"
+    },
+    "A3": {
+      "type": "COMPARISON",
+      "left": {
+        "type": "DIFFERENCE",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "A1"
+        },
+        "right": {
+          "type": "ROW",
+          "row": 1
+        }
+      },
+      "right": {
+        "type": "EXPLICIT",
+        "cells": [
+          "B2",
+          "B4",
+          "B1"
+        ]
+      },
+      "op": "=",
+      "id": "A3"
+    },
+    "B3": {
+      "type": "EXACTLY",
+      "k": 3,
+      "region": {
+        "type": "ROW",
+        "row": 1
+      },
+      "id": "B3"
+    },
+    "C3": {
+      "type": "EXACTLY",
+      "k": 2,
+      "region": {
+        "type": "ROW",
+        "row": 4
+      },
+      "id": "C3"
+    },
+    "D3": {
+      "type": "EXACTLY",
+      "k": 2,
+      "region": {
+        "type": "EXPLICIT",
+        "cells": [
+          "A2",
+          "E4",
+          "C3",
+          "E5"
+        ]
+      },
+      "id": "D3"
+    },
+    "E3": {
+      "type": "CONDITIONAL",
+      "if": {
+        "type": "EXACTLY",
+        "k": 2,
+        "region": {
+          "type": "NEIGHBORS",
+          "cell": "B1"
+        }
+      },
+      "then": {
+        "type": "EXACTLY",
+        "k": 1,
+        "region": {
+          "type": "NEIGHBORS",
+          "cell": "B4"
+        }
+      },
+      "id": "E3"
+    },
+    "A4": {
+      "type": "CONDITIONAL",
+      "if": {
+        "type": "AT_LEAST",
+        "k": 1,
+        "region": {
+          "type": "EXPLICIT",
+          "cells": [
+            "D1",
+            "A3",
+            "E5"
+          ]
+        }
+      },
+      "then": {
+        "type": "EXACTLY",
+        "k": 2,
+        "region": {
+          "type": "NEIGHBORS",
+          "cell": "B3"
+        }
+      },
+      "id": "A4"
+    },
+    "B4": {
+      "type": "EXACTLY",
+      "k": 2,
+      "region": {
+        "type": "DIFFERENCE",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "B4"
+        },
+        "right": {
+          "type": "ROW",
+          "row": 5
+        }
+      },
+      "id": "B4"
+    },
+    "C4": {
+      "type": "COMPARISON",
+      "left": {
+        "type": "NEIGHBORS",
+        "cell": "A5"
+      },
+      "right": {
+        "type": "NEIGHBORS",
+        "cell": "A1"
+      },
+      "op": "=",
+      "id": "C4"
+    },
+    "D4": {
+      "type": "AT_MOST",
+      "k": 3,
+      "region": {
+        "type": "UNION",
+        "left": {
+          "type": "ROW",
+          "row": 2
+        },
+        "right": {
+          "type": "COLUMN",
+          "column": "E"
+        }
+      },
+      "id": "D4"
+    },
+    "E4": {
+      "type": "COMPARISON",
+      "left": {
+        "type": "NEIGHBORS",
+        "cell": "C3"
+      },
+      "right": {
+        "type": "NEIGHBORS",
+        "cell": "D5"
+      },
+      "op": "<=",
+      "id": "E4"
+    },
+    "A5": {
+      "type": "CONDITIONAL",
+      "if": {
+        "type": "EXACTLY",
+        "k": 2,
+        "region": {
+          "type": "NEIGHBORS",
+          "cell": "D3"
+        }
+      },
+      "then": {
+        "type": "EXACTLY",
+        "k": 1,
+        "region": {
+          "type": "EXPLICIT",
+          "cells": [
+            "A5",
+            "D3",
+            "C3",
+            "C5"
+          ]
+        }
+      },
+      "id": "A5"
+    },
+    "B5": {
+      "type": "EXACTLY",
+      "k": 2,
+      "region": {
+        "type": "COLUMN",
+        "column": "E"
+      },
+      "id": "B5"
+    },
+    "C5": {
+      "type": "COMPARISON",
+      "left": {
+        "type": "NEIGHBORS",
+        "cell": "A5"
+      },
+      "right": {
+        "type": "DIFFERENCE",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "E2"
+        },
+        "right": {
+          "type": "ROW",
+          "row": 3
+        }
+      },
+      "op": "<=",
+      "id": "C5"
+    },
+    "D5": {
+      "type": "EXACTLY",
+      "k": 2,
+      "region": {
+        "type": "INTERSECTION",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "C2"
+        },
+        "right": {
+          "type": "ROW",
+          "row": 3
+        }
+      },
+      "id": "D5"
+    },
+    "E5": {
+      "type": "AT_LEAST",
+      "k": 1,
+      "region": {
+        "type": "DIFFERENCE",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "A2"
+        },
+        "right": {
+          "type": "ROW",
+          "row": 1
+        }
+      },
+      "id": "E5"
+    }
+  }
+}

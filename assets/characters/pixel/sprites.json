@@ -1,0 +1,12 @@
+{
+  "tile_size": 256,
+  "slots": [
+    "neutral",
+    "blink_neutral",
+    "surprised",
+    "relief",
+    "smile",
+    "prison_surprised",
+    "prison_resigned"
+  ]
+}

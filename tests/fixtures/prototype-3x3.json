@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "puzzle_id": "prototype-3x3",
+  "title": "Bức thư ở góc phố",
+  "size": 3,
+  "characters": [
+    {
+      "cell": "A1",
+      "name": "Ada",
+      "profession": "Bác sĩ",
+      "portrait": 0
+    },
+    {
+      "cell": "B1",
+      "name": "Ben",
+      "profession": "Họa sĩ",
+      "portrait": 1
+    },
+    {
+      "cell": "C1",
+      "name": "Cara",
+      "profession": "Nhà báo",
+      "portrait": 2
+    },
+    {
+      "cell": "A2",
+      "name": "Dara",
+      "profession": "Luật sư",
+      "portrait": 3
+    },
+    {
+      "cell": "B2",
+      "name": "Eli",
+      "profession": "Giáo sư",
+      "portrait": 4
+    },
+    {
+      "cell": "C2",
+      "name": "Finn",
+      "profession": "Đầu bếp",
+      "portrait": 5
+    },
+    {
+      "cell": "A3",
+      "name": "Gwen",
+      "profession": "Thủ thư",
+      "portrait": 6
+    },
+    {
+      "cell": "B3",
+      "name": "Hugo",
+      "profession": "Thợ máy",
+      "portrait": 7
+    },
+    {
+      "cell": "C3",
+      "name": "Isla",
+      "profession": "Làm vườn",
+      "portrait": 8
+    }
+  ],
+  "solution": {
+    "A1": "INNOCENT",
+    "B1": "CRIMINAL",
+    "C1": "CRIMINAL",
+    "A2": "INNOCENT",
+    "B2": "INNOCENT",
+    "C2": "CRIMINAL",
+    "A3": "CRIMINAL",
+    "B3": "INNOCENT",
+    "C3": "INNOCENT"
+  },
+  "initially_revealed": [
+    "A1",
+    "B2",
+    "C3"
+  ],
+  "clues": {
+    "A1": {
+      "id": "A1",
+      "type": "EXACTLY",
+      "k": 2,
+      "region": {
+        "type": "CORNERS"
+      }
+    },
+    "B1": {
+      "id": "B1",
+      "type": "FACT",
+      "person": "B1",
+      "status": "CRIMINAL"
+    },
+    "C1": {
+      "id": "C1",
+      "type": "DIFFERENT",
+      "a": "C1",
+      "b": "A1"
+    },
+    "A2": {
+      "id": "A2",
+      "type": "SAME",
+      "a": "A2",
+      "b": "B2"
+    },
+    "B2": {
+      "id": "B2",
+      "type": "EXACTLY",
+      "k": 2,
+      "region": {
+        "type": "DIFFERENCE",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "B2"
+        },
+        "right": {
+          "type": "ROW",
+          "row": 1
+        }
+      }
+    },
+    "C2": {
+      "id": "C2",
+      "type": "AT_LEAST",
+      "k": 1,
+      "region": {
+        "type": "COLUMN",
+        "column": "C"
+      }
+    },
+    "A3": {
+      "id": "A3",
+      "type": "FACT",
+      "person": "A3",
+      "status": "CRIMINAL"
+    },
+    "B3": {
+      "id": "B3",
+      "type": "AT_MOST",
+      "k": 1,
+      "region": {
+        "type": "INTERSECTION",
+        "left": {
+          "type": "ROW",
+          "row": 3
+        },
+        "right": {
+          "type": "CORNERS"
+        }
+      }
+    },
+    "C3": {
+      "id": "C3",
+      "type": "EXACTLY",
+      "k": 3,
+      "region": {
+        "type": "UNION",
+        "left": {
+          "type": "ROW",
+          "row": 1
+        },
+        "right": {
+          "type": "COLUMN",
+          "column": "A"
+        }
+      }
+    }
+  }
+}

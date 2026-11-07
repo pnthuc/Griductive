@@ -1,0 +1,1854 @@
+{
+  "method": "Exhaustive truth-table authoring; independently checked with the in-house DPLL. Multi-clue steps hold all previously proved statuses fixed.",
+  "conditional_policy": "At its reveal in the row-major review path, a premise must be undecided. An implication must not collapse to either of its two sides. Each case includes a usable contraposition. The two sides admit all four truth combinations without the implication. Relational clues additionally admit all four combinations at reveal; reverse clues have a known-false consequence and an undecided premise.",
+  "opening_policy": "Opening certificates use only revealed clues, count bounds and an opposite-verdict assumption; one additional two-way case split is allowed. This is a mechanical review, not a claim of human playtesting. All opening conditionals have both sides unresolved; 3x3 openings need no additional case split.",
+  "cases": {
+    "case-3x3-01": {
+      "title": "Bức thư bên cửa sổ",
+      "size": 3,
+      "initially_revealed": [
+        "B1",
+        "C1"
+      ],
+      "seed": 301003,
+      "trace": [
+        {
+          "opened": "A3",
+          "candidates_before": 40,
+          "candidates_after": 16,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "COMPARISON",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "A1",
+          "candidates_before": 16,
+          "candidates_after": 8,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "CONDITIONAL",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "B3",
+          "candidates_before": 8,
+          "candidates_after": 5,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "COMPARISON",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "B2",
+          "candidates_before": 5,
+          "candidates_after": 2,
+          "forced_before": 1,
+          "forced_after": 2,
+          "new_clue": "CONDITIONAL",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "A2",
+          "candidates_before": 2,
+          "candidates_after": 2,
+          "forced_before": 2,
+          "forced_after": 1,
+          "new_clue": "AT_MOST",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "C2",
+          "candidates_before": 2,
+          "candidates_after": 1,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "AT_MOST",
+          "needs_other_clues": true,
+          "single_clue_supports": [
+            "B2",
+            "A2"
+          ],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "C3",
+          "candidates_before": 1,
+          "candidates_after": 1,
+          "forced_before": 1,
+          "forced_after": 0,
+          "new_clue": "EXACTLY",
+          "needs_other_clues": true,
+          "single_clue_supports": [
+            "C2"
+          ],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        }
+      ],
+      "clue_types": {
+        "AT_LEAST": 1,
+        "AT_MOST": 2,
+        "COMPARISON": 2,
+        "CONDITIONAL": 3,
+        "EXACTLY": 1
+      },
+      "unique_without_initial_statuses": true,
+      "multi_clue_steps": 5,
+      "essential_conditional_steps": 4,
+      "essential_comparison_steps": 5,
+      "closing_clues": [
+        "C3"
+      ],
+      "conditional_reveals": [
+        {
+          "owner": "C1",
+          "revealed_at_step": 0,
+          "antecedent_at_reveal": "UNKNOWN",
+          "mode": "LINK_UNRESOLVED_COUNTS"
+        },
+        {
+          "owner": "A1",
+          "revealed_at_step": 2,
+          "antecedent_at_reveal": "UNKNOWN",
+          "mode": "LINK_UNRESOLVED_COUNTS"
+        },
+        {
+          "owner": "B2",
+          "revealed_at_step": 4,
+          "antecedent_at_reveal": "UNKNOWN",
+          "mode": "CONTRAPOSITION"
+        }
+      ],
+      "contraposition_clues": 1,
+      "opening_review": {
+        "cell": "A3",
+        "verdict": "CRIMINAL",
+        "proof": [
+          {
+            "rule": "ASSUME_OPPOSITE",
+            "cell": "A3",
+            "status": "INNOCENT"
+          },
+          {
+            "rule": "COUNT_BOUND",
+            "cell": "A1",
+            "status": "CRIMINAL",
+            "clue": "B1"
+          },
+          {
+            "rule": "COUNT_BOUND",
+            "cell": "B3",
+            "status": "CRIMINAL",
+            "clue": "B1"
+          },
+          {
+            "rule": "CONTRADICTION",
+            "clue": "C1"
+          }
+        ]
+      },
+      "source_sha256": "97fe87fe8c21e487da46be65960d5d977c548b001d9b49da50e7cfe5a0945262"
+    },
+    "case-3x3-02": {
+      "title": "Lời khai trên bến vắng",
+      "size": 3,
+      "initially_revealed": [
+        "A2",
+        "C3"
+      ],
+      "seed": 302000,
+      "trace": [
+        {
+          "opened": "B1",
+          "candidates_before": 20,
+          "candidates_after": 14,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "CONDITIONAL",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "A1",
+          "candidates_before": 14,
+          "candidates_after": 6,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "COMPARISON",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "C1",
+          "candidates_before": 6,
+          "candidates_after": 3,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "COMPARISON",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "C2",
+          "candidates_before": 3,
+          "candidates_after": 2,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "EXACTLY",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "B2",
+          "candidates_before": 2,
+          "candidates_after": 1,
+          "forced_before": 1,
+          "forced_after": 2,
+          "new_clue": "EXACTLY",
+          "needs_other_clues": true,
+          "single_clue_supports": [
+            "C2"
+          ],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "A3",
+          "candidates_before": 1,
+          "candidates_after": 1,
+          "forced_before": 2,
+          "forced_after": 1,
+          "new_clue": "AT_LEAST",
+          "needs_other_clues": true,
+          "single_clue_supports": [
+            "B2"
+          ],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "B3",
+          "candidates_before": 1,
+          "candidates_after": 1,
+          "forced_before": 1,
+          "forced_after": 0,
+          "new_clue": "AT_MOST",
+          "needs_other_clues": true,
+          "single_clue_supports": [
+            "A2",
+            "C1"
+          ],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        }
+      ],
+      "clue_types": {
+        "AT_MOST": 1,
+        "COMPARISON": 2,
+        "CONDITIONAL": 2,
+        "EXACTLY": 4
+      },
+      "unique_without_initial_statuses": true,
+      "multi_clue_steps": 4,
+      "essential_conditional_steps": 4,
+      "essential_comparison_steps": 2,
+      "closing_clues": [
+        "A3",
+        "B3"
+      ],
+      "conditional_reveals": [
+        {
+          "owner": "C3",
+          "revealed_at_step": 0,
+          "antecedent_at_reveal": "UNKNOWN",
+          "mode": "LINK_UNRESOLVED_COUNTS"
+        },
+        {
+          "owner": "B1",
+          "revealed_at_step": 1,
+          "antecedent_at_reveal": "UNKNOWN",
+          "mode": "CONTRAPOSITION"
+        }
+      ],
+      "contraposition_clues": 1,
+      "opening_review": {
+        "cell": "B1",
+        "verdict": "INNOCENT",
+        "proof": [
+          {
+            "rule": "ASSUME_OPPOSITE",
+            "cell": "B1",
+            "status": "CRIMINAL"
+          },
+          {
+            "rule": "COUNT_BOUND",
+            "cell": "A1",
+            "status": "INNOCENT",
+            "clue": "A2"
+          },
+          {
+            "rule": "COUNT_BOUND",
+            "cell": "A3",
+            "status": "INNOCENT",
+            "clue": "A2"
+          },
+          {
+            "rule": "COUNT_BOUND",
+            "cell": "B3",
+            "status": "INNOCENT",
+            "clue": "A2"
+          },
+          {
+            "rule": "CONTRADICTION",
+            "clue": "C3"
+          }
+        ]
+      },
+      "source_sha256": "7e86e0af3775ca72d197ae290e0e9422723fe1f63ff53cbc88aa5bf35fa4620a"
+    },
+    "case-4x4-01": {
+      "title": "Chuyến tàu lúc hoàng hôn",
+      "size": 4,
+      "initially_revealed": [
+        "D1",
+        "D2",
+        "B3"
+      ],
+      "seed": 401003,
+      "trace": [
+        {
+          "opened": "C3",
+          "candidates_before": 792,
+          "candidates_after": 456,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "AT_MOST",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "A3",
+          "candidates_before": 456,
+          "candidates_after": 228,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "CONDITIONAL",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "A4",
+          "candidates_before": 228,
+          "candidates_after": 116,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "COMPARISON",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "C1",
+          "candidates_before": 116,
+          "candidates_after": 33,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "COMPARISON",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "C2",
+          "candidates_before": 33,
+          "candidates_after": 24,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "COMPARISON",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "B2",
+          "candidates_before": 24,
+          "candidates_after": 16,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "COMPARISON",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "B1",
+          "candidates_before": 16,
+          "candidates_after": 8,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "AT_MOST",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "B4",
+          "candidates_before": 8,
+          "candidates_after": 4,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "AT_LEAST",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "A2",
+          "candidates_before": 4,
+          "candidates_after": 2,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "AT_LEAST",
+          "needs_other_clues": true,
+          "single_clue_supports": [
+            "B4"
+          ],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "A1",
+          "candidates_before": 2,
+          "candidates_after": 1,
+          "forced_before": 1,
+          "forced_after": 3,
+          "new_clue": "CONDITIONAL",
+          "needs_other_clues": true,
+          "single_clue_supports": [
+            "A2"
+          ],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "D3",
+          "candidates_before": 1,
+          "candidates_after": 1,
+          "forced_before": 3,
+          "forced_after": 2,
+          "new_clue": "AT_MOST",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "C4",
+          "candidates_before": 1,
+          "candidates_after": 1,
+          "forced_before": 2,
+          "forced_after": 1,
+          "new_clue": "EXACTLY",
+          "needs_other_clues": true,
+          "single_clue_supports": [
+            "D2",
+            "A1"
+          ],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "D4",
+          "candidates_before": 1,
+          "candidates_after": 1,
+          "forced_before": 1,
+          "forced_after": 0,
+          "new_clue": "EXACTLY",
+          "needs_other_clues": true,
+          "single_clue_supports": [
+            "B3",
+            "C3",
+            "A3",
+            "C2",
+            "B1",
+            "D3"
+          ],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        }
+      ],
+      "clue_types": {
+        "AT_LEAST": 3,
+        "AT_MOST": 2,
+        "COMPARISON": 4,
+        "CONDITIONAL": 3,
+        "EXACTLY": 4
+      },
+      "unique_without_initial_statuses": true,
+      "multi_clue_steps": 9,
+      "essential_conditional_steps": 4,
+      "essential_comparison_steps": 6,
+      "closing_clues": [
+        "D3",
+        "C4",
+        "D4"
+      ],
+      "conditional_reveals": [
+        {
+          "owner": "D2",
+          "revealed_at_step": 0,
+          "antecedent_at_reveal": "UNKNOWN",
+          "mode": "LINK_UNRESOLVED_COUNTS"
+        },
+        {
+          "owner": "A3",
+          "revealed_at_step": 2,
+          "antecedent_at_reveal": "UNKNOWN",
+          "mode": "CONTRAPOSITION"
+        },
+        {
+          "owner": "A1",
+          "revealed_at_step": 10,
+          "antecedent_at_reveal": "UNKNOWN",
+          "mode": "CONTRAPOSITION"
+        }
+      ],
+      "contraposition_clues": 2,
+      "opening_review": {
+        "cell": "C3",
+        "verdict": "CRIMINAL",
+        "proof": [
+          {
+            "rule": "ASSUME_OPPOSITE",
+            "cell": "C3",
+            "status": "INNOCENT"
+          },
+          {
+            "rule": "COUNT_BOUND",
+            "cell": "A3",
+            "status": "CRIMINAL",
+            "clue": "B3"
+          },
+          {
+            "rule": "COUNT_BOUND",
+            "cell": "D3",
+            "status": "CRIMINAL",
+            "clue": "B3"
+          },
+          {
+            "rule": "COUNT_BOUND",
+            "cell": "D4",
+            "status": "CRIMINAL",
+            "clue": "B3"
+          },
+          {
+            "rule": "CONTRADICTION",
+            "clue": "D2"
+          }
+        ]
+      },
+      "source_sha256": "64060f73c79680c83dde45ed9302e7bf1a81627475ae1f114467c30c179eff88"
+    },
+    "case-4x4-02": {
+      "title": "Dấu vết trong phố nhỏ",
+      "size": 4,
+      "initially_revealed": [
+        "C1",
+        "A4",
+        "B4"
+      ],
+      "seed": 402004,
+      "trace": [
+        {
+          "opened": "D4",
+          "candidates_before": 960,
+          "candidates_after": 240,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "CONDITIONAL",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "C2",
+          "candidates_before": 240,
+          "candidates_after": 200,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "CONDITIONAL",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "D3",
+          "candidates_before": 200,
+          "candidates_after": 72,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "COMPARISON",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "C4",
+          "candidates_before": 72,
+          "candidates_after": 40,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "COMPARISON",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "D2",
+          "candidates_before": 40,
+          "candidates_after": 24,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "AT_MOST",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "B2",
+          "candidates_before": 24,
+          "candidates_after": 12,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "COMPARISON",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "B1",
+          "candidates_before": 12,
+          "candidates_after": 6,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "AT_MOST",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "A3",
+          "candidates_before": 6,
+          "candidates_after": 4,
+          "forced_before": 1,
+          "forced_after": 3,
+          "new_clue": "COMPARISON",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "A1",
+          "candidates_before": 4,
+          "candidates_after": 4,
+          "forced_before": 3,
+          "forced_after": 2,
+          "new_clue": "AT_LEAST",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "B3",
+          "candidates_before": 4,
+          "candidates_after": 4,
+          "forced_before": 2,
+          "forced_after": 1,
+          "new_clue": "AT_MOST",
+          "needs_other_clues": true,
+          "single_clue_supports": [
+            "B1"
+          ],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "C3",
+          "candidates_before": 4,
+          "candidates_after": 2,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "EXACTLY",
+          "needs_other_clues": true,
+          "single_clue_supports": [
+            "C1",
+            "C2",
+            "C4"
+          ],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "A2",
+          "candidates_before": 2,
+          "candidates_after": 1,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "AT_MOST",
+          "needs_other_clues": true,
+          "single_clue_supports": [
+            "C3"
+          ],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "D1",
+          "candidates_before": 1,
+          "candidates_after": 1,
+          "forced_before": 1,
+          "forced_after": 0,
+          "new_clue": "AT_LEAST",
+          "needs_other_clues": true,
+          "single_clue_supports": [
+            "A2"
+          ],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        }
+      ],
+      "clue_types": {
+        "AT_LEAST": 3,
+        "AT_MOST": 4,
+        "COMPARISON": 4,
+        "CONDITIONAL": 3,
+        "EXACTLY": 2
+      },
+      "unique_without_initial_statuses": true,
+      "multi_clue_steps": 9,
+      "essential_conditional_steps": 6,
+      "essential_comparison_steps": 4,
+      "closing_clues": [
+        "D1"
+      ],
+      "conditional_reveals": [
+        {
+          "owner": "A4",
+          "revealed_at_step": 0,
+          "antecedent_at_reveal": "UNKNOWN",
+          "mode": "LINK_UNRESOLVED_COUNTS"
+        },
+        {
+          "owner": "D4",
+          "revealed_at_step": 1,
+          "antecedent_at_reveal": "UNKNOWN",
+          "mode": "LINK_UNRESOLVED_COUNTS"
+        },
+        {
+          "owner": "C2",
+          "revealed_at_step": 2,
+          "antecedent_at_reveal": "UNKNOWN",
+          "mode": "CONTRAPOSITION"
+        }
+      ],
+      "contraposition_clues": 1,
+      "opening_review": {
+        "cell": "D4",
+        "verdict": "CRIMINAL",
+        "proof": [
+          {
+            "rule": "ASSUME_OPPOSITE",
+            "cell": "D4",
+            "status": "INNOCENT"
+          },
+          {
+            "rule": "COUNT_BOUND",
+            "cell": "B3",
+            "status": "CRIMINAL",
+            "clue": "C1"
+          },
+          {
+            "rule": "COUNT_BOUND",
+            "cell": "C3",
+            "status": "CRIMINAL",
+            "clue": "C1"
+          },
+          {
+            "rule": "COUNT_BOUND",
+            "cell": "D3",
+            "status": "CRIMINAL",
+            "clue": "C1"
+          },
+          {
+            "rule": "CONTRAPOSITION",
+            "cell": "A1",
+            "status": "INNOCENT",
+            "clue": "A4"
+          },
+          {
+            "rule": "CONTRAPOSITION",
+            "cell": "C4",
+            "status": "INNOCENT",
+            "clue": "A4"
+          },
+          {
+            "rule": "CONTRADICTION",
+            "clue": "B4"
+          }
+        ]
+      },
+      "source_sha256": "499b4b322ff92492c96ede79d3fa18b876f61ec5d2878860a08033c8b294a640"
+    },
+    "case-5x5-01": {
+      "title": "Đêm hội bên hải đăng",
+      "size": 5,
+      "initially_revealed": [
+        "E2",
+        "A4",
+        "E5"
+      ],
+      "seed": 501001,
+      "trace": [
+        {
+          "opened": "A3",
+          "candidates_before": 147456,
+          "candidates_after": 61440,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "COMPARISON",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "B4",
+          "candidates_before": 61440,
+          "candidates_after": 28672,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "EXACTLY",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "C4",
+          "candidates_before": 28672,
+          "candidates_after": 10240,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "COMPARISON",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "C2",
+          "candidates_before": 10240,
+          "candidates_after": 5120,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "EXACTLY",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "D2",
+          "candidates_before": 5120,
+          "candidates_after": 2560,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "EXACTLY",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "A1",
+          "candidates_before": 2560,
+          "candidates_after": 1280,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "COMPARISON",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "D5",
+          "candidates_before": 1280,
+          "candidates_after": 640,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "EXACTLY",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "D3",
+          "candidates_before": 640,
+          "candidates_after": 192,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "EXACTLY",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "E4",
+          "candidates_before": 192,
+          "candidates_after": 96,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "COMPARISON",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "C5",
+          "candidates_before": 96,
+          "candidates_after": 32,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "COMPARISON",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "E1",
+          "candidates_before": 32,
+          "candidates_after": 16,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "COMPARISON",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "D4",
+          "candidates_before": 16,
+          "candidates_after": 8,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "AT_MOST",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "E3",
+          "candidates_before": 8,
+          "candidates_after": 4,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "CONDITIONAL",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "C1",
+          "candidates_before": 4,
+          "candidates_after": 2,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "AT_MOST",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "A5",
+          "candidates_before": 2,
+          "candidates_after": 1,
+          "forced_before": 1,
+          "forced_after": 7,
+          "new_clue": "CONDITIONAL",
+          "needs_other_clues": true,
+          "single_clue_supports": [
+            "C1"
+          ],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "B1",
+          "candidates_before": 1,
+          "candidates_after": 1,
+          "forced_before": 7,
+          "forced_after": 6,
+          "new_clue": "AT_MOST",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "D1",
+          "candidates_before": 1,
+          "candidates_after": 1,
+          "forced_before": 6,
+          "forced_after": 5,
+          "new_clue": "AT_LEAST",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "A2",
+          "candidates_before": 1,
+          "candidates_after": 1,
+          "forced_before": 5,
+          "forced_after": 4,
+          "new_clue": "EXACTLY",
+          "needs_other_clues": true,
+          "single_clue_supports": [
+            "A3"
+          ],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "B2",
+          "candidates_before": 1,
+          "candidates_after": 1,
+          "forced_before": 4,
+          "forced_after": 3,
+          "new_clue": "AT_LEAST",
+          "needs_other_clues": true,
+          "single_clue_supports": [
+            "E2",
+            "A4",
+            "C4",
+            "C2",
+            "D2",
+            "D4",
+            "E3"
+          ],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "B3",
+          "candidates_before": 1,
+          "candidates_after": 1,
+          "forced_before": 3,
+          "forced_after": 2,
+          "new_clue": "EXACTLY",
+          "needs_other_clues": true,
+          "single_clue_supports": [
+            "E5"
+          ],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "C3",
+          "candidates_before": 1,
+          "candidates_after": 1,
+          "forced_before": 2,
+          "forced_after": 1,
+          "new_clue": "EXACTLY",
+          "needs_other_clues": true,
+          "single_clue_supports": [
+            "A4",
+            "B4",
+            "D5",
+            "D3",
+            "A5",
+            "A2"
+          ],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "B5",
+          "candidates_before": 1,
+          "candidates_after": 1,
+          "forced_before": 1,
+          "forced_after": 0,
+          "new_clue": "AT_MOST",
+          "needs_other_clues": true,
+          "single_clue_supports": [
+            "C4",
+            "A1",
+            "B2"
+          ],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        }
+      ],
+      "clue_types": {
+        "AT_LEAST": 1,
+        "AT_MOST": 2,
+        "COMPARISON": 6,
+        "CONDITIONAL": 3,
+        "EXACTLY": 13
+      },
+      "unique_without_initial_statuses": true,
+      "multi_clue_steps": 16,
+      "essential_conditional_steps": 5,
+      "essential_comparison_steps": 8,
+      "closing_clues": [
+        "B1",
+        "D1",
+        "A2",
+        "B2",
+        "B3",
+        "C3",
+        "B5"
+      ],
+      "conditional_reveals": [
+        {
+          "owner": "A4",
+          "revealed_at_step": 0,
+          "antecedent_at_reveal": "UNKNOWN",
+          "mode": "LINK_UNRESOLVED_COUNTS"
+        },
+        {
+          "owner": "E3",
+          "revealed_at_step": 13,
+          "antecedent_at_reveal": "UNKNOWN",
+          "mode": "CONTRAPOSITION"
+        },
+        {
+          "owner": "A5",
+          "revealed_at_step": 15,
+          "antecedent_at_reveal": "UNKNOWN",
+          "mode": "CONTRAPOSITION"
+        }
+      ],
+      "contraposition_clues": 2,
+      "opening_review": {
+        "cell": "A3",
+        "verdict": "INNOCENT",
+        "proof": [
+          {
+            "rule": "ASSUME_OPPOSITE",
+            "cell": "A3",
+            "status": "CRIMINAL"
+          },
+          {
+            "rule": "CONDITIONAL_TRIGGER",
+            "cell": "A2",
+            "status": "INNOCENT",
+            "clue": "A4"
+          },
+          {
+            "rule": "CONDITIONAL_TRIGGER",
+            "cell": "B2",
+            "status": "INNOCENT",
+            "clue": "A4"
+          },
+          {
+            "rule": "CONDITIONAL_TRIGGER",
+            "cell": "C2",
+            "status": "INNOCENT",
+            "clue": "A4"
+          },
+          {
+            "rule": "CONDITIONAL_TRIGGER",
+            "cell": "C3",
+            "status": "INNOCENT",
+            "clue": "A4"
+          },
+          {
+            "rule": "CONDITIONAL_TRIGGER",
+            "cell": "B4",
+            "status": "INNOCENT",
+            "clue": "A4"
+          },
+          {
+            "rule": "CONDITIONAL_TRIGGER",
+            "cell": "C4",
+            "status": "INNOCENT",
+            "clue": "A4"
+          },
+          {
+            "rule": "CONTRADICTION",
+            "clue": "E2"
+          }
+        ]
+      },
+      "source_sha256": "13b92675fb5e463621e57d3706df42e7a9a13ea027ce21a0f19aeb1da8267d00"
+    },
+    "case-5x5-02": {
+      "title": "Bí mật sau phiên chợ",
+      "size": 5,
+      "initially_revealed": [
+        "C2",
+        "E2",
+        "D5"
+      ],
+      "seed": 502007,
+      "trace": [
+        {
+          "opened": "C3",
+          "candidates_before": 137216,
+          "candidates_after": 94208,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "CONDITIONAL",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "B4",
+          "candidates_before": 94208,
+          "candidates_after": 57344,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "CONDITIONAL",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "C5",
+          "candidates_before": 57344,
+          "candidates_after": 40960,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "AT_LEAST",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "C4",
+          "candidates_before": 40960,
+          "candidates_after": 20480,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "EXACTLY",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "D2",
+          "candidates_before": 20480,
+          "candidates_after": 10240,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "AT_LEAST",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "D4",
+          "candidates_before": 10240,
+          "candidates_after": 5120,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "AT_LEAST",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "E3",
+          "candidates_before": 5120,
+          "candidates_after": 1536,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "EXACTLY",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "B2",
+          "candidates_before": 1536,
+          "candidates_after": 768,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "CONDITIONAL",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "B1",
+          "candidates_before": 768,
+          "candidates_after": 256,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "COMPARISON",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "D1",
+          "candidates_before": 256,
+          "candidates_after": 128,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "COMPARISON",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "A4",
+          "candidates_before": 128,
+          "candidates_after": 48,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "CONDITIONAL",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "A3",
+          "candidates_before": 48,
+          "candidates_after": 24,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "COMPARISON",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "A2",
+          "candidates_before": 24,
+          "candidates_after": 8,
+          "forced_before": 1,
+          "forced_after": 1,
+          "new_clue": "COMPARISON",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "A1",
+          "candidates_before": 8,
+          "candidates_after": 2,
+          "forced_before": 1,
+          "forced_after": 3,
+          "new_clue": "COMPARISON",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": true,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "C1",
+          "candidates_before": 2,
+          "candidates_after": 2,
+          "forced_before": 3,
+          "forced_after": 2,
+          "new_clue": "AT_LEAST",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "E1",
+          "candidates_before": 2,
+          "candidates_after": 2,
+          "forced_before": 2,
+          "forced_after": 1,
+          "new_clue": "COMPARISON",
+          "needs_other_clues": true,
+          "single_clue_supports": [
+            "C2",
+            "C4",
+            "D4"
+          ],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "E5",
+          "candidates_before": 2,
+          "candidates_after": 1,
+          "forced_before": 1,
+          "forced_after": 5,
+          "new_clue": "AT_MOST",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "B3",
+          "candidates_before": 1,
+          "candidates_after": 1,
+          "forced_before": 5,
+          "forced_after": 4,
+          "new_clue": "EXACTLY",
+          "needs_other_clues": true,
+          "single_clue_supports": [],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "D3",
+          "candidates_before": 1,
+          "candidates_after": 1,
+          "forced_before": 4,
+          "forced_after": 3,
+          "new_clue": "AT_MOST",
+          "needs_other_clues": true,
+          "single_clue_supports": [
+            "E3",
+            "A1",
+            "E5"
+          ],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "E4",
+          "candidates_before": 1,
+          "candidates_after": 1,
+          "forced_before": 3,
+          "forced_after": 2,
+          "new_clue": "AT_MOST",
+          "needs_other_clues": true,
+          "single_clue_supports": [
+            "B1"
+          ],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": true
+          }
+        },
+        {
+          "opened": "A5",
+          "candidates_before": 1,
+          "candidates_after": 1,
+          "forced_before": 2,
+          "forced_after": 1,
+          "new_clue": "EXACTLY",
+          "needs_other_clues": true,
+          "single_clue_supports": [
+            "B3"
+          ],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        },
+        {
+          "opened": "B5",
+          "candidates_before": 1,
+          "candidates_after": 1,
+          "forced_before": 1,
+          "forced_after": 0,
+          "new_clue": "EXACTLY",
+          "needs_other_clues": true,
+          "single_clue_supports": [
+            "D5",
+            "B4",
+            "B2",
+            "D1",
+            "A2"
+          ],
+          "essential_extensions": {
+            "CONDITIONAL": false,
+            "COMPARISON": false
+          }
+        }
+      ],
+      "clue_types": {
+        "AT_LEAST": 4,
+        "AT_MOST": 2,
+        "COMPARISON": 6,
+        "CONDITIONAL": 5,
+        "EXACTLY": 8
+      },
+      "unique_without_initial_statuses": true,
+      "multi_clue_steps": 17,
+      "essential_conditional_steps": 9,
+      "essential_comparison_steps": 8,
+      "closing_clues": [
+        "B3",
+        "D3",
+        "E4",
+        "A5",
+        "B5"
+      ],
+      "conditional_reveals": [
+        {
+          "owner": "E2",
+          "revealed_at_step": 0,
+          "antecedent_at_reveal": "UNKNOWN",
+          "mode": "LINK_UNRESOLVED_COUNTS"
+        },
+        {
+          "owner": "C3",
+          "revealed_at_step": 1,
+          "antecedent_at_reveal": "UNKNOWN",
+          "mode": "LINK_UNRESOLVED_COUNTS"
+        },
+        {
+          "owner": "B4",
+          "revealed_at_step": 2,
+          "antecedent_at_reveal": "UNKNOWN",
+          "mode": "LINK_UNRESOLVED_COUNTS"
+        },
+        {
+          "owner": "B2",
+          "revealed_at_step": 8,
+          "antecedent_at_reveal": "UNKNOWN",
+          "mode": "CONTRAPOSITION"
+        },
+        {
+          "owner": "A4",
+          "revealed_at_step": 11,
+          "antecedent_at_reveal": "UNKNOWN",
+          "mode": "LINK_UNRESOLVED_COUNTS"
+        }
+      ],
+      "contraposition_clues": 1,
+      "opening_review": {
+        "cell": "C3",
+        "verdict": "INNOCENT",
+        "proof": [
+          {
+            "rule": "ASSUME_OPPOSITE",
+            "cell": "C3",
+            "status": "CRIMINAL"
+          },
+          {
+            "rule": "CASE_SPLIT",
+            "cell": "C1",
+            "branches": [
+              {
+                "status": "INNOCENT",
+                "proof": [
+                  {
+                    "rule": "COUNT_BOUND",
+                    "cell": "E1",
+                    "status": "CRIMINAL",
+                    "clue": "C2"
+                  },
+                  {
+                    "rule": "COUNT_BOUND",
+                    "cell": "B3",
+                    "status": "INNOCENT",
+                    "clue": "D5"
+                  },
+                  {
+                    "rule": "COUNT_BOUND",
+                    "cell": "B4",
+                    "status": "INNOCENT",
+                    "clue": "D5"
+                  },
+                  {
+                    "rule": "COUNT_BOUND",
+                    "cell": "B5",
+                    "status": "INNOCENT",
+                    "clue": "D5"
+                  },
+                  {
+                    "rule": "COUNT_BOUND",
+                    "cell": "C5",
+                    "status": "INNOCENT",
+                    "clue": "D5"
+                  },
+                  {
+                    "rule": "CONTRADICTION",
+                    "clue": "E2"
+                  }
+                ]
+              },
+              {
+                "status": "CRIMINAL",
+                "proof": [
+                  {
+                    "rule": "COUNT_BOUND",
+                    "cell": "E1",
+                    "status": "INNOCENT",
+                    "clue": "C2"
+                  },
+                  {
+                    "rule": "COUNT_BOUND",
+                    "cell": "B3",
+                    "status": "INNOCENT",
+                    "clue": "D5"
+                  },
+                  {
+                    "rule": "COUNT_BOUND",
+                    "cell": "B4",
+                    "status": "INNOCENT",
+                    "clue": "D5"
+                  },
+                  {
+                    "rule": "COUNT_BOUND",
+                    "cell": "B5",
+                    "status": "INNOCENT",
+                    "clue": "D5"
+                  },
+                  {
+                    "rule": "COUNT_BOUND",
+                    "cell": "C5",
+                    "status": "INNOCENT",
+                    "clue": "D5"
+                  },
+                  {
+                    "rule": "CONTRADICTION",
+                    "clue": "E2"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "rule": "CONTRADICTION_IN_BOTH_CASES"
+          }
+        ]
+      },
+      "source_sha256": "c74ed70ff303f800e38057c408156ad7ff20d5e35f1a7d897db6d551a876f1fd"
+    }
+  },
+  "source_hash_algorithm": "SHA256 of puzzle JSON file bytes"
+}

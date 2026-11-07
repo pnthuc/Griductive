@@ -1,0 +1,240 @@
+{
+  "schema_version": 1,
+  "puzzle_id": "case-3x3-01",
+  "title": "Bức thư bên cửa sổ",
+  "size": 3,
+  "characters": [
+    {
+      "name": "Ada",
+      "profession": "Bác sĩ",
+      "portrait": 0,
+      "cell": "A1"
+    },
+    {
+      "name": "Ben",
+      "profession": "Họa sĩ",
+      "portrait": 1,
+      "cell": "B1"
+    },
+    {
+      "name": "Cara",
+      "profession": "Nhà báo",
+      "portrait": 2,
+      "cell": "C1"
+    },
+    {
+      "name": "Dara",
+      "profession": "Luật sư",
+      "portrait": 3,
+      "cell": "A2"
+    },
+    {
+      "name": "Eli",
+      "profession": "Giáo sư",
+      "portrait": 4,
+      "cell": "B2"
+    },
+    {
+      "name": "Finn",
+      "profession": "Đầu bếp",
+      "portrait": 5,
+      "cell": "C2"
+    },
+    {
+      "name": "Gwen",
+      "profession": "Thủ thư",
+      "portrait": 6,
+      "cell": "A3"
+    },
+    {
+      "name": "Hugo",
+      "profession": "Thợ máy",
+      "portrait": 7,
+      "cell": "B3"
+    },
+    {
+      "name": "Isla",
+      "profession": "Làm vườn",
+      "portrait": 8,
+      "cell": "C3"
+    }
+  ],
+  "solution": {
+    "A1": "CRIMINAL",
+    "B1": "CRIMINAL",
+    "C1": "INNOCENT",
+    "A2": "INNOCENT",
+    "B2": "INNOCENT",
+    "C2": "INNOCENT",
+    "A3": "CRIMINAL",
+    "B3": "INNOCENT",
+    "C3": "INNOCENT"
+  },
+  "initially_revealed": [
+    "B1",
+    "C1"
+  ],
+  "clues": {
+    "A1": {
+      "type": "CONDITIONAL",
+      "if": {
+        "type": "AT_MOST",
+        "k": 2,
+        "region": {
+          "type": "COLUMN",
+          "column": "A"
+        }
+      },
+      "then": {
+        "type": "AT_MOST",
+        "k": 3,
+        "region": {
+          "type": "NEIGHBORS",
+          "cell": "A2"
+        }
+      },
+      "id": "A1"
+    },
+    "B1": {
+      "type": "AT_LEAST",
+      "k": 3,
+      "region": {
+        "type": "DIFFERENCE",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "A2"
+        },
+        "right": {
+          "type": "ROW",
+          "row": 2
+        }
+      },
+      "id": "B1"
+    },
+    "C1": {
+      "type": "CONDITIONAL",
+      "if": {
+        "type": "AT_LEAST",
+        "k": 2,
+        "region": {
+          "type": "ROW",
+          "row": 1
+        }
+      },
+      "then": {
+        "type": "COMPARISON",
+        "left": {
+          "type": "EXPLICIT",
+          "cells": [
+            "A1",
+            "B3",
+            "C2",
+            "C3"
+          ]
+        },
+        "right": {
+          "type": "EXPLICIT",
+          "cells": [
+            "C3",
+            "A3",
+            "A1"
+          ]
+        },
+        "op": "<="
+      },
+      "id": "C1"
+    },
+    "A2": {
+      "type": "AT_MOST",
+      "k": 1,
+      "region": {
+        "type": "NEIGHBORS",
+        "cell": "B1"
+      },
+      "id": "A2"
+    },
+    "B2": {
+      "type": "CONDITIONAL",
+      "if": {
+        "type": "EXACTLY",
+        "k": 2,
+        "region": {
+          "type": "EXPLICIT",
+          "cells": [
+            "B3",
+            "A2",
+            "C2",
+            "A3"
+          ]
+        }
+      },
+      "then": {
+        "type": "EXACTLY",
+        "k": 1,
+        "region": {
+          "type": "EXPLICIT",
+          "cells": [
+            "C3",
+            "B3",
+            "A3",
+            "B1"
+          ]
+        }
+      },
+      "id": "B2"
+    },
+    "C2": {
+      "type": "AT_MOST",
+      "k": 1,
+      "region": {
+        "type": "NEIGHBORS",
+        "cell": "C2"
+      },
+      "id": "C2"
+    },
+    "A3": {
+      "type": "COMPARISON",
+      "left": {
+        "type": "EXPLICIT",
+        "cells": [
+          "B3",
+          "A2",
+          "C2",
+          "A3"
+        ]
+      },
+      "right": {
+        "type": "ROW",
+        "row": 1
+      },
+      "op": "<=",
+      "id": "A3"
+    },
+    "B3": {
+      "type": "COMPARISON",
+      "left": {
+        "type": "NEIGHBORS",
+        "cell": "A1"
+      },
+      "right": {
+        "type": "EXPLICIT",
+        "cells": [
+          "A1",
+          "B3",
+          "C2",
+          "C3"
+        ]
+      },
+      "op": "<=",
+      "id": "B3"
+    },
+    "C3": {
+      "type": "EXACTLY",
+      "k": 2,
+      "region": {
+        "type": "CORNERS"
+      },
+      "id": "C3"
+    }
+  }
+}

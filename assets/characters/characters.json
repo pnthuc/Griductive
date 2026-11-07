@@ -1,0 +1,127 @@
+[
+  {
+    "name": "Ada",
+    "profession": "Bác sĩ",
+    "portrait": 0
+  },
+  {
+    "name": "Ben",
+    "profession": "Họa sĩ",
+    "portrait": 1
+  },
+  {
+    "name": "Cara",
+    "profession": "Nhà báo",
+    "portrait": 2
+  },
+  {
+    "name": "Dara",
+    "profession": "Luật sư",
+    "portrait": 3
+  },
+  {
+    "name": "Eli",
+    "profession": "Giáo sư",
+    "portrait": 4
+  },
+  {
+    "name": "Finn",
+    "profession": "Đầu bếp",
+    "portrait": 5
+  },
+  {
+    "name": "Gwen",
+    "profession": "Thủ thư",
+    "portrait": 6
+  },
+  {
+    "name": "Hugo",
+    "profession": "Thợ máy",
+    "portrait": 7
+  },
+  {
+    "name": "Isla",
+    "profession": "Làm vườn",
+    "portrait": 8
+  },
+  {
+    "name": "Jasper",
+    "profession": "Nhiếp ảnh gia",
+    "portrait": 9
+  },
+  {
+    "name": "Kira",
+    "profession": "Kiến trúc sư",
+    "portrait": 10
+  },
+  {
+    "name": "Leon",
+    "profession": "Thợ đồng hồ",
+    "portrait": 11
+  },
+  {
+    "name": "Mina",
+    "profession": "Nhạc công",
+    "portrait": 12
+  },
+  {
+    "name": "Nolan",
+    "profession": "Lính cứu hỏa",
+    "portrait": 13
+  },
+  {
+    "name": "Opal",
+    "profession": "Người bán hoa",
+    "portrait": 14
+  },
+  {
+    "name": "Pavel",
+    "profession": "Thợ may",
+    "portrait": 15
+  },
+  {
+    "name": "Quinn",
+    "profession": "Phi công",
+    "portrait": 16
+  },
+  {
+    "name": "Rosa",
+    "profession": "Thợ bánh",
+    "portrait": 17
+  },
+  {
+    "name": "Silas",
+    "profession": "Thám tử",
+    "portrait": 18
+  },
+  {
+    "name": "Tessa",
+    "profession": "Kỹ sư",
+    "portrait": 19
+  },
+  {
+    "name": "Umar",
+    "profession": "Người bán sách",
+    "portrait": 20
+  },
+  {
+    "name": "Vera",
+    "profession": "Y tá",
+    "portrait": 21
+  },
+  {
+    "name": "Wade",
+    "profession": "Thủy thủ",
+    "portrait": 22
+  },
+  {
+    "name": "Xenia",
+    "profession": "Giáo viên âm nhạc",
+    "portrait": 23
+  },
+  {
+    "name": "Yuri",
+    "profession": "Nhà thực vật học",
+    "portrait": 24
+  }
+]

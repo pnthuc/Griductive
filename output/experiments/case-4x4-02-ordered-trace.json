@@ -1,0 +1,741 @@
+[
+  {
+    "step": 1,
+    "cell": "D4",
+    "verdict": "CRIMINAL",
+    "active_clues": [
+      "C1",
+      "A4",
+      "B4"
+    ],
+    "queries": [
+      {
+        "assumptions": [],
+        "result": "SAT",
+        "decisions": 2,
+        "propagations": 56,
+        "backtracks": 0,
+        "runtime": 0.0012481000158004463
+      },
+      {
+        "assumptions": [
+          -16
+        ],
+        "result": "UNSAT",
+        "decisions": 0,
+        "propagations": 48,
+        "backtracks": 0,
+        "runtime": 0.0003945999778807163
+      }
+    ],
+    "new_clue": "D4",
+    "new_clue_content": {
+      "type": "CONDITIONAL",
+      "if": {
+        "type": "AT_LEAST",
+        "k": 1,
+        "region": {
+          "type": "ROW",
+          "row": 2
+        }
+      },
+      "then": {
+        "type": "AT_LEAST",
+        "k": 2,
+        "region": {
+          "type": "EXPLICIT",
+          "cells": [
+            "A1",
+            "C3",
+            "C4",
+            "A4"
+          ]
+        }
+      },
+      "id": "D4"
+    },
+    "primary_variables": 16,
+    "auxiliary_variables": 46,
+    "clauses": 144
+  },
+  {
+    "step": 2,
+    "cell": "C2",
+    "verdict": "INNOCENT",
+    "active_clues": [
+      "C1",
+      "A4",
+      "B4",
+      "D4"
+    ],
+    "queries": [
+      {
+        "assumptions": [],
+        "result": "SAT",
+        "decisions": 5,
+        "propagations": 72,
+        "backtracks": 0,
+        "runtime": 0.0020041000097990036
+      },
+      {
+        "assumptions": [
+          7
+        ],
+        "result": "UNSAT",
+        "decisions": 0,
+        "propagations": 27,
+        "backtracks": 0,
+        "runtime": 0.0003603000077418983
+      }
+    ],
+    "new_clue": "C2",
+    "new_clue_content": {
+      "type": "CONDITIONAL",
+      "if": {
+        "type": "EXACTLY",
+        "k": 1,
+        "region": {
+          "type": "EXPLICIT",
+          "cells": [
+            "A1",
+            "C3",
+            "C4",
+            "A4"
+          ]
+        }
+      },
+      "then": {
+        "type": "EXACTLY",
+        "k": 1,
+        "region": {
+          "type": "ROW",
+          "row": 4
+        }
+      },
+      "id": "C2"
+    },
+    "primary_variables": 16,
+    "auxiliary_variables": 59,
+    "clauses": 185
+  },
+  {
+    "step": 3,
+    "cell": "D3",
+    "verdict": "CRIMINAL",
+    "active_clues": [
+      "C1",
+      "C2",
+      "A4",
+      "B4",
+      "D4"
+    ],
+    "queries": [
+      {
+        "assumptions": [],
+        "result": "SAT",
+        "decisions": 5,
+        "propagations": 87,
+        "backtracks": 0,
+        "runtime": 0.0020726000075228512
+      },
+      {
+        "assumptions": [
+          -12
+        ],
+        "result": "UNSAT",
+        "decisions": 0,
+        "propagations": 62,
+        "backtracks": 0,
+        "runtime": 0.0008354000165127218
+      }
+    ],
+    "new_clue": "D3",
+    "new_clue_content": {
+      "type": "COMPARISON",
+      "left": {
+        "type": "EXPLICIT",
+        "cells": [
+          "B3",
+          "D3",
+          "B4",
+          "C3"
+        ]
+      },
+      "right": {
+        "type": "NEIGHBORS",
+        "cell": "D4"
+      },
+      "op": ">",
+      "id": "D3"
+    },
+    "primary_variables": 16,
+    "auxiliary_variables": 74,
+    "clauses": 232
+  },
+  {
+    "step": 4,
+    "cell": "C4",
+    "verdict": "INNOCENT",
+    "active_clues": [
+      "C1",
+      "C2",
+      "D3",
+      "A4",
+      "B4",
+      "D4"
+    ],
+    "queries": [
+      {
+        "assumptions": [],
+        "result": "SAT",
+        "decisions": 4,
+        "propagations": 101,
+        "backtracks": 0,
+        "runtime": 0.0022846999927423894
+      },
+      {
+        "assumptions": [
+          15
+        ],
+        "result": "UNSAT",
+        "decisions": 0,
+        "propagations": 82,
+        "backtracks": 0,
+        "runtime": 0.0012009999481961131
+      }
+    ],
+    "new_clue": "C4",
+    "new_clue_content": {
+      "type": "COMPARISON",
+      "left": {
+        "type": "NEIGHBORS",
+        "cell": "D3"
+      },
+      "right": {
+        "type": "EXPLICIT",
+        "cells": [
+          "D4",
+          "C4",
+          "A1"
+        ]
+      },
+      "op": "=",
+      "id": "C4"
+    },
+    "primary_variables": 16,
+    "auxiliary_variables": 88,
+    "clauses": 279
+  },
+  {
+    "step": 5,
+    "cell": "D2",
+    "verdict": "INNOCENT",
+    "active_clues": [
+      "C1",
+      "C2",
+      "D3",
+      "A4",
+      "B4",
+      "C4",
+      "D4"
+    ],
+    "queries": [
+      {
+        "assumptions": [],
+        "result": "SAT",
+        "decisions": 3,
+        "propagations": 136,
+        "backtracks": 0,
+        "runtime": 0.001641899987589568
+      },
+      {
+        "assumptions": [
+          8
+        ],
+        "result": "UNSAT",
+        "decisions": 0,
+        "propagations": 110,
+        "backtracks": 0,
+        "runtime": 0.0007862999918870628
+      }
+    ],
+    "new_clue": "D2",
+    "new_clue_content": {
+      "type": "AT_MOST",
+      "k": 2,
+      "region": {
+        "type": "DIFFERENCE",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "C2"
+        },
+        "right": {
+          "type": "ROW",
+          "row": 1
+        }
+      },
+      "id": "D2"
+    },
+    "primary_variables": 16,
+    "auxiliary_variables": 123,
+    "clauses": 390
+  },
+  {
+    "step": 6,
+    "cell": "B2",
+    "verdict": "INNOCENT",
+    "active_clues": [
+      "C1",
+      "C2",
+      "D2",
+      "D3",
+      "A4",
+      "B4",
+      "C4",
+      "D4"
+    ],
+    "queries": [
+      {
+        "assumptions": [],
+        "result": "SAT",
+        "decisions": 2,
+        "propagations": 156,
+        "backtracks": 0,
+        "runtime": 0.001594299974385649
+      },
+      {
+        "assumptions": [
+          6
+        ],
+        "result": "UNSAT",
+        "decisions": 0,
+        "propagations": 127,
+        "backtracks": 0,
+        "runtime": 0.0008016999927349389
+      }
+    ],
+    "new_clue": "B2",
+    "new_clue_content": {
+      "type": "COMPARISON",
+      "left": {
+        "type": "ROW",
+        "row": 3
+      },
+      "right": {
+        "type": "NEIGHBORS",
+        "cell": "A2"
+      },
+      "op": "<=",
+      "id": "B2"
+    },
+    "primary_variables": 16,
+    "auxiliary_variables": 143,
+    "clauses": 452
+  },
+  {
+    "step": 7,
+    "cell": "B1",
+    "verdict": "CRIMINAL",
+    "active_clues": [
+      "C1",
+      "B2",
+      "C2",
+      "D2",
+      "D3",
+      "A4",
+      "B4",
+      "C4",
+      "D4"
+    ],
+    "queries": [
+      {
+        "assumptions": [],
+        "result": "SAT",
+        "decisions": 4,
+        "propagations": 200,
+        "backtracks": 0,
+        "runtime": 0.0030178999877534807
+      },
+      {
+        "assumptions": [
+          -2
+        ],
+        "result": "UNSAT",
+        "decisions": 1,
+        "propagations": 258,
+        "backtracks": 2,
+        "runtime": 0.0037748999893665314
+      }
+    ],
+    "new_clue": "B1",
+    "new_clue_content": {
+      "type": "AT_MOST",
+      "k": 2,
+      "region": {
+        "type": "DIFFERENCE",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "A2"
+        },
+        "right": {
+          "type": "ROW",
+          "row": 2
+        }
+      },
+      "id": "B1"
+    },
+    "primary_variables": 16,
+    "auxiliary_variables": 185,
+    "clauses": 585
+  },
+  {
+    "step": 8,
+    "cell": "A3",
+    "verdict": "INNOCENT",
+    "active_clues": [
+      "B1",
+      "C1",
+      "B2",
+      "C2",
+      "D2",
+      "D3",
+      "A4",
+      "B4",
+      "C4",
+      "D4"
+    ],
+    "queries": [
+      {
+        "assumptions": [],
+        "result": "SAT",
+        "decisions": 2,
+        "propagations": 210,
+        "backtracks": 0,
+        "runtime": 0.0021731999586336315
+      },
+      {
+        "assumptions": [
+          9
+        ],
+        "result": "UNSAT",
+        "decisions": 0,
+        "propagations": 206,
+        "backtracks": 0,
+        "runtime": 0.0014107999741099775
+      }
+    ],
+    "new_clue": "A3",
+    "new_clue_content": {
+      "type": "COMPARISON",
+      "left": {
+        "type": "EXPLICIT",
+        "cells": [
+          "A1",
+          "C2",
+          "C3"
+        ]
+      },
+      "right": {
+        "type": "ROW",
+        "row": 2
+      },
+      "op": "!=",
+      "id": "A3"
+    },
+    "primary_variables": 16,
+    "auxiliary_variables": 195,
+    "clauses": 617
+  },
+  {
+    "step": 9,
+    "cell": "A1",
+    "verdict": "CRIMINAL",
+    "active_clues": [
+      "B1",
+      "C1",
+      "B2",
+      "C2",
+      "D2",
+      "A3",
+      "D3",
+      "A4",
+      "B4",
+      "C4",
+      "D4"
+    ],
+    "queries": [
+      {
+        "assumptions": [],
+        "result": "SAT",
+        "decisions": 2,
+        "propagations": 225,
+        "backtracks": 0,
+        "runtime": 0.00217510003130883
+      },
+      {
+        "assumptions": [
+          -1
+        ],
+        "result": "UNSAT",
+        "decisions": 0,
+        "propagations": 193,
+        "backtracks": 0,
+        "runtime": 0.0013981000520288944
+      }
+    ],
+    "new_clue": "A1",
+    "new_clue_content": {
+      "type": "AT_LEAST",
+      "k": 3,
+      "region": {
+        "type": "DIFFERENCE",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "C3"
+        },
+        "right": {
+          "type": "ROW",
+          "row": 2
+        }
+      },
+      "id": "A1"
+    },
+    "primary_variables": 16,
+    "auxiliary_variables": 210,
+    "clauses": 667
+  },
+  {
+    "step": 10,
+    "cell": "B3",
+    "verdict": "INNOCENT",
+    "active_clues": [
+      "A1",
+      "B1",
+      "C1",
+      "B2",
+      "C2",
+      "D2",
+      "A3",
+      "D3",
+      "A4",
+      "B4",
+      "C4",
+      "D4"
+    ],
+    "queries": [
+      {
+        "assumptions": [],
+        "result": "SAT",
+        "decisions": 1,
+        "propagations": 245,
+        "backtracks": 0,
+        "runtime": 0.0015801999834366143
+      },
+      {
+        "assumptions": [
+          10
+        ],
+        "result": "UNSAT",
+        "decisions": 0,
+        "propagations": 107,
+        "backtracks": 0,
+        "runtime": 0.0007761000306345522
+      }
+    ],
+    "new_clue": "B3",
+    "new_clue_content": {
+      "type": "AT_MOST",
+      "k": 1,
+      "region": {
+        "type": "INTERSECTION",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "A3"
+        },
+        "right": {
+          "type": "ROW",
+          "row": 4
+        }
+      },
+      "id": "B3"
+    },
+    "primary_variables": 16,
+    "auxiliary_variables": 230,
+    "clauses": 729
+  },
+  {
+    "step": 11,
+    "cell": "C3",
+    "verdict": "CRIMINAL",
+    "active_clues": [
+      "A1",
+      "B1",
+      "C1",
+      "B2",
+      "C2",
+      "D2",
+      "A3",
+      "B3",
+      "D3",
+      "A4",
+      "B4",
+      "C4",
+      "D4"
+    ],
+    "queries": [
+      {
+        "assumptions": [],
+        "result": "SAT",
+        "decisions": 1,
+        "propagations": 245,
+        "backtracks": 0,
+        "runtime": 0.0015572999836876988
+      },
+      {
+        "assumptions": [
+          -11
+        ],
+        "result": "UNSAT",
+        "decisions": 0,
+        "propagations": 231,
+        "backtracks": 0,
+        "runtime": 0.0010443999781273305
+      }
+    ],
+    "new_clue": "C3",
+    "new_clue_content": {
+      "type": "EXACTLY",
+      "k": 3,
+      "region": {
+        "type": "DIFFERENCE",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "B2"
+        },
+        "right": {
+          "type": "ROW",
+          "row": 3
+        }
+      },
+      "id": "C3"
+    },
+    "primary_variables": 16,
+    "auxiliary_variables": 230,
+    "clauses": 731
+  },
+  {
+    "step": 12,
+    "cell": "A2",
+    "verdict": "CRIMINAL",
+    "active_clues": [
+      "A1",
+      "B1",
+      "C1",
+      "B2",
+      "C2",
+      "D2",
+      "A3",
+      "B3",
+      "C3",
+      "D3",
+      "A4",
+      "B4",
+      "C4",
+      "D4"
+    ],
+    "queries": [
+      {
+        "assumptions": [],
+        "result": "SAT",
+        "decisions": 0,
+        "propagations": 264,
+        "backtracks": 0,
+        "runtime": 0.0012038000277243555
+      },
+      {
+        "assumptions": [
+          -5
+        ],
+        "result": "UNSAT",
+        "decisions": 0,
+        "propagations": 168,
+        "backtracks": 0,
+        "runtime": 0.0008507999591529369
+      }
+    ],
+    "new_clue": "A2",
+    "new_clue_content": {
+      "type": "AT_MOST",
+      "k": 1,
+      "region": {
+        "type": "DIFFERENCE",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "C2"
+        },
+        "right": {
+          "type": "ROW",
+          "row": 3
+        }
+      },
+      "id": "A2"
+    },
+    "primary_variables": 16,
+    "auxiliary_variables": 249,
+    "clauses": 790
+  },
+  {
+    "step": 13,
+    "cell": "D1",
+    "verdict": "INNOCENT",
+    "active_clues": [
+      "A1",
+      "B1",
+      "C1",
+      "A2",
+      "B2",
+      "C2",
+      "D2",
+      "A3",
+      "B3",
+      "C3",
+      "D3",
+      "A4",
+      "B4",
+      "C4",
+      "D4"
+    ],
+    "queries": [
+      {
+        "assumptions": [],
+        "result": "SAT",
+        "decisions": 0,
+        "propagations": 285,
+        "backtracks": 0,
+        "runtime": 0.0012251000152900815
+      },
+      {
+        "assumptions": [
+          4
+        ],
+        "result": "UNSAT",
+        "decisions": 0,
+        "propagations": 207,
+        "backtracks": 0,
+        "runtime": 0.0011890999739989638
+      }
+    ],
+    "new_clue": "D1",
+    "new_clue_content": {
+      "type": "EXACTLY",
+      "k": 2,
+      "region": {
+        "type": "CORNERS"
+      },
+      "id": "D1"
+    },
+    "primary_variables": 16,
+    "auxiliary_variables": 269,
+    "clauses": 852
+  }
+]

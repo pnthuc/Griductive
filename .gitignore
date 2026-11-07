@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+tmp/
+.pytest_cache/
+.coverage
+output/*
+!output/experiments/
+!output/puzzle-quality.json
+!output/verification.txt

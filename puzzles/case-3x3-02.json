@@ -1,0 +1,221 @@
+{
+  "schema_version": 1,
+  "puzzle_id": "case-3x3-02",
+  "title": "Lời khai trên bến vắng",
+  "size": 3,
+  "characters": [
+    {
+      "name": "Ada",
+      "profession": "Bác sĩ",
+      "portrait": 0,
+      "cell": "A1"
+    },
+    {
+      "name": "Ben",
+      "profession": "Họa sĩ",
+      "portrait": 1,
+      "cell": "B1"
+    },
+    {
+      "name": "Cara",
+      "profession": "Nhà báo",
+      "portrait": 2,
+      "cell": "C1"
+    },
+    {
+      "name": "Dara",
+      "profession": "Luật sư",
+      "portrait": 3,
+      "cell": "A2"
+    },
+    {
+      "name": "Eli",
+      "profession": "Giáo sư",
+      "portrait": 4,
+      "cell": "B2"
+    },
+    {
+      "name": "Finn",
+      "profession": "Đầu bếp",
+      "portrait": 5,
+      "cell": "C2"
+    },
+    {
+      "name": "Gwen",
+      "profession": "Thủ thư",
+      "portrait": 6,
+      "cell": "A3"
+    },
+    {
+      "name": "Hugo",
+      "profession": "Thợ máy",
+      "portrait": 7,
+      "cell": "B3"
+    },
+    {
+      "name": "Isla",
+      "profession": "Làm vườn",
+      "portrait": 8,
+      "cell": "C3"
+    }
+  ],
+  "solution": {
+    "A1": "INNOCENT",
+    "B1": "INNOCENT",
+    "C1": "CRIMINAL",
+    "A2": "INNOCENT",
+    "B2": "INNOCENT",
+    "C2": "CRIMINAL",
+    "A3": "CRIMINAL",
+    "B3": "INNOCENT",
+    "C3": "CRIMINAL"
+  },
+  "initially_revealed": [
+    "A2",
+    "C3"
+  ],
+  "clues": {
+    "A1": {
+      "type": "COMPARISON",
+      "left": {
+        "type": "EXPLICIT",
+        "cells": [
+          "A3",
+          "C1",
+          "C2"
+        ]
+      },
+      "right": {
+        "type": "ROW",
+        "row": 2
+      },
+      "op": ">",
+      "id": "A1"
+    },
+    "B1": {
+      "type": "CONDITIONAL",
+      "if": {
+        "type": "EXACTLY",
+        "k": 1,
+        "region": {
+          "type": "NEIGHBORS",
+          "cell": "C2"
+        }
+      },
+      "then": {
+        "type": "EXACTLY",
+        "k": 2,
+        "region": {
+          "type": "COLUMN",
+          "column": "A"
+        }
+      },
+      "id": "B1"
+    },
+    "C1": {
+      "type": "COMPARISON",
+      "left": {
+        "type": "COLUMN",
+        "column": "C"
+      },
+      "right": {
+        "type": "UNION",
+        "left": {
+          "type": "ROW",
+          "row": 3
+        },
+        "right": {
+          "type": "COLUMN",
+          "column": "A"
+        }
+      },
+      "op": "!=",
+      "id": "C1"
+    },
+    "A2": {
+      "type": "AT_MOST",
+      "k": 1,
+      "region": {
+        "type": "DIFFERENCE",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "B2"
+        },
+        "right": {
+          "type": "COLUMN",
+          "column": "C"
+        }
+      },
+      "id": "A2"
+    },
+    "B2": {
+      "type": "EXACTLY",
+      "k": 1,
+      "region": {
+        "type": "DIFFERENCE",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "B3"
+        },
+        "right": {
+          "type": "COLUMN",
+          "column": "C"
+        }
+      },
+      "id": "B2"
+    },
+    "C2": {
+      "type": "EXACTLY",
+      "k": 3,
+      "region": {
+        "type": "UNION",
+        "left": {
+          "type": "ROW",
+          "row": 2
+        },
+        "right": {
+          "type": "COLUMN",
+          "column": "C"
+        }
+      },
+      "id": "C2"
+    },
+    "A3": {
+      "type": "EXACTLY",
+      "k": 3,
+      "region": {
+        "type": "CORNERS"
+      },
+      "id": "A3"
+    },
+    "B3": {
+      "type": "EXACTLY",
+      "k": 1,
+      "region": {
+        "type": "ROW",
+        "row": 1
+      },
+      "id": "B3"
+    },
+    "C3": {
+      "type": "CONDITIONAL",
+      "if": {
+        "type": "EXACTLY",
+        "k": 1,
+        "region": {
+          "type": "ROW",
+          "row": 3
+        }
+      },
+      "then": {
+        "type": "EXACTLY",
+        "k": 1,
+        "region": {
+          "type": "NEIGHBORS",
+          "cell": "C2"
+        }
+      },
+      "id": "C3"
+    }
+  }
+}

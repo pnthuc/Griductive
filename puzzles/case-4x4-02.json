@@ -1,0 +1,402 @@
+{
+  "schema_version": 1,
+  "puzzle_id": "case-4x4-02",
+  "title": "Dấu vết trong phố nhỏ",
+  "size": 4,
+  "characters": [
+    {
+      "name": "Ada",
+      "profession": "Bác sĩ",
+      "portrait": 0,
+      "cell": "A1"
+    },
+    {
+      "name": "Ben",
+      "profession": "Họa sĩ",
+      "portrait": 1,
+      "cell": "B1"
+    },
+    {
+      "name": "Cara",
+      "profession": "Nhà báo",
+      "portrait": 2,
+      "cell": "C1"
+    },
+    {
+      "name": "Dara",
+      "profession": "Luật sư",
+      "portrait": 3,
+      "cell": "D1"
+    },
+    {
+      "name": "Eli",
+      "profession": "Giáo sư",
+      "portrait": 4,
+      "cell": "A2"
+    },
+    {
+      "name": "Finn",
+      "profession": "Đầu bếp",
+      "portrait": 5,
+      "cell": "B2"
+    },
+    {
+      "name": "Gwen",
+      "profession": "Thủ thư",
+      "portrait": 6,
+      "cell": "C2"
+    },
+    {
+      "name": "Hugo",
+      "profession": "Thợ máy",
+      "portrait": 7,
+      "cell": "D2"
+    },
+    {
+      "name": "Isla",
+      "profession": "Làm vườn",
+      "portrait": 8,
+      "cell": "A3"
+    },
+    {
+      "name": "Jasper",
+      "profession": "Nhiếp ảnh gia",
+      "portrait": 9,
+      "cell": "B3"
+    },
+    {
+      "name": "Kira",
+      "profession": "Kiến trúc sư",
+      "portrait": 10,
+      "cell": "C3"
+    },
+    {
+      "name": "Leon",
+      "profession": "Thợ đồng hồ",
+      "portrait": 11,
+      "cell": "D3"
+    },
+    {
+      "name": "Mina",
+      "profession": "Nhạc công",
+      "portrait": 12,
+      "cell": "A4"
+    },
+    {
+      "name": "Nolan",
+      "profession": "Lính cứu hỏa",
+      "portrait": 13,
+      "cell": "B4"
+    },
+    {
+      "name": "Opal",
+      "profession": "Người bán hoa",
+      "portrait": 14,
+      "cell": "C4"
+    },
+    {
+      "name": "Pavel",
+      "profession": "Thợ may",
+      "portrait": 15,
+      "cell": "D4"
+    }
+  ],
+  "solution": {
+    "A1": "CRIMINAL",
+    "B1": "CRIMINAL",
+    "C1": "INNOCENT",
+    "D1": "INNOCENT",
+    "A2": "CRIMINAL",
+    "B2": "INNOCENT",
+    "C2": "INNOCENT",
+    "D2": "INNOCENT",
+    "A3": "INNOCENT",
+    "B3": "INNOCENT",
+    "C3": "CRIMINAL",
+    "D3": "CRIMINAL",
+    "A4": "INNOCENT",
+    "B4": "CRIMINAL",
+    "C4": "INNOCENT",
+    "D4": "CRIMINAL"
+  },
+  "initially_revealed": [
+    "C1",
+    "A4",
+    "B4"
+  ],
+  "clues": {
+    "A1": {
+      "type": "AT_LEAST",
+      "k": 3,
+      "region": {
+        "type": "DIFFERENCE",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "C3"
+        },
+        "right": {
+          "type": "ROW",
+          "row": 2
+        }
+      },
+      "id": "A1"
+    },
+    "B1": {
+      "type": "AT_MOST",
+      "k": 2,
+      "region": {
+        "type": "DIFFERENCE",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "A2"
+        },
+        "right": {
+          "type": "ROW",
+          "row": 2
+        }
+      },
+      "id": "B1"
+    },
+    "C1": {
+      "type": "AT_LEAST",
+      "k": 4,
+      "region": {
+        "type": "NEIGHBORS",
+        "cell": "C4"
+      },
+      "id": "C1"
+    },
+    "D1": {
+      "type": "EXACTLY",
+      "k": 2,
+      "region": {
+        "type": "CORNERS"
+      },
+      "id": "D1"
+    },
+    "A2": {
+      "type": "AT_MOST",
+      "k": 1,
+      "region": {
+        "type": "DIFFERENCE",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "C2"
+        },
+        "right": {
+          "type": "ROW",
+          "row": 3
+        }
+      },
+      "id": "A2"
+    },
+    "B2": {
+      "type": "COMPARISON",
+      "left": {
+        "type": "ROW",
+        "row": 3
+      },
+      "right": {
+        "type": "NEIGHBORS",
+        "cell": "A2"
+      },
+      "op": "<=",
+      "id": "B2"
+    },
+    "C2": {
+      "type": "CONDITIONAL",
+      "if": {
+        "type": "EXACTLY",
+        "k": 1,
+        "region": {
+          "type": "EXPLICIT",
+          "cells": [
+            "A1",
+            "C3",
+            "C4",
+            "A4"
+          ]
+        }
+      },
+      "then": {
+        "type": "EXACTLY",
+        "k": 1,
+        "region": {
+          "type": "ROW",
+          "row": 4
+        }
+      },
+      "id": "C2"
+    },
+    "D2": {
+      "type": "AT_MOST",
+      "k": 2,
+      "region": {
+        "type": "DIFFERENCE",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "C2"
+        },
+        "right": {
+          "type": "ROW",
+          "row": 1
+        }
+      },
+      "id": "D2"
+    },
+    "A3": {
+      "type": "COMPARISON",
+      "left": {
+        "type": "EXPLICIT",
+        "cells": [
+          "A1",
+          "C2",
+          "C3"
+        ]
+      },
+      "right": {
+        "type": "ROW",
+        "row": 2
+      },
+      "op": "!=",
+      "id": "A3"
+    },
+    "B3": {
+      "type": "AT_MOST",
+      "k": 1,
+      "region": {
+        "type": "INTERSECTION",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "A3"
+        },
+        "right": {
+          "type": "ROW",
+          "row": 4
+        }
+      },
+      "id": "B3"
+    },
+    "C3": {
+      "type": "EXACTLY",
+      "k": 3,
+      "region": {
+        "type": "DIFFERENCE",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "B2"
+        },
+        "right": {
+          "type": "ROW",
+          "row": 3
+        }
+      },
+      "id": "C3"
+    },
+    "D3": {
+      "type": "COMPARISON",
+      "left": {
+        "type": "EXPLICIT",
+        "cells": [
+          "B3",
+          "D3",
+          "B4",
+          "C3"
+        ]
+      },
+      "right": {
+        "type": "NEIGHBORS",
+        "cell": "D4"
+      },
+      "op": ">",
+      "id": "D3"
+    },
+    "A4": {
+      "type": "CONDITIONAL",
+      "if": {
+        "type": "AT_LEAST",
+        "k": 2,
+        "region": {
+          "type": "EXPLICIT",
+          "cells": [
+            "A1",
+            "C3",
+            "C4",
+            "A4"
+          ]
+        }
+      },
+      "then": {
+        "type": "EXACTLY",
+        "k": 1,
+        "region": {
+          "type": "EXPLICIT",
+          "cells": [
+            "C2",
+            "B4",
+            "B3"
+          ]
+        }
+      },
+      "id": "A4"
+    },
+    "B4": {
+      "type": "AT_LEAST",
+      "k": 2,
+      "region": {
+        "type": "INTERSECTION",
+        "left": {
+          "type": "NEIGHBORS",
+          "cell": "C3"
+        },
+        "right": {
+          "type": "ROW",
+          "row": 4
+        }
+      },
+      "id": "B4"
+    },
+    "C4": {
+      "type": "COMPARISON",
+      "left": {
+        "type": "NEIGHBORS",
+        "cell": "D3"
+      },
+      "right": {
+        "type": "EXPLICIT",
+        "cells": [
+          "D4",
+          "C4",
+          "A1"
+        ]
+      },
+      "op": "=",
+      "id": "C4"
+    },
+    "D4": {
+      "type": "CONDITIONAL",
+      "if": {
+        "type": "AT_LEAST",
+        "k": 1,
+        "region": {
+          "type": "ROW",
+          "row": 2
+        }
+      },
+      "then": {
+        "type": "AT_LEAST",
+        "k": 2,
+        "region": {
+          "type": "EXPLICIT",
+          "cells": [
+            "A1",
+            "C3",
+            "C4",
+            "A4"
+          ]
+        }
+      },
+      "id": "D4"
+    }
+  }
+}

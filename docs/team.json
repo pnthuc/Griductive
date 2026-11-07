@@ -1,0 +1,12 @@
+{
+  "course": "CSC14003 - Introduction to Artificial Intelligence",
+  "class": "24TN",
+  "demo_url": null,
+  "members": [
+    {"name": "Phan Ngọc Thức", "student_id": "24120228", "responsibility": null, "completion_percent": null},
+    {"name": "Nguyễn Lê Minh Quân", "student_id": "24120219", "responsibility": null, "completion_percent": null},
+    {"name": "Tống Phúc Thiện", "student_id": "24120141", "responsibility": null, "completion_percent": null},
+    {"name": "Bùi Phương Nam", "student_id": "24120502", "responsibility": null, "completion_percent": null},
+    {"name": "Phan Gia Phúc", "student_id": "24120503", "responsibility": null, "completion_percent": null}
+  ]
+}
