@@ -27,11 +27,7 @@ BUTTON = {'padding': '10px 15px', 'border': f'2px solid {INK}',
           'fontSize': '14px', 'fontWeight': 600, 'cursor': 'pointer'}
 PANEL = {'padding': '18px', 'border': '3px solid #817D75', 'borderRadius': '12px',
          'background': PAPER, 'boxSizing': 'border-box'}
-IMAGE_PATHS = {
-    'sprites.png': ROOT / 'assets/characters/pixel/sprites.png',
-    'pixel-desk.png': ROOT / 'assets/scenery/pixel-desk.png',
-    'pixel-profession-props.png': ROOT / 'assets/scenery/pixel-profession-props.png',
-}
+IMAGE_FILES = {'sprites.png', 'pixel-desk.png', 'pixel-profession-props.png'}
 
 
 def button(label, identifier, **style):
@@ -230,11 +226,11 @@ def create_app():
 
     @server.get('/images/<name>')
     def image(name):
-        if name not in IMAGE_PATHS:
+        if name not in IMAGE_FILES:
             abort(404)
         path = ROOT / 'public/images' / name
         if not path.is_file():
-            path = IMAGE_PATHS[name]
+            abort(404)
         return send_file(path, conditional=True, max_age=86400)
 
     dashboard = Dash(__name__, server=server, title='Griductive — Phố biển',

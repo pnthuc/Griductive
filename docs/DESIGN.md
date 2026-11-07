@@ -91,7 +91,8 @@ solutions and unrevealed clues stay server-side. A user-uploaded puzzle stays
 in that user's tab and is validated through the existing loader.
 
 Vercel runs the Flask server exposed in app.py, with only Dash/Flask runtime
-dependencies. build_web.py copies existing images to public/images for the CDN.
+dependencies. Shared desktop/web images live in public/images and are deployed
+directly to the CDN; no custom build step or duplicate image files are needed.
 Each server operation has a 45-second cooperative deadline inside a 60-second
 function. Hint/rejection/timeout preserve progress. Auto Solve requests one
 proved move at a time; journal export contains the real reconstructed trace.

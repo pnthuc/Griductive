@@ -24,9 +24,9 @@ mã để trình duyệt hiển thị; mọi luật chơi và suy luận chạy 
 ## Deploy Vercel
 
 Chọn framework Flask, dùng `app.py` làm entrypoint. `vercel.json` và
-`.python-version` đã cấu hình Python 3.12, giới hạn request 60 giây và build
-`python build_web.py`. Build chỉ sao chép atlas/background có sẵn sang `public/images`
-để CDN phục vụ ảnh lớn. Không cần Node/React build hay cơ sở dữ liệu.
+`.python-version` đã cấu hình Python 3.12 và giới hạn request 60 giây.
+Atlas/background dùng chung cho web và desktop nằm trong `public/images`,
+Vercel phục vụ trực tiếp qua CDN. Không cần Node/React build hay cơ sở dữ liệu.
 Dependencies web ở `requirements.txt`; PySide6 không được cài vào bản deploy.
 
 ```powershell
@@ -86,7 +86,8 @@ Ví dụ đầy đủ và cách đăng ký riêng cho một phiên nằm trong
 
 - `griductive/presentation/`: câu tiếng Việt và lựa chọn tham chiếu, không Qt.
 - `griductive/ui/`: cửa sổ, thẻ, animation, nhật ký, controller và worker.
-- `assets/`: dữ liệu và atlas đang dùng; một sprite atlas cho 25 người, 7 frame/người.
+- `assets/`: dữ liệu nhân vật và manifest ảnh.
+- `public/images/`: atlas và ảnh nền dùng chung; 25 người, 7 frame/người.
 - `puzzles/`: sáu màn, hai màn cho mỗi size 3x3, 4x4, 5x5; ID clue là mã ô.
 - `tests/`: kiểm tra thuật toán, UI, sprite và xử lý nền; cần giữ để chống lỗi.
 - `output/`: kết quả thực nghiệm chính và bản kiểm định độ khó đã lưu.

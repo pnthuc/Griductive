@@ -1,11 +1,9 @@
 ...................................................................................
 ----------------------------------------------------------------------
-Ran 83 tests in 25.013s
+Ran 83 tests in 54.958s
 
 OK
 
-Python web verification:
-- 83 tests passed, including stateless replay and real Dash callback tests.
-- Browser: Hint, CONTRADICTED, accepted reveal, 3x3 Auto Solve and 5x5 Hint passed.
-- 5x5-02 stateless playthrough: SOLVED, 22 moves; slowest request 1.51 seconds.
-- pip check passed; existing engine and puzzle source unchanged.
+- Desktop and web both load the single shared image set in public/images.
+- All three artwork files were moved byte-for-byte without changes.
+- Web gameplay uses the same Python solver and does not expose hidden solution data.

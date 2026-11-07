@@ -19,7 +19,10 @@ def _cached_frames(asset_dir):
     manifest = json.loads((root / 'sprites.json').read_text(encoding='utf-8'))
     tile = manifest['tile_size']
     columns = len(manifest['slots'])
-    atlas = QPixmap(str(root / 'sprites.png'))
+    atlas_path = root / 'sprites.png'
+    if not atlas_path.is_file():
+        atlas_path = Path(asset_dir).parent / 'public/images/sprites.png'
+    atlas = QPixmap(str(atlas_path))
     if atlas.isNull() or atlas.width() != tile * columns or atlas.height() != tile * PORTRAIT_COUNT:
         raise ValueError('Invalid character sprite sheet dimensions')
     return {
