@@ -20,7 +20,7 @@ from .themes import THEMES, stylesheet
 from .icons import icon
 from .portraits import load_expression_frames, load_silhouette_frames
 from .assets import ROOT, scenery_catalog, scenery_image
-from .widgets import label, button, configure_app, DeskSurface, PixelLabel, HudButton
+from .widgets import label, configure_app, DeskSurface, PixelLabel, HudButton
 from .cards import PortraitCard
 from .dialogs import GameNotice, ModalScrim
 from .journal import SolverJournal
@@ -61,7 +61,6 @@ class Window(QMainWindow):
         self.parts = {}
         self.preview_key = None
         self.pinned_key = None
-        self.ticks = 0
         self._col_labels = []
         self._row_labels = []
         self.load_visual_assets()
@@ -140,10 +139,6 @@ class Window(QMainWindow):
         self._case_btn.setMenu(self._case_menu)
         hl.addWidget(self._case_btn)
 
-        # Keep hidden self.title synced for internal compatibility
-        self.title = label('', 'title')
-        self.title.hide()
-
         hl.addStretch(1)
 
 
@@ -168,18 +163,7 @@ class Window(QMainWindow):
         self.tools_button.setMenu(self.tools_menu)
         hl.addWidget(self.tools_button)
 
-        # Hidden legacy controls preserved for API compatibility
-        self.load_button = QToolButton(self)
-        self.load_button.hide()
-        self.restart_button = QToolButton(self)
-        self.restart_button.hide()
-        self.auto_button = button('Tự động giải', self.open_solver)
-        self.auto_button.hide()
-        self.motion = button('Chuyển động')
-        self.motion.setCheckable(True)
-        self.motion.setChecked(True)
-        self.motion.toggled.connect(self.toggle_motion)
-        self.motion.hide()
+        self.motion_enabled = True
 
         layout.addWidget(self.header)
 
@@ -456,12 +440,6 @@ class Window(QMainWindow):
             except OSError as exc:
                 self.show_notice('Không thể lưu', str(exc), tone='warning')
 
-    def choose_file(self):
-        self.pause_auto()
-        path, _ = QFileDialog.getOpenFileName(self, 'Mở tệp màn chơi', str(ROOT / 'puzzles'), 'Màn chơi (*.json)')
-        if path:
-            self.load(Path(path))
-
     def restart(self):
         self.load(self.path)
 
@@ -505,7 +483,6 @@ class Window(QMainWindow):
         board = public.board
         self._rebuild_coordinates(board.size)
         self.names = {c.cell: c.name for c in public.characters}
-        self.title.setText(public.title)
         self._case_btn.setText(public.title)
         for char in public.characters:
             spec = public.clues.get(char.cell)
@@ -517,7 +494,7 @@ class Window(QMainWindow):
             card.expression_frames = self.expression_bank[char.portrait]
             card.silhouette_frames = self.silhouette_bank[char.portrait]
             card.props = self.profession_props[self.character_backgrounds[str(char.portrait)]]
-            card.motion = self.motion.isChecked()
+            card.motion = self.motion_enabled
             card.selected.connect(self.select_person)
             card.verdict_requested.connect(self.submit_verdict)
             card.clue_text.linkHovered.connect(
@@ -582,7 +559,7 @@ class Window(QMainWindow):
             else:
                 cells = self.parts['result'].cells if self.parts else ()
         for cell, card in self.cards.items():
-            card.feedback.pulse(self.motion.isChecked() and cell in cells)
+            card.feedback.pulse(self.motion_enabled and cell in cells)
             if cell in cells:
                 card.raise_()
         if self.zoom_card:
@@ -655,12 +632,13 @@ class Window(QMainWindow):
             card.region_roles = focus.roles(cell)
             card.name_role = focus.named.get(cell)
             card.dimmed = bool(self.active_clue and cell not in focus.focused)
-            card.feedback.emphasize(card.is_selected, card.dimmed, self.motion.isChecked())
+            card.feedback.emphasize(card.is_selected, card.dimmed, self.motion_enabled)
             card.place_actions()
             card.update()
         self.sync_zoom()
 
     def toggle_motion(self, enabled):
+        self.motion_enabled = enabled
         for card in self.cards.values():
             card.motion = enabled
             if not enabled:
@@ -675,7 +653,6 @@ class Window(QMainWindow):
                 self.clock.stop()
 
     def tick(self):
-        self.ticks += 1
         delta = min(.1, self.elapsed_clock.restart() / 1000.)
         if not self.isVisible() or self.isMinimized():
             return

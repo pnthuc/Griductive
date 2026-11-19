@@ -12,5 +12,3 @@ output/*
 !output/experiments/
 !output/puzzle-quality.json
 !output/verification.txt
-
-.vercel

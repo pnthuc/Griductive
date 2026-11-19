@@ -16,15 +16,6 @@ def label(value='', name=None):
     return w
 
 
-def button(value, slot=None, primary=False):
-    w = QPushButton(value)
-    if primary:
-        w.setObjectName('primary')
-    if slot:
-        w.clicked.connect(slot)
-    return w
-
-
 def pixel_frame(box, step=3):
     """Closed outline with one square step at each corner."""
     left, top, right, bottom = box.getCoords()
@@ -165,13 +156,6 @@ def configure_app(app):
             QFontDatabase.addApplicationFont(str(fonts / name))
     app.setFont(QFont('Segoe UI', 10))
     app.setStyle('Fusion')
-
-
-def painter_font(p, size, bold=False, serif=False):
-    f = QFont('Segoe UI')
-    f.setPixelSize(size)
-    f.setWeight(QFont.Weight.ExtraBold if bold else QFont.Weight.Medium)
-    p.setFont(f)
 
 
 class InlineClue(QLabel):

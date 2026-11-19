@@ -93,31 +93,6 @@ QLabel#coordHeader {{
     font-weight:800;
     padding:2px 6px;
 }}
-QLabel#progress {{
-    font-family:"Segoe UI";
-    font-size:15px;
-    font-weight:700;
-    color:#FFFFFF;
-    background:rgba(255,255,255,58);
-    border:1px solid rgba(255,255,255,105);
-    border-radius:2px;
-    padding:0px 18px;
-}}
-QPushButton#hint {{
-    background:#FFFFFF;
-    color:#0F2038;
-    border:none;
-    border-radius:2px;
-    padding:0px 18px;
-    font-family:"Segoe UI";
-    font-size:15px;
-    font-weight:700;
-}}
-QPushButton#hint:hover {{background:#F0F7FF;}}
-QPushButton#hint:disabled {{
-    background:rgba(255,255,255,110);
-    color:rgba(15,41,66,120);
-}}
 QToolButton#menuButton {{
     background:#F5DEAD;border:2px solid #493A37;border-bottom-width:4px;
     padding:0;border-radius:0;

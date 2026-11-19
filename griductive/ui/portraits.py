@@ -1,34 +1,8 @@
-"""Qt SVG renderers and validated legacy sprite frames."""
+"""Load the desktop pixel sprite atlases."""
 import json
 from functools import lru_cache
 from pathlib import Path
-from ..vector_art import PORTRAIT_COUNT, portrait_svg, profession_svg
-
-ROOT = Path(__file__).resolve().parents[2]
-
-
-@lru_cache(maxsize=128)
-def portrait_svg_renderer(portrait: int, slot: int = 0, silhouette: bool = False):
-    from PySide6.QtCore import QByteArray
-    from PySide6.QtSvg import QSvgRenderer
-
-    svg = portrait_svg(portrait, slot, silhouette)
-    return QSvgRenderer(QByteArray(svg.encode('utf-8')))
-
-
-@lru_cache(maxsize=1)
-def backdrop_svg_renderer():
-    from PySide6.QtSvg import QSvgRenderer
-
-    return QSvgRenderer(str(ROOT / 'public/images/backdrop.svg'))
-
-
-@lru_cache(maxsize=64)
-def profession_renderer(category: str, color: str = '#BDD7F2'):
-    from PySide6.QtCore import QByteArray
-    from PySide6.QtSvg import QSvgRenderer
-
-    return QSvgRenderer(QByteArray(profession_svg(category, color).encode('utf-8')))
+PORTRAIT_COUNT = 25
 
 
 def load_expression_frames(asset_dir):

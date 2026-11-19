@@ -21,7 +21,7 @@ class JournalTest(unittest.TestCase):
     def setUp(self):
         self.window = Window()
         self.window.show()
-        self.window.motion.setChecked(False)
+        self.window.toggle_motion(False)
         self.window.open_solver()
         QTest.qWait(30)
         self.journal = self.window.solver

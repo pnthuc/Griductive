@@ -5,7 +5,7 @@ from pathlib import Path
 import tempfile
 import unittest
 from unittest.mock import patch
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QPushButton, QApplication
 from PySide6.QtCore import Qt,QPoint,QRect
 from PySide6.QtTest import QTest
 from griductive.ui import Window,configure_app,ROOT
@@ -19,7 +19,7 @@ class InteractionTest(unittest.TestCase):
 
     def setUp(self):
         self.window=Window(ROOT/'tests/fixtures/prototype-3x3.json');self.window.show();QTest.qWait(80)
-        self.window.motion.setChecked(False)
+        self.window.toggle_motion(False)
 
     def wait_engine(self):
         import time
@@ -69,7 +69,7 @@ class InteractionTest(unittest.TestCase):
         self.assertTrue(self.window.cards['B2'].anchor)
         QTest.mouseClick(self.window.cards['C3'],Qt.MouseButton.LeftButton);self.app.processEvents()
         self.assertEqual({c for c,w in self.window.cards.items() if w.counted},{'A1','B1','C1','A2','A3'})
-        self.window.motion.setChecked(False)
+        self.window.toggle_motion(False)
         self.assertFalse(self.window.clock.isActive())
         self.window.restart();self.app.processEvents()
         self.assertIsNone(self.window.active_clue)
@@ -140,7 +140,7 @@ class InteractionTest(unittest.TestCase):
         self.assertFalse(any(c.counted or c.dimmed for c in self.window.cards.values()))
 
     def test_all_region_colors_stay_visible_while_hovering_a_word(self):
-        self.window.motion.setChecked(False);self.app.processEvents()
+        self.window.toggle_motion(False);self.app.processEvents()
         before=self.window.cards['C1'].grab().toImage()
         self.window.inspect_clue('A1');self.app.processEvents()
         self.assertTrue(self.window.cards['C1'].counted)  # Metadata retained for later.
@@ -273,7 +273,7 @@ class InteractionTest(unittest.TestCase):
             self.assertIsNone(self.window.pinned_key)
 
     def test_region_bounce_finishes_once_and_rapid_switch_cancels_old_group(self):
-        self.window.motion.setChecked(True)
+        self.window.toggle_motion(True)
         self.window.select_person('C3')
         slots={cell:slot.geometry() for cell,slot in self.window.card_slots.items()}
         QTest.qWait(130)
@@ -294,7 +294,7 @@ class InteractionTest(unittest.TestCase):
         # Clicking the same word replays its group's pulse.
         self.window.pin_part('region.right');QTest.qWait(80)
         self.assertGreater(self.window.cards['A3'].feedback.pop,0.)
-        self.window.motion.setChecked(False)
+        self.window.toggle_motion(False)
         self.assertTrue(all(c.feedback.pop==0 for c in self.window.cards.values()))
         self.assertFalse(self.window.clock.isActive())
         self.window.clear_selection()
@@ -322,7 +322,7 @@ class InteractionTest(unittest.TestCase):
     def test_solver_panel_opens_only_on_request_without_fake_solving(self):
         before=self.window.state
         self.assertFalse(self.window.solver.isVisible())
-        self.assertFalse(self.window.auto_button.isVisible())
+        self.assertFalse(any(w.isVisible() and w.text() == 'Tự động giải' for w in self.window.findChildren(QPushButton)))
         self.assertIn(self.window.solve_action,self.window.tools_menu.actions())
         self.window.solve_action.trigger();self.app.processEvents()
         self.assertTrue(self.window.solver.isVisible())
@@ -434,7 +434,7 @@ class InteractionTest(unittest.TestCase):
                 self.assertLessEqual(card.note_scroll.geometry().bottom(),card.height())
 
     def test_portrait_motion_changes_pixels_and_can_stop(self):
-        self.window.motion.setChecked(True)
+        self.window.toggle_motion(True)
         card=self.window.cards['A1']
         self.assertEqual(len(card.expression_frames),7)
         card.expression.arrival=1.;card.expression.elapsed=1.;self.app.processEvents()
@@ -442,12 +442,12 @@ class InteractionTest(unittest.TestCase):
         QTest.mouseClick(card,Qt.MouseButton.LeftButton);self.app.processEvents()
         QTest.qWait(90)
         self.assertNotEqual(before,card.grab().toImage())
-        self.window.motion.setChecked(False);self.app.processEvents()
+        self.window.toggle_motion(False);self.app.processEvents()
         stopped=card.grab().toImage();QTest.qWait(150)
         self.assertEqual(stopped,card.grab().toImage())
 
     def test_blink_keeps_card_geometry_fixed(self):
-        self.window.motion.setChecked(True)
+        self.window.toggle_motion(True)
         self.window.clock.stop()
         card=self.window.cards['B1'];card.expression.arrival=1.;card.expression.reaction=0.
         card.expression.elapsed=1.;before=card.grab().toImage();size=card.size()

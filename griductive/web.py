@@ -1,28 +1,16 @@
-"""Browser UI authored entirely in Python with Dash components/callbacks.
-
-Matches the Desktop Alto's Odyssey x Reigns Lineless Paper-Cut Vector UI 1:1:
-- Full-screen edge-to-edge card grid over the flat-vector sky/hills/poppies SVG
-- Single ultra-minimal top HUD bar (Griductive · Case ⌄ | 3/9 | 💡 Gợi ý | ☰)
-- 30% Left Portrait Arch (ice-blue silhouette when unopened, vibrant green/coral
-  when solved) + 70% Right spacious multi-line clue area (no "Lời khai" label)
-- Flush Reigns-style 50/50 bottom split verdict bar on the selected suspect
-- Exact original highlight rules (bold colored words + segmented region borders)
-"""
-import base64
+"""Browser UI and callbacks for Griductive."""
 import json
 import re
 from dataclasses import dataclass
-from functools import lru_cache
 from html import unescape
 
 from dash import ALL, Dash, Input, Output, State, ctx, dcc, html, no_update
 from dash.exceptions import PreventUpdate
-from flask import Flask, Response, abort, send_file
+from flask import Flask, abort, send_file
 
 from .engine import PuzzleError, SolverTimeout, clue_parts
 from .presentation.references import reference_focus
 from .presentation.wording_vi import clue_html, clue_text
-from .vector_art import PORTRAIT_COUNT, portrait_svg, profession_svg
 from .web_game import ROOT, new_session, puzzle_options, restore, transition
 
 INK = '#0B192C'
@@ -53,12 +41,6 @@ WEB_PAPER_THEME = _WebPaperTheme()
 _LINK_RE = re.compile(r'<a href="([^"]+)" style="color:([^;]+);[^"]*">(.*?)</a>')
 
 
-@lru_cache(maxsize=512)
-def _svg_uri(svg: str) -> str:
-    encoded = base64.b64encode(svg.encode('utf-8')).decode('ascii')
-    return f'data:image/svg+xml;base64,{encoded}'
-
-
 CHARACTER_CATEGORIES = {
     '0': 'medical', '1': 'painting', '2': 'journalism', '3': 'law', '4': 'academic',
     '5': 'cooking', '6': 'library', '7': 'mechanics', '8': 'gardening', '9': 'photography',
@@ -68,8 +50,8 @@ CHARACTER_CATEGORIES = {
 }
 
 
-def _character_categories():
-    return CHARACTER_CATEGORIES
+PORTRAIT_COUNT = len(CHARACTER_CATEGORIES)
+IMAGE_FILES.update(f'profession-{category}.svg' for category in CHARACTER_CATEGORIES.values())
 
 
 def _portrait_url(portrait, silhouette=False):
@@ -157,7 +139,6 @@ def render_board(public, registry, session):
     pinned = session.get('focus') if session.get('focus') in parts else None
     focus = reference_focus(parts, active, pinned, pinned)
     names = {person.cell: person.name for person in public.characters}
-    categories = _character_categories()
     compact = size == 5
 
     coord_pill = {
@@ -236,9 +217,9 @@ def render_board(public, registry, session):
                     },
                 )
             else:
-                cat = categories.get(str(person.portrait), 'detective')
+                cat = CHARACTER_CATEGORIES.get(str(person.portrait), 'detective')
                 prop_img = None if is_sel else html.Img(
-                    src=_svg_uri(profession_svg(cat, '#C4DCF5')),
+                    src=f'/images/profession-{cat}.svg',
                     alt='',
                     **{'aria-hidden': 'true'},
                     style={
@@ -594,15 +575,9 @@ def create_app():
     @server.get('/images/<name>')
     def image(name):
         m = re.fullmatch(r'(portrait|silhouette)-([0-9]{1,2})\.svg', name)
-        if m:
-            idx = int(m.group(2))
-            if idx < PORTRAIT_COUNT:
-                return Response(
-                    portrait_svg(idx, silhouette=m.group(1) == 'silhouette'),
-                    mimetype='image/svg+xml',
-                    headers={'Cache-Control': 'public, max-age=86400'},
-                )
-        if name not in IMAGE_FILES:
+        if m and int(m.group(2)) < PORTRAIT_COUNT:
+            name = f'{m.group(1)}-{int(m.group(2))}.svg'
+        elif name not in IMAGE_FILES:
             abort(404)
         path = ROOT / 'public/images' / name
         if not path.is_file():

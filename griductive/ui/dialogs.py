@@ -1,7 +1,7 @@
 """Game notices that share the board's paper, outlines and pixel characters."""
 from PySide6.QtCore import Qt,QSize,QRectF
 from PySide6.QtGui import QColor,QPainter
-from PySide6.QtWidgets import QDialog,QFrame,QLabel,QPushButton,QToolButton,QHBoxLayout,QVBoxLayout,QGraphicsDropShadowEffect
+from PySide6.QtWidgets import QDialog,QFrame,QLabel,QToolButton,QHBoxLayout,QVBoxLayout,QGraphicsDropShadowEffect
 from .icons import icon
 from .widgets import pixel_frame, PixelHintButton
 

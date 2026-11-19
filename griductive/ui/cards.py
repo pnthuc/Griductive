@@ -2,7 +2,7 @@
 import math
 from html import escape
 from PySide6.QtCore import Qt, QRectF, QPointF, Signal, QSize
-from PySide6.QtGui import QColor, QPainter, QPainterPath, QPen, QFont, QTextDocument
+from PySide6.QtGui import QColor, QPainter, QPen, QFont, QTextDocument
 from PySide6.QtWidgets import QWidget, QPushButton, QBoxLayout, QFrame, QScrollArea
 from ..presentation.wording_vi import STATUS_TEXT
 from .icons import icon
