@@ -125,8 +125,6 @@ class Window(QMainWindow):
                 lambda checked=False, p=path: self.load(p),
             )
         self._case_btn.setMenu(self._case_menu)
-        self._case_menu.ensurePolished()
-        self._case_btn.setFixedWidth(self._case_menu.sizeHint().width())
         hl.addWidget(self._case_btn, 0, 1, Qt.AlignmentFlag.AlignCenter)
 
         # Keep hidden self.title synced for internal compatibility
@@ -272,6 +270,8 @@ class Window(QMainWindow):
         ):
             palette.setColor(role, QColor(value))
         self.setPalette(palette)
+        self._case_menu.ensurePolished()
+        self._case_btn.setFixedWidth(self._case_menu.sizeHint().width())
         self._case_btn.setIcon(icon('chevron', '#FFFFFF'))
         self._case_btn.setIconSize(QSize(15, 15))
         self.hint_button.setIcon(icon('hint', '#0F2942'))
