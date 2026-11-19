@@ -57,12 +57,18 @@ def paint_label_frame(p, rect, background, border):
 
 
 def paint_pixel_key(painter, button):
-    painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-    box = QRectF(button.rect()).adjusted(0, 2 if button.isDown() else 0, -1, -1)
-    painter.fillPath(pixel_frame(box), HUD_BORDER)
-    face = box.adjusted(2, 2, -2, -2 if button.isDown() else -5)
     fill = QColor('#FFEDBF') if button.underMouse() or button.hasFocus() else HUD_BACKGROUND
-    painter.fillPath(pixel_frame(face, 2), fill if button.isEnabled() else QColor(255, 255, 255, 130))
+    if not button.isEnabled():
+        fill = QColor(255, 255, 255, 130)
+    return paint_key_frame(painter, button.rect(), fill, button.isDown())
+
+
+def paint_key_frame(painter, rect, fill=HUD_BACKGROUND, pressed=False):
+    painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+    box = QRectF(rect).adjusted(0, 2 if pressed else 0, -1, -1)
+    painter.fillPath(pixel_frame(box), HUD_BORDER)
+    face = box.adjusted(2, 2, -2, -2 if pressed else -5)
+    painter.fillPath(pixel_frame(face, 2), fill)
     return face
 
 
@@ -85,6 +91,18 @@ class HudButton(QToolButton):
         painter.setPen(QColor('#0F2942'))
         painter.drawText(QRectF(x+side+gap, box.y(), width+1, box.height()),
                          Qt.AlignmentFlag.AlignVCenter, text)
+
+
+class ProgressLabel(QLabel):
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        face = paint_key_frame(painter, self.rect())
+        font = QFont('Segoe UI')
+        font.setBold(True)
+        font.setPixelSize(15)
+        painter.setFont(font)
+        painter.setPen(QColor('#0F2942'))
+        painter.drawText(face, Qt.AlignmentFlag.AlignCenter, self.text())
 
 
 class PixelLabel(QLabel):

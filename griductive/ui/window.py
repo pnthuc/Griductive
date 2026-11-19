@@ -4,7 +4,7 @@ import json
 from dataclasses import replace
 from pathlib import Path
 from PySide6.QtCore import Qt, QTimer, QElapsedTimer, QSize, QEvent, QPoint
-from PySide6.QtGui import QColor, QShortcut, QKeySequence, QPalette
+from PySide6.QtGui import QIcon, QColor, QShortcut, QKeySequence, QPalette
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QToolButton, QVBoxLayout, QHBoxLayout,
     QGridLayout, QFrame, QFileDialog, QMenu, QSizePolicy,
@@ -20,7 +20,7 @@ from .themes import THEMES, stylesheet
 from .icons import icon
 from .portraits import load_expression_frames, load_silhouette_frames
 from .assets import ROOT, scenery_catalog, scenery_image
-from .widgets import label, button, configure_app, DeskSurface, PixelLabel, HudButton, HUD_BACKGROUND, HUD_BORDER
+from .widgets import label, button, configure_app, DeskSurface, PixelLabel, HudButton, ProgressLabel
 from .cards import PortraitCard
 from .dialogs import GameNotice, ModalScrim
 from .journal import SolverJournal
@@ -136,10 +136,8 @@ class Window(QMainWindow):
 
         hl.addStretch(1)
 
-        self.progress = PixelLabel(
-            '', 'progress',
-            bg=HUD_BACKGROUND.getRgb(), border=HUD_BORDER.getRgb(), fg='#0F2942', radius=None, font_px=15,
-        )
+        self.progress = ProgressLabel()
+        self.progress.setObjectName('progress')
         self.progress.setFixedSize(78, 36)
         hl.addWidget(self.progress)
 
@@ -282,7 +280,7 @@ class Window(QMainWindow):
         self._case_btn.setIconSize(QSize(15, 15))
         self.hint_button.setIcon(icon('hint', '#0F2942'))
         self.hint_button.setIconSize(QSize(18, 18))
-        self.tools_button.setIcon(icon('gear', '#313E48'))
+        self.tools_button.setIcon(QIcon(str(ROOT / 'assets/ui/gear.png')))
         self.tools_button.setIconSize(QSize(24, 24))
         self.solver.set_theme(self.theme)
         for card in self.cards.values():
