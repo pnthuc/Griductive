@@ -145,7 +145,7 @@ class Window(QMainWindow):
 
         self.hint_button = PixelHintButton('Gợi ý')
         self.hint_button.setObjectName('hint')
-        self.hint_button.setFixedSize(104, 36)
+        self.hint_button.setFixedSize(self.progress.size())
         self.hint_button.clicked.connect(self.show_hint)
         self.hint_button.setToolTip('Tìm một nhân vật suy ra được từ thông tin đã mở.')
         hl.addWidget(self.hint_button)
@@ -281,7 +281,7 @@ class Window(QMainWindow):
         self._case_btn.setIconSize(QSize(15, 15))
         self.hint_button.setIcon(icon('hint', '#0F2942'))
         self.hint_button.setIconSize(QSize(18, 18))
-        self.tools_button.setIcon(icon('gear', '#313E48'))
+        self.tools_button.setIcon(icon('sliders', '#38454B'))
         self.tools_button.setIconSize(QSize(24, 24))
         self.solver.set_theme(self.theme)
         for card in self.cards.values():

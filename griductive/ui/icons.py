@@ -76,22 +76,14 @@ def icon(name,color):
         p.drawRoundedRect(QRectF(6,4,20,24),2.5,2.5)
         p.drawLine(10,4,10,28)
         for y in (10,15,20):p.drawLine(14,y,22,y)
-    elif name=='gear':
+    elif name=='sliders':
         p.save()
         p.resetTransform()
-        gear = (
-            '......OOO......', '..OO..OHH..OO..', '.OHOOOOHHOOOHO.',
-            '..OHHHHHHHHHO..', '...OHHHHHHHOO..', '..OOHHOOOHHOO..',
-            'OOHHHOO.OOHHOOO', 'OHHHHO...OHHSSO',
-            'OOSSHOO.OOHSSOO', '..OSSHOOOHSSO..', '..OOSSSSSSSSO..',
-            '..OSSSSSSSSSO..', '.OSOOOOSSOOOSO.', '..OO..OSS..OO..',
-            '......OOO......',
-        )
-        colors = {'O': color, 'H': '#8DB4B1', 'S': '#557F84'}
-        for y, row in enumerate(gear):
-            for x, tile in enumerate(row):
-                if tile in colors:
-                    p.fillRect(x+1, y+1, 1, 1, QColor(colors[tile]))
+        ink = QColor(color)
+        for y, knob in ((4, 5), (11, 10)):
+            p.fillRect(1, y, 14, 2, ink)
+            p.fillRect(knob-2, y-2, 5, 6, ink)
+            p.fillRect(knob-1, y-1, 3, 3, QColor('#A5CAC0'))
         p.restore()
     elif name=='menu':
         pen.setWidthF(2.5);p.setPen(pen)
