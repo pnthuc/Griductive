@@ -27,6 +27,16 @@ from .journal import SolverJournal
 from .game_controller import GameController
 
 
+class CaseMenu(QMenu):
+    def showEvent(self, event):
+        super().showEvent(event)
+        button = self.parentWidget()
+        center = button.mapToGlobal(button.rect().center())
+        screen = button.screen().availableGeometry()
+        left = center.x() - self.rect().center().x()
+        self.move(max(screen.left(), min(left, screen.right()-self.width()+1)), self.y())
+
+
 class Window(QMainWindow):
     def __init__(self, path=None):
         super().__init__()
@@ -101,22 +111,20 @@ class Window(QMainWindow):
         self.header = QFrame()
         self.header.setObjectName('header')
         self.header.setFixedHeight(44)
-        hl = QGridLayout(self.header)
-        hl.setColumnStretch(0, 1)
-        hl.setColumnStretch(2, 1)
+        hl = QHBoxLayout(self.header)
         hl.setContentsMargins(0, 0, 0, 0)
         hl.setSpacing(10)
 
         brand = label('Griductive', 'brand')
         brand.setWordWrap(False)
-        hl.addWidget(brand, 0, 0, Qt.AlignmentFlag.AlignLeft)
+        hl.addWidget(brand)
 
         self._case_btn = QToolButton()
         self._case_btn.setObjectName('caseSelector')
         self._case_btn.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         self._case_btn.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
         self._case_btn.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
-        self._case_menu = QMenu(self._case_btn)
+        self._case_menu = CaseMenu(self._case_btn)
         for path in sorted((ROOT / 'puzzles').glob('case-*.json')):
             data = json.loads(path.read_text(encoding='utf-8'))
             size = data['size']
@@ -125,7 +133,8 @@ class Window(QMainWindow):
                 lambda checked=False, p=path: self.load(p),
             )
         self._case_btn.setMenu(self._case_menu)
-        hl.addWidget(self._case_btn, 0, 1, Qt.AlignmentFlag.AlignCenter)
+        hl.addWidget(self._case_btn)
+        hl.addStretch(1)
 
         # Keep hidden self.title synced for internal compatibility
         self.title = label('', 'title')
@@ -133,7 +142,7 @@ class Window(QMainWindow):
 
         actions = QHBoxLayout()
         actions.setSpacing(10)
-        hl.addLayout(actions, 0, 2, Qt.AlignmentFlag.AlignRight)
+        hl.addLayout(actions)
 
         self.hint_button = HudButton()
         self.hint_button.setText('Gợi ý')
@@ -270,8 +279,6 @@ class Window(QMainWindow):
         ):
             palette.setColor(role, QColor(value))
         self.setPalette(palette)
-        self._case_menu.ensurePolished()
-        self._case_btn.setFixedWidth(self._case_menu.sizeHint().width())
         self._case_btn.setIcon(icon('chevron', '#FFFFFF'))
         self._case_btn.setIconSize(QSize(15, 15))
         self.hint_button.setIcon(icon('hint', '#0F2942'))
