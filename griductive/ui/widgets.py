@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 from PySide6.QtCore import Qt, QRectF, Signal
 from PySide6.QtGui import QPainterPath, QLinearGradient, QColor, QPainter, QFont, QFontDatabase, QPixmap
-from PySide6.QtWidgets import QWidget, QLabel, QPushButton, QGraphicsOpacityEffect
+from PySide6.QtWidgets import QToolButton, QWidget, QLabel, QPushButton, QGraphicsOpacityEffect
 from .assets import ROOT
 
 
@@ -39,6 +39,49 @@ def pixel_frame(box, step=3):
     return path
 
 
+HUD_BACKGROUND = QColor(63, 64, 78, 245)
+HUD_BORDER = QColor(232, 220, 192, 230)
+
+
+def paint_label_frame(p, rect, background, border):
+    p.setRenderHint(QPainter.RenderHint.Antialiasing, True)
+    box = QRectF(rect).adjusted(0.75, 0.75, -0.75, -0.75)
+    p.setBrush(background)
+    if border:
+        from PySide6.QtGui import QPen
+        p.setPen(QPen(border, 1.2))
+    else:
+        p.setPen(Qt.PenStyle.NoPen)
+    p.drawPath(pixel_frame(box))
+    return box
+
+
+class HudButton(QToolButton):
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        fill = HUD_BACKGROUND
+        if self.isDown():
+            fill = fill.darker(120)
+        elif self.underMouse() or self.hasFocus():
+            fill = fill.lighter(115)
+        box = paint_label_frame(painter, self.rect(), fill, HUD_BORDER)
+        painter.setOpacity(1 if self.isEnabled() else .55)
+        font = QFont('Segoe UI')
+        font.setBold(True)
+        font.setPixelSize(15)
+        painter.setFont(font)
+        text = self.text()
+        width = painter.fontMetrics().horizontalAdvance(text)
+        side = self.iconSize().width()
+        gap = 3 if text else 0
+        x = round(box.center().x() - (side + gap + width)/2)
+        y = round(box.center().y() - side/2) + int(self.isDown())
+        painter.drawPixmap(x, y, self.icon().pixmap(side, side))
+        painter.setPen(Qt.GlobalColor.white)
+        painter.drawText(QRectF(x+side+gap, box.y()+int(self.isDown()), width+1, box.height()),
+                         Qt.AlignmentFlag.AlignVCenter, text)
+
+
 class PixelLabel(QLabel):
     """Stepped board label."""
 
@@ -56,15 +99,7 @@ class PixelLabel(QLabel):
 
     def paintEvent(self, event):
         p = QPainter(self)
-        p.setRenderHint(QPainter.RenderHint.Antialiasing, True)
-        box = QRectF(self.rect()).adjusted(0.75, 0.75, -0.75, -0.75)
-        p.setBrush(self._bg)
-        if self._border:
-            from PySide6.QtGui import QPen
-            p.setPen(QPen(self._border, 1.2))
-        else:
-            p.setPen(Qt.PenStyle.NoPen)
-        p.drawPath(pixel_frame(box))
+        box = paint_label_frame(p, self.rect(), self._bg, self._border)
         f = QFont('Segoe UI')
         f.setPixelSize(self._font_px)
         f.setWeight(QFont.Weight.ExtraBold if self._radius is not None else QFont.Weight.Bold)

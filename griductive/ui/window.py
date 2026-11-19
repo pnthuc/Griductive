@@ -20,7 +20,7 @@ from .themes import THEMES, stylesheet
 from .icons import icon
 from .portraits import load_expression_frames, load_silhouette_frames
 from .assets import ROOT, scenery_catalog, scenery_image
-from .widgets import label, button, configure_app, DeskSurface, PixelLabel, PixelHintButton
+from .widgets import label, button, configure_app, DeskSurface, PixelLabel, HudButton, HUD_BACKGROUND, HUD_BORDER
 from .cards import PortraitCard
 from .dialogs import GameNotice, ModalScrim
 from .journal import SolverJournal
@@ -138,12 +138,13 @@ class Window(QMainWindow):
 
         self.progress = PixelLabel(
             '', 'progress',
-            bg=(63, 64, 78, 245), border=(232, 220, 192, 230), fg='#FFFFFF', radius=None, font_px=15,
+            bg=HUD_BACKGROUND.getRgb(), border=HUD_BORDER.getRgb(), fg='#FFFFFF', radius=None, font_px=15,
         )
         self.progress.setFixedSize(78, 36)
         hl.addWidget(self.progress)
 
-        self.hint_button = PixelHintButton('Gợi ý')
+        self.hint_button = HudButton()
+        self.hint_button.setText('Gợi ý')
         self.hint_button.setObjectName('hint')
         self.hint_button.setFixedSize(self.progress.size())
         self.hint_button.clicked.connect(self.show_hint)
@@ -151,9 +152,9 @@ class Window(QMainWindow):
         hl.addWidget(self.hint_button)
 
         # Single compact ☰ menu button housing all secondary tools
-        self.tools_button = QToolButton()
+        self.tools_button = HudButton()
         self.tools_button.setObjectName('menuButton')
-        self.tools_button.setFixedSize(36, 36)
+        self.tools_button.setFixedSize(self.progress.size())
         self.tools_button.setToolTip('Công cụ')
         self.tools_button.setAccessibleName('Công cụ')
         self.tools_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
@@ -279,9 +280,9 @@ class Window(QMainWindow):
         self.setPalette(palette)
         self._case_btn.setIcon(icon('chevron', '#FFFFFF'))
         self._case_btn.setIconSize(QSize(15, 15))
-        self.hint_button.setIcon(icon('hint', '#0F2942'))
+        self.hint_button.setIcon(icon('hint', '#FFFFFF'))
         self.hint_button.setIconSize(QSize(18, 18))
-        self.tools_button.setIcon(icon('sliders', '#38454B'))
+        self.tools_button.setIcon(icon('sliders', '#FFFFFF'))
         self.tools_button.setIconSize(QSize(24, 24))
         self.solver.set_theme(self.theme)
         for card in self.cards.values():
