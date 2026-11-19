@@ -386,7 +386,7 @@ class PortraitCard(QWidget):
         p.setBrush(Qt.BrushStyle.NoBrush)
         status_rim = {'INNOCENT': '#478453', 'CRIMINAL': '#BB5751'}.get(self.status)
         if self.is_selected:
-            p.setPen(QPen(QColor(status_rim or t.selected), 4.5))
+            p.setPen(QPen(QColor(status_rim or t.selected), 5.5))
             p.drawPath(card_path)
         elif colors:
             for i, color in enumerate(colors):
@@ -396,5 +396,5 @@ class PortraitCard(QWidget):
             p.setPen(QPen(QColor(t.anchor), 3.5))
             p.drawPath(card_path)
         else:
-            p.setPen(QPen(QColor(status_rim or '#AAA398'), 2.0))
+            p.setPen(QPen(QColor(status_rim or '#AAA398'), 3.5))
             p.drawPath(card_path)
