@@ -56,15 +56,20 @@ def paint_label_frame(p, rect, background, border):
     return box
 
 
+def paint_pixel_key(painter, button):
+    painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+    box = QRectF(button.rect()).adjusted(0, 2 if button.isDown() else 0, -1, -1)
+    painter.fillPath(pixel_frame(box), HUD_BORDER)
+    face = box.adjusted(2, 2, -2, -2 if button.isDown() else -5)
+    fill = QColor('#FFEDBF') if button.underMouse() or button.hasFocus() else HUD_BACKGROUND
+    painter.fillPath(pixel_frame(face, 2), fill if button.isEnabled() else QColor(255, 255, 255, 130))
+    return face
+
+
 class HudButton(QToolButton):
     def paintEvent(self, event):
         painter = QPainter(self)
-        fill = HUD_BACKGROUND
-        if self.isDown():
-            fill = fill.darker(120)
-        elif self.underMouse() or self.hasFocus():
-            fill = fill.lighter(115)
-        box = paint_label_frame(painter, self.rect(), fill, HUD_BORDER)
+        box = paint_pixel_key(painter, self)
         painter.setOpacity(1 if self.isEnabled() else .55)
         font = QFont('Segoe UI')
         font.setBold(True)
@@ -75,10 +80,10 @@ class HudButton(QToolButton):
         side = self.iconSize().width()
         gap = 3 if text else 0
         x = round(box.center().x() - (side + gap + width)/2)
-        y = round(box.center().y() - side/2) + int(self.isDown())
+        y = round(box.center().y() - side/2)
         painter.drawPixmap(x, y, self.icon().pixmap(side, side))
         painter.setPen(QColor('#0F2942'))
-        painter.drawText(QRectF(x+side+gap, box.y()+int(self.isDown()), width+1, box.height()),
+        painter.drawText(QRectF(x+side+gap, box.y(), width+1, box.height()),
                          Qt.AlignmentFlag.AlignVCenter, text)
 
 
@@ -122,22 +127,10 @@ class PixelHintButton(QPushButton):
         p = QPainter(self)
         p.setRenderHint(QPainter.RenderHint.Antialiasing, True)
         p.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform, True)
-        box = QRectF(self.rect()).adjusted(0.75, 0.75, -0.75, -0.75)
+        box = paint_pixel_key(p, self)
+        fg = QColor('#0F2038')
         if not self.isEnabled():
-            bg = QColor(255, 255, 255, 130)
-            fg = QColor(15, 32, 56, 130)
-        elif self.underMouse():
-            bg = QColor('#EEF6FF')
-            fg = QColor('#0F2038')
-        else:
-            bg = QColor('#FFFFFF')
-            fg = QColor('#0F2038')
-        box = QRectF(self.rect()).adjusted(0, 2 if self.isDown() else 0, -1, -1)
-        p.fillPath(pixel_frame(box), QColor('#463D39'))
-        face = box.adjusted(2, 2, -2, -2 if self.isDown() else -5)
-        fill = QColor('#FFEDBF') if self.underMouse() or self.hasFocus() else QColor('#F5DEAD')
-        p.fillPath(pixel_frame(face, 2), fill if self.isEnabled() else bg)
-        box = face
+            fg.setAlpha(130)
 
         f = QFont('Segoe UI')
         f.setPixelSize(15)
