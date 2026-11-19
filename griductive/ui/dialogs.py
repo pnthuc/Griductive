@@ -32,7 +32,7 @@ class GameNotice(QDialog):
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setWindowModality(Qt.WindowModality.WindowModal)
         self.setWindowTitle(title);self.setAccessibleName(title)
-        self.setFixedWidth(480)
+        self.setFixedWidth(540 if subject else 480)
         outer=QVBoxLayout(self);outer.setContentsMargins(16,16,16,22)
         self.panel=NoticePanel();self.panel.setObjectName('gameNotice');outer.addWidget(self.panel)
         accent=theme.innocent if tone=='success' else '#D97706' if tone=='warning' else theme.primary
@@ -65,7 +65,7 @@ QPushButton#noticeAction:hover {{background:#1E40AF;}}
         body=QHBoxLayout();body.setSpacing(18)
         if subject:
             name,portrait=subject
-            figure=QLabel();figure.setObjectName('noticeFigure');figure.setFixedSize(150,150);figure.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            figure=QLabel();figure.setObjectName('noticeFigure');figure.setFixedSize(210,210);figure.setAlignment(Qt.AlignmentFlag.AlignCenter)
             figure.setPixmap(portrait.scaled(figure.size(),Qt.AspectRatioMode.KeepAspectRatio,Qt.TransformationMode.FastTransformation))
             body.addWidget(figure,0,Qt.AlignmentFlag.AlignTop)
         words=QVBoxLayout();words.setSpacing(10)
