@@ -6,7 +6,6 @@ from PySide6.QtGui import QColor, QPainter, QPainterPath, QPen, QFont, QTextDocu
 from PySide6.QtWidgets import QWidget, QPushButton, QBoxLayout, QFrame, QScrollArea
 from ..presentation.wording_vi import STATUS_TEXT
 from .icons import icon
-from .portraits import profession_renderer
 from .character_animation import CharacterAnimation
 from .card_feedback import CardFeedback
 from .widgets import InlineClue, CardFadeEffect
@@ -33,7 +32,6 @@ class PortraitCard(QWidget):
         self.name_role = None
         self.motion = True
         self.pixel_style = True
-        self.prop_category = 'detective'
         self.feedback = CardFeedback()
         self.fade_effect = CardFadeEffect(self)
         self.fade_effect.setOpacity(1.)
@@ -223,7 +221,8 @@ class PortraitCard(QWidget):
         card_path = QPainterPath()
         card_path.addRoundedRect(rect, radius, radius)
 
-        p.fillPath(card_path, QColor('#FFFFFF'))
+        paper = {'INNOCENT': t.card_innocent, 'CRIMINAL': t.card_criminal}.get(self.status, t.card_unknown)
+        p.fillPath(card_path, QColor(paper))
         p.save()
         p.setClipPath(card_path)
         p.setClipRect(panel_rect, Qt.ClipOperation.IntersectClip)
@@ -266,19 +265,16 @@ class PortraitCard(QWidget):
                                    panel_rect.width(), bar_width), QColor('#465A5A'))
         p.restore()
 
-        # Subtle monochrome vector profession emblem on unopened, unselected cards (scaled generously!)
-        if not self.clue and not self.is_selected:
+        if self.props and not self.clue and not self.is_selected:
+            pad = max(6., round(9 * s))
+            space = self.paper_geometry(content, s)
+            scale = min(space.width() * .85 / self.props.width(),
+                        (space.height() - pad) / self.props.height())
+            width, height = self.props.width() * scale, self.props.height() * scale
+            dest = QRectF(content.right() - width, rect.bottom() - pad - height, width, height)
             p.save()
-            p.setOpacity(0.92)
-            icon_sz = max(36., min(content.width() * 0.42, rect.height() * 0.42, 112. * s))
-            pad = max(8., round(13 * s))
-            icon_rect = QRectF(
-                rect.right() - icon_sz - pad,
-                rect.bottom() - icon_sz - pad,
-                icon_sz,
-                icon_sz,
-            )
-            profession_renderer(self.prop_category, '#C4DCF5').render(p, icon_rect)
+            p.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform, False)
+            p.drawPixmap(dest, self.props, QRectF(self.props.rect()))
             p.restore()
 
         # Top-left coordinate pill (A1..E5)

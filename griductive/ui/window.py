@@ -19,7 +19,7 @@ from ..presentation.references import reference_focus
 from .themes import THEMES, stylesheet
 from .icons import icon
 from .portraits import load_expression_frames, load_silhouette_frames
-from .assets import ROOT, scenery_catalog
+from .assets import ROOT, scenery_catalog, scenery_image
 from .widgets import label, button, configure_app, DeskSurface, SmoothPillLabel, SmoothPillButton
 from .cards import PortraitCard
 from .dialogs import GameNotice, ModalScrim
@@ -75,6 +75,13 @@ class Window(QMainWindow):
     def load_visual_assets(self):
         catalog = scenery_catalog()
         self.character_backgrounds = catalog['character_backgrounds']
+        spec = catalog['profession_atlas']
+        atlas = scenery_image(spec['image'])
+        self.profession_props = {}
+        for name, (col, row) in spec['tiles'].items():
+            left, right = (round(i * atlas.width() / spec['columns']) for i in (col, col + 1))
+            top, bottom = (round(i * atlas.height() / spec['rows']) for i in (row, row + 1))
+            self.profession_props[name] = atlas.copy(left, top, right - left, bottom - top)
         self.expression_bank = load_expression_frames(ROOT / 'assets')
         self.silhouette_bank = load_silhouette_frames(ROOT / 'assets')
         self.portraits = [frames[0] for frames in self.expression_bank.values()]
@@ -521,7 +528,7 @@ class Window(QMainWindow):
             )
             card.expression_frames = self.expression_bank[char.portrait]
             card.silhouette_frames = self.silhouette_bank[char.portrait]
-            card.prop_category = self.character_backgrounds.get(str(char.portrait), 'detective')
+            card.props = self.profession_props[self.character_backgrounds[str(char.portrait)]]
             card.motion = self.motion.isChecked()
             card.selected.connect(self.select_person)
             card.verdict_requested.connect(self.submit_verdict)

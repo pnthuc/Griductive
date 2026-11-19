@@ -41,9 +41,9 @@ THEMES = {
         '#F85A6A',  # criminal: poppy coral
         '#EFF6FF',  # badge: soft sky tint
         '#1D4ED8',  # primary: royal cobalt
-        '#FFFFFF',  # card_unknown
-        '#FFFFFF',  # card_innocent
-        '#FFFFFF',  # card_criminal
+        '#FAF8F2',  # card_unknown
+        '#F2F4ED',  # card_innocent
+        '#F8EFEA',  # card_criminal
     ),
 }
 
