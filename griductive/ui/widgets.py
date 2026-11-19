@@ -2,10 +2,9 @@
 import os
 from pathlib import Path
 from PySide6.QtCore import Qt, QRectF, Signal
-from PySide6.QtGui import QColor, QPainter, QFont, QFontDatabase, QPixmap
+from PySide6.QtGui import QLinearGradient, QColor, QPainter, QFont, QFontDatabase, QPixmap
 from PySide6.QtWidgets import QWidget, QLabel, QPushButton, QGraphicsOpacityEffect
 from .assets import ROOT
-from .themes import THEMES
 
 
 def label(value='', name=None):
@@ -182,8 +181,22 @@ class CardFadeEffect(QGraphicsOpacityEffect):
 
 
 class DeskSurface(QWidget):
-    """Quiet matte surface behind the desktop board."""
+    """Harbor at dusk, with a shaded skyline behind the board controls."""
+
+    def __init__(self):
+        super().__init__()
+        self.harbor = QPixmap(str(ROOT / 'assets/scenery/harbor.png'))
 
     def paintEvent(self, event):
         painter = QPainter(self)
-        painter.fillRect(event.rect(), QColor(THEMES['pixel'].background))
+        bounds = QRectF(self.rect())
+        scale = max(bounds.width()/self.harbor.width(), bounds.height()/self.harbor.height())
+        source = QRectF(0, 0, bounds.width()/scale, bounds.height()/scale)
+        source.moveCenter(QRectF(self.harbor.rect()).center())
+        painter.drawPixmap(bounds, self.harbor, source)
+        dusk = QLinearGradient(0, 0, 0, bounds.height())
+        dusk.setColorAt(0, QColor(37, 32, 63, 212))
+        dusk.setColorAt(.16, QColor(115, 65, 85, 128))
+        dusk.setColorAt(.65, QColor(60, 63, 94, 100))
+        dusk.setColorAt(1, QColor(29, 57, 72, 135))
+        painter.fillRect(bounds, dusk)
