@@ -208,7 +208,9 @@ def render_board(public, registry, session):
                     if cell == active
                     else clue_text(public.clues[cell], public.board, registry, names)
                 )
-                body = html.Div(nodes, className="statement")
+                body = html.Div(
+                    nodes, className="statement", tabIndex=0 if chosen else None
+                )
             elif chosen:
                 body = html.Div(
                     [
