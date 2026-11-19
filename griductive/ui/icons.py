@@ -76,6 +76,18 @@ def icon(name,color):
         p.drawRoundedRect(QRectF(6,4,20,24),2.5,2.5)
         p.drawLine(10,4,10,28)
         for y in (10,15,20):p.drawLine(14,y,22,y)
+    elif name=='home':
+        p.save()
+        p.resetTransform()
+        tiles = ('......oo......','.....orro.oo..','....orrrrooo..','...orrrrrroo..',
+                 '..orrrrrrrro..','.orrrrrrrrrro.','oooooooooloooo','..owwwwwwwwo..',
+                 '..owllwwddwo..','..owllwwddwo..','..owwwwwddwo..','..oooooooooo..')
+        colors = {'o': color, 'r': '#B95D46', 'w': '#FFF1CD', 'l': '#669B9E', 'd': '#906742'}
+        for y, row in enumerate(tiles):
+            for x, tile in enumerate(row):
+                if tile in colors:
+                    p.fillRect(x+1, y+2, 1, 1, QColor(colors[tile]))
+        p.restore()
     elif name=='menu':
         pen.setWidthF(2.5);p.setPen(pen)
         for y in (9,16,23):p.drawLine(6,y,26,y)

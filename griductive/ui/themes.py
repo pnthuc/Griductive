@@ -119,27 +119,20 @@ QPushButton#hint:disabled {{
     color:rgba(15,41,66,120);
 }}
 QToolButton#menuButton {{
-    background:transparent;
-    color:#FFFFFF;
-    border:none;
-    border-radius:2px;
-    padding:4px;
+    background:#F5DEAD;border:2px solid #493A37;border-bottom-width:4px;
+    padding:0;border-radius:0;
 }}
-QToolButton#menuButton:hover {{
-    background:rgba(255,255,255,52);
-}}
+QToolButton#menuButton:hover {{background:#FFEDBF;}}
+QToolButton#menuButton:pressed {{background:#E4C593;border-bottom-width:2px;padding-top:2px;}}
 QToolButton#menuButton::menu-indicator {{image:none;width:0px;}}
 QToolButton#caseSelector::menu-indicator {{image:none;width:0px;}}
 QMenu {{
-    background:#FFFFFF;
-    color:{t.text};
-    border:1.5px solid #CBD5E1;
-    border-radius:2px;
-    padding:6px;
+    background:#FBF3E3;color:#463A38;border:3px solid #514344;
+    border-bottom:5px solid #45383B;padding:5px;
 }}
-QMenu::item {{padding:8px 16px;border-radius:2px;font-weight:500;}}
-QMenu::item:selected {{background:{t.primary};color:#FFFFFF;}}
-QMenu::separator {{height:1px;background:#E2E8F0;margin:4px 6px;}}
+QMenu::item {{padding:8px 16px 8px 10px;border:2px solid transparent;font-weight:600;}}
+QMenu::item:selected {{background:#F1D7A1;color:#382F32;border:2px solid #A98153;}}
+QMenu::separator {{height:2px;background:#CDB690;margin:4px 6px;}}
 QPushButton, QToolButton, QComboBox {{
     background:#FFFFFF;
     border:1.5px solid #CBD5E1;
