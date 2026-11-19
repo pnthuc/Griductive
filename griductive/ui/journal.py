@@ -32,7 +32,7 @@ class JournalEntry(QFrame):
         figure.setAlignment(Qt.AlignmentFlag.AlignCenter)
         figure.setPixmap(portrait.scaled(
             44, 50, Qt.AspectRatioMode.KeepAspectRatio,
-            Qt.TransformationMode.SmoothTransformation))
+            Qt.TransformationMode.FastTransformation))
         heading.addWidget(figure)
         identity = QVBoxLayout()
         identity.setSpacing(3)
@@ -226,24 +226,24 @@ QDockWidget#solverDock QLabel {{border:0;background:transparent;color:{theme.tex
 QDockWidget#solverDock QLabel#journalTitle {{font-family:"Segoe UI";font-size:20px;font-weight:800;color:{theme.text};}}
 QDockWidget#solverDock QLabel#journalName {{font-family:"Segoe UI";font-size:18px;font-weight:700;}}
 QDockWidget#solverDock QLabel#journalNumber {{font-size:14px;font-weight:700;color:{theme.primary};}}
-QDockWidget#solverDock QLabel#journalCell {{font-size:11px;font-weight:700;color:#FFFFFF;background:#83A3C4;border-radius:4px;padding:1px 6px;}}
+QDockWidget#solverDock QLabel#journalCell {{font-size:11px;font-weight:700;color:#FFFFFF;background:#83A3C4;border-radius:2px;padding:1px 6px;}}
 QDockWidget#solverDock QLabel#journalVerdict {{font-size:13px;font-weight:700;}}
 QDockWidget#solverDock QLabel#journalMuted {{color:{theme.muted};font-size:12px;}}
 QDockWidget#solverDock QLabel#journalStatus {{font-size:13px;font-weight:600;}}
 QDockWidget#solverDock QLabel#journalCaption {{font-size:12px;font-weight:700;color:{theme.primary};}}
 QDockWidget#solverDock QLabel#journalEmpty {{padding:22px 14px;color:{theme.muted};font-size:14px;}}
-QScrollArea#journalScroll, QWidget#journalPaper {{background:#F1F5F9;border:0;border-radius:9px;}}
-QFrame#journalEntry {{background:#FFFFFF;border:1px solid #E2E8F0;border-radius:9px;}}
+QScrollArea#journalScroll, QWidget#journalPaper {{background:#F1F5F9;border:0;border-radius:2px;}}
+QFrame#journalEntry {{background:#FAF8F2;border:2px solid #C7BBA6;border-radius:2px;}}
 QFrame#journalDetails {{background:transparent;border:0;border-top:1px solid #E2E8F0;}}
-QPushButton#journalPrimary, QPushButton#journalSecondary {{font-size:13px;font-weight:700;border-radius:8px;padding:8px 10px;}}
-QPushButton#journalPrimary {{background:{theme.primary};color:#FFFFFF;border:none;}}
+QPushButton#journalPrimary, QPushButton#journalSecondary {{font-size:13px;font-weight:700;border-radius:2px;padding:8px 10px;}}
+QPushButton#journalPrimary {{background:{theme.primary};color:#FFFFFF;border:2px solid #243D67;border-bottom-width:4px;}}
 QPushButton#journalPrimary:hover {{background:#1E40AF;}}
 QPushButton#journalSecondary {{background:#FFFFFF;color:{theme.text};border:1.5px solid #CBD5E1;}}
 QPushButton#journalSecondary:hover {{background:#F1F5F9;}}
 QPushButton#journalPrimary:disabled, QPushButton#journalSecondary:disabled {{background:#E2E8F0;color:#94A3B8;border:1px solid #CBD5E1;}}
-QToolButton#journalClose {{background:transparent;border:1px solid transparent;border-radius:6px;padding:3px;}}
+QToolButton#journalClose {{background:transparent;border:1px solid transparent;border-radius:2px;padding:3px;}}
 QToolButton#journalClose:hover {{background:#F1F5F9;border-color:#CBD5E1;}}
-QToolButton#journalDetailsButton, QPushButton#journalQuiet, QToolButton#journalQuiet {{background:transparent;border:1px solid transparent;border-radius:6px;color:{theme.primary};font-size:12px;font-weight:600;padding:4px 6px;}}
+QToolButton#journalDetailsButton, QPushButton#journalQuiet, QToolButton#journalQuiet {{background:transparent;border:1px solid transparent;border-radius:2px;color:{theme.primary};font-size:12px;font-weight:600;padding:4px 6px;}}
 QToolButton#journalDetailsButton:hover, QPushButton#journalQuiet:hover, QToolButton#journalQuiet:hover {{background:#EFF6FF;border-color:#BFDBFE;}}
 QToolButton#journalClose:focus, QToolButton#journalDetailsButton:focus, QToolButton#journalQuiet:focus, QToolButton#journalQuiet:focus {{border-color:{theme.selected};}}
 QPushButton#journalPrimary:focus, QPushButton#journalSecondary:focus {{border-color:{theme.selected};}}

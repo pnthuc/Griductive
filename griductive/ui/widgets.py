@@ -2,7 +2,7 @@
 import os
 from pathlib import Path
 from PySide6.QtCore import Qt, QRectF, Signal
-from PySide6.QtGui import QLinearGradient, QColor, QPainter, QFont, QFontDatabase, QPixmap
+from PySide6.QtGui import QPainterPath, QLinearGradient, QColor, QPainter, QFont, QFontDatabase, QPixmap
 from PySide6.QtWidgets import QWidget, QLabel, QPushButton, QGraphicsOpacityEffect
 from .assets import ROOT
 
@@ -25,8 +25,22 @@ def button(value, slot=None, primary=False):
     return w
 
 
-class SmoothPillLabel(QLabel):
-    """True QPainter-antialiased capsule label (avoids Qt QSS faceted border-radius)."""
+def pixel_frame(box, step=3):
+    """Closed outline with one square step at each corner."""
+    left, top, right, bottom = box.getCoords()
+    path = QPainterPath()
+    path.moveTo(left+step, top)
+    for x, y in ((right-step, top), (right-step, top+step), (right, top+step),
+                 (right, bottom-step), (right-step, bottom-step), (right-step, bottom),
+                 (left+step, bottom), (left+step, bottom-step), (left, bottom-step),
+                 (left, top+step), (left+step, top+step)):
+        path.lineTo(x, y)
+    path.closeSubpath()
+    return path
+
+
+class PixelLabel(QLabel):
+    """Stepped board label."""
 
     def __init__(self, value='', name=None, *, bg=(255, 255, 255, 76), border=None, fg='#0D2744', radius=None, font_px=15):
         super().__init__(value)
@@ -44,14 +58,13 @@ class SmoothPillLabel(QLabel):
         p = QPainter(self)
         p.setRenderHint(QPainter.RenderHint.Antialiasing, True)
         box = QRectF(self.rect()).adjusted(0.75, 0.75, -0.75, -0.75)
-        r = (box.height() * 0.5) if self._radius is None else min(float(self._radius), box.height() * 0.5)
         p.setBrush(self._bg)
         if self._border:
             from PySide6.QtGui import QPen
             p.setPen(QPen(self._border, 1.2))
         else:
             p.setPen(Qt.PenStyle.NoPen)
-        p.drawRoundedRect(box, r, r)
+        p.drawPath(pixel_frame(box))
         f = QFont('Segoe UI')
         f.setPixelSize(self._font_px)
         f.setWeight(QFont.Weight.ExtraBold if self._radius is not None else QFont.Weight.Bold)
@@ -60,8 +73,8 @@ class SmoothPillLabel(QLabel):
         p.drawText(box, Qt.AlignmentFlag.AlignCenter, self.text())
 
 
-class SmoothPillButton(QPushButton):
-    """True QPainter-antialiased stadium pill button (avoids Qt QSS polygonal corners)."""
+class PixelHintButton(QPushButton):
+    """Raised hint key with a recessed pressed state."""
 
     def __init__(self, value='', slot=None):
         super().__init__(value)
@@ -75,7 +88,6 @@ class SmoothPillButton(QPushButton):
         p.setRenderHint(QPainter.RenderHint.Antialiasing, True)
         p.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform, True)
         box = QRectF(self.rect()).adjusted(0.75, 0.75, -0.75, -0.75)
-        r = box.height() * 0.5
         if not self.isEnabled():
             bg = QColor(255, 255, 255, 130)
             fg = QColor(15, 32, 56, 130)
@@ -85,9 +97,12 @@ class SmoothPillButton(QPushButton):
         else:
             bg = QColor('#FFFFFF')
             fg = QColor('#0F2038')
-        p.setPen(Qt.PenStyle.NoPen)
-        p.setBrush(bg)
-        p.drawRoundedRect(box, r, r)
+        box = QRectF(self.rect()).adjusted(0, 2 if self.isDown() else 0, -1, -1)
+        p.fillPath(pixel_frame(box), QColor('#463D39'))
+        face = box.adjusted(2, 2, -2, -2 if self.isDown() else -5)
+        fill = QColor('#FFEDBF') if self.underMouse() or self.hasFocus() else QColor('#F5DEAD')
+        p.fillPath(pixel_frame(face, 2), fill if self.isEnabled() else bg)
+        box = face
 
         f = QFont('Segoe UI')
         f.setPixelSize(15)

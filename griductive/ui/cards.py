@@ -8,7 +8,7 @@ from ..presentation.wording_vi import STATUS_TEXT
 from .icons import icon
 from .character_animation import CharacterAnimation
 from .card_feedback import CardFeedback
-from .widgets import InlineClue, CardFadeEffect
+from .widgets import pixel_frame, InlineClue, CardFadeEffect
 
 
 class VerdictButton(QPushButton):
@@ -241,17 +241,16 @@ class PortraitCard(QWidget):
         p.setRenderHint(QPainter.RenderHint.Antialiasing, True)
         p.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform, True)
         t = self.theme
-        radius = 12.0
+        corner = 4
         rect, panel_rect, content = self.content_geometry()
         s = max(0.58, min(1.65, self.height() / 200.))
 
         # Crisp flat-vector sky shadow under card
         p.setPen(Qt.PenStyle.NoPen)
         p.setBrush(QColor(12, 58, 118, 44))
-        p.drawRoundedRect(rect.translated(0, 3.5), radius, radius)
+        p.drawPath(pixel_frame(rect.translated(0, 3), corner))
 
-        card_path = QPainterPath()
-        card_path.addRoundedRect(rect, radius, radius)
+        card_path = pixel_frame(rect, corner)
 
         paper = {'INNOCENT': t.card_innocent, 'CRIMINAL': t.card_criminal}.get(self.status, t.card_unknown)
         p.fillPath(card_path, QColor(paper))
@@ -322,8 +321,7 @@ class PortraitCard(QWidget):
         )
         p.setBrush(QColor(chip_bg))
         p.setPen(Qt.PenStyle.NoPen)
-        r_chip = max(6., 7.5 * min(1.3, s))
-        p.drawRoundedRect(chip, r_chip, r_chip)
+        p.drawPath(pixel_frame(chip))
         f_chip = QFont('Segoe UI')
         f_chip.setPixelSize(max(11, round(13.5 * s)))
         f_chip.setWeight(QFont.Weight.Bold)
@@ -338,25 +336,11 @@ class PortraitCard(QWidget):
             bpad = max(7., round(11 * s))
             badge = QRectF(rect.right() - bsz - bpad, rect.y() + bpad, bsz, bsz)
             is_inn = self.status == 'INNOCENT'
-            p.setBrush(QColor('#34C772' if is_inn else '#F45866'))
+            p.setBrush(QColor('#327F58' if is_inn else '#B54954'))
             p.setPen(Qt.PenStyle.NoPen)
-            p.drawEllipse(badge)
-            mark_pen = QPen(QColor('#FFFFFF'), max(2.0, 2.4 * s))
-            mark_pen.setCapStyle(Qt.PenCapStyle.RoundCap)
-            mark_pen.setJoinStyle(Qt.PenJoinStyle.RoundJoin)
-            p.setPen(mark_pen)
-            p.setBrush(Qt.BrushStyle.NoBrush)
-            cx, cy = badge.center().x(), badge.center().y()
-            if is_inn:
-                chk = QPainterPath()
-                chk.moveTo(QPointF(cx - bsz * 0.22, cy + bsz * 0.01))
-                chk.lineTo(QPointF(cx - bsz * 0.05, cy + bsz * 0.19))
-                chk.lineTo(QPointF(cx + bsz * 0.24, cy - bsz * 0.16))
-                p.drawPath(chk)
-            else:
-                d = bsz * 0.18
-                p.drawLine(QPointF(cx - d, cy - d), QPointF(cx + d, cy + d))
-                p.drawLine(QPointF(cx + d, cy - d), QPointF(cx - d, cy + d))
+            p.drawPath(pixel_frame(badge))
+            symbol = icon('check' if is_inn else 'cross', '#FFFFFF')
+            symbol.paint(p, badge.toRect())
             badge_reserved = bsz + round(8 * s)
 
         # Character Name, Profession & subtle editorial divider
@@ -402,15 +386,15 @@ class PortraitCard(QWidget):
         p.setBrush(Qt.BrushStyle.NoBrush)
         if self.is_selected:
             p.setPen(QPen(QColor(t.selected), 4.5))
-            p.drawRoundedRect(rect, radius, radius)
+            p.drawPath(card_path)
         elif colors:
             for i, color in enumerate(colors):
                 p.setPen(QPen(QColor(color), 7, Qt.PenStyle.SolidLine, Qt.PenCapStyle.FlatCap))
                 p.drawPath(card_path if len(colors) == 1 else card_path.trimmed(i / len(colors), (i + 1) / len(colors)))
         elif self.anchor:
             p.setPen(QPen(QColor(t.anchor), 3.5))
-            p.drawRoundedRect(rect, radius, radius)
+            p.drawPath(card_path)
         else:
             rim = '#B7ECCE' if self.status == 'INNOCENT' else '#FCD2D7' if self.status == 'CRIMINAL' else '#D3E5F8'
             p.setPen(QPen(QColor(rim), 1.4))
-            p.drawRoundedRect(rect, radius, radius)
+            p.drawPath(card_path)

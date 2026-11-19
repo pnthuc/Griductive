@@ -68,7 +68,7 @@ QToolButton#caseSelector {{
     background:transparent;
     color:rgba(255,255,255,245);
     border:1px solid transparent;
-    border-radius:8px;
+    border-radius:2px;
     padding:4px 8px;
     font-family:"Segoe UI";
     font-size:18px;
@@ -87,7 +87,7 @@ QLabel#coordHeader {{
     background:rgba(255,255,255,74);
     color:#0D2744;
     border:none;
-    border-radius:9px;
+    border-radius:2px;
     font-family:"Segoe UI";
     font-size:15px;
     font-weight:800;
@@ -100,14 +100,14 @@ QLabel#progress {{
     color:#FFFFFF;
     background:rgba(255,255,255,58);
     border:1px solid rgba(255,255,255,105);
-    border-radius:18px;
+    border-radius:2px;
     padding:0px 18px;
 }}
 QPushButton#hint {{
     background:#FFFFFF;
     color:#0F2038;
     border:none;
-    border-radius:18px;
+    border-radius:2px;
     padding:0px 18px;
     font-family:"Segoe UI";
     font-size:15px;
@@ -122,7 +122,7 @@ QToolButton#menuButton {{
     background:transparent;
     color:#FFFFFF;
     border:none;
-    border-radius:9px;
+    border-radius:2px;
     padding:4px;
 }}
 QToolButton#menuButton:hover {{
@@ -134,16 +134,16 @@ QMenu {{
     background:#FFFFFF;
     color:{t.text};
     border:1.5px solid #CBD5E1;
-    border-radius:10px;
+    border-radius:2px;
     padding:6px;
 }}
-QMenu::item {{padding:8px 16px;border-radius:6px;font-weight:500;}}
+QMenu::item {{padding:8px 16px;border-radius:2px;font-weight:500;}}
 QMenu::item:selected {{background:{t.primary};color:#FFFFFF;}}
 QMenu::separator {{height:1px;background:#E2E8F0;margin:4px 6px;}}
 QPushButton, QToolButton, QComboBox {{
     background:#FFFFFF;
     border:1.5px solid #CBD5E1;
-    border-radius:8px;
+    border-radius:2px;
     padding:7px 14px;
     font-size:14px;
     font-weight:600;
@@ -154,7 +154,7 @@ QPushButton#primary {{
     background:{t.primary};
     color:#FFFFFF;
     border:none;
-    border-radius:10px;
+    border-radius:2px;
     padding:9px 20px;
     font-size:15px;
     font-weight:700;
@@ -196,7 +196,7 @@ QToolTip {{
     background:#0F172A;
     color:#FFFFFF;
     border:none;
-    border-radius:6px;
+    border-radius:2px;
     padding:6px 10px;
 }}
 QStatusBar {{background:transparent;color:#FFFFFF;font-size:12px;}}

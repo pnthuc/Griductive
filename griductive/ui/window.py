@@ -20,7 +20,7 @@ from .themes import THEMES, stylesheet
 from .icons import icon
 from .portraits import load_expression_frames, load_silhouette_frames
 from .assets import ROOT, scenery_catalog, scenery_image
-from .widgets import label, button, configure_app, DeskSurface, SmoothPillLabel, SmoothPillButton
+from .widgets import label, button, configure_app, DeskSurface, PixelLabel, PixelHintButton
 from .cards import PortraitCard
 from .dialogs import GameNotice, ModalScrim
 from .journal import SolverJournal
@@ -138,14 +138,14 @@ class Window(QMainWindow):
 
         hl.addStretch(1)
 
-        self.progress = SmoothPillLabel(
+        self.progress = PixelLabel(
             '', 'progress',
-            bg=(255, 255, 255, 58), border=(255, 255, 255, 110), fg='#FFFFFF', radius=None, font_px=15,
+            bg=(63, 64, 78, 245), border=(232, 220, 192, 230), fg='#FFFFFF', radius=None, font_px=15,
         )
         self.progress.setFixedSize(78, 36)
         hl.addWidget(self.progress)
 
-        self.hint_button = SmoothPillButton('Gợi ý')
+        self.hint_button = PixelHintButton('Gợi ý')
         self.hint_button.setObjectName('hint')
         self.hint_button.setFixedSize(104, 36)
         self.hint_button.clicked.connect(self.show_hint)
@@ -258,11 +258,11 @@ class Window(QMainWindow):
                 w.deleteLater()
             item_list.clear()
         for col in range(size):
-            pill = SmoothPillLabel(chr(65 + col), 'coordHeader', bg=(255, 255, 255, 76), fg='#0D2744', radius=9, font_px=15)
+            pill = PixelLabel(chr(65 + col), 'coordHeader', bg=(250, 231, 192, 230), fg='#0D2744', radius=9, font_px=15)
             self._col_layout.addWidget(pill, 1)
             self._col_labels.append(pill)
         for row in range(size):
-            pill = SmoothPillLabel(str(row + 1), 'coordHeader', bg=(255, 255, 255, 76), fg='#0D2744', radius=9, font_px=15)
+            pill = PixelLabel(str(row + 1), 'coordHeader', bg=(250, 231, 192, 230), fg='#0D2744', radius=9, font_px=15)
             self._row_layout.addWidget(pill, 1)
             self._row_labels.append(pill)
 

@@ -26,15 +26,15 @@ class GameNotice(QDialog):
         self.panel=QFrame();self.panel.setObjectName('gameNotice');outer.addWidget(self.panel)
         accent=theme.innocent if tone=='success' else '#D97706' if tone=='warning' else theme.primary
         self.setStyleSheet(f'''
-QFrame#gameNotice {{background:#FFFFFF;border:1.5px solid #CBD5E1;border-radius:16px;}}
+QFrame#gameNotice {{background:#FAF8F2;border:3px solid #766A59;border-radius:2px;}}
 QFrame#gameNotice QLabel {{background:transparent;border:0;color:{theme.text};}}
 QLabel#noticeTitle {{font-family:"Segoe UI";font-size:22px;font-weight:800;}}
 QLabel#noticeSubject {{font-family:"Segoe UI";font-size:23px;font-weight:700;}}
-QFrame#gameNotice QLabel#noticeCell {{font-size:12px;font-weight:700;color:#FFFFFF;background:{theme.primary};border-radius:6px;padding:3px 8px;}}
+QFrame#gameNotice QLabel#noticeCell {{font-size:12px;font-weight:700;color:#FFFFFF;background:{theme.primary};border-radius:2px;padding:3px 8px;}}
 QLabel#noticeMessage {{font-family:"Segoe UI";font-size:15px;color:#334155;}}
-QToolButton#noticeClose {{background:transparent;border:1px solid transparent;border-radius:6px;padding:3px;}}
+QToolButton#noticeClose {{background:transparent;border:1px solid transparent;border-radius:2px;padding:3px;}}
 QToolButton#noticeClose:hover {{background:#F1F5F9;border-color:#CBD5E1;}}
-QPushButton#noticeAction {{background:{theme.primary};color:#FFFFFF;border:none;border-radius:10px;padding:9px 20px;font-size:15px;font-weight:700;}}
+QPushButton#noticeAction {{background:{theme.primary};color:#FFFFFF;border:2px solid #243D67;border-bottom-width:4px;border-radius:2px;padding:9px 20px;font-size:15px;font-weight:700;}}
 QPushButton#noticeAction:hover {{background:#1E40AF;}}
 ''')
         shadow=QGraphicsDropShadowEffect(self.panel);shadow.setBlurRadius(24)

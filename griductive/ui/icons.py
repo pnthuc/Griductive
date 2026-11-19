@@ -1,11 +1,13 @@
-"""Small original line icons, drawn in Qt at the requested device scale."""
+"""Desktop glyphs rasterized on a 16-pixel grid."""
+from functools import lru_cache
 from PySide6.QtCore import Qt,QRectF,QPointF
 from PySide6.QtGui import QColor,QIcon,QPainter,QPainterPath,QPen,QPixmap
 
 
+@lru_cache(maxsize=128)
 def icon(name,color):
-    image=QPixmap(128,128);image.fill(Qt.GlobalColor.transparent)
-    p=QPainter(image);p.setRenderHint(QPainter.RenderHint.Antialiasing);p.scale(4,4)
+    image=QPixmap(16,16);image.fill(Qt.GlobalColor.transparent)
+    p=QPainter(image);p.scale(.5,.5)
     pen=QPen(QColor(color),1.6);pen.setCapStyle(Qt.PenCapStyle.RoundCap);pen.setJoinStyle(Qt.PenJoinStyle.RoundJoin)
     p.setPen(pen);p.setBrush(Qt.BrushStyle.NoBrush)
     if name=='folder':
@@ -84,4 +86,10 @@ def icon(name,color):
         for offset in (0,7,14):
             path=QPainterPath();path.moveTo(4,9+offset);path.cubicTo(10,2+offset,20,16+offset,28,9+offset);p.drawPath(path)
         if name=='still':p.drawLine(5,27,27,5)
-    p.end();result=QIcon(image);result.addPixmap(image,QIcon.Mode.Disabled);return result
+    p.end()
+    result = QIcon()
+    for size in (16, 24, 32, 64, 128):
+        scaled = image.scaled(size, size, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.FastTransformation)
+        result.addPixmap(scaled)
+        result.addPixmap(scaled,QIcon.Mode.Disabled)
+    return result
