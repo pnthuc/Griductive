@@ -20,7 +20,7 @@ from .themes import THEMES, stylesheet
 from .icons import icon
 from .portraits import load_expression_frames, load_silhouette_frames
 from .assets import ROOT, scenery_catalog, scenery_image
-from .widgets import label, button, configure_app, DeskSurface, PixelLabel, HudButton, ProgressLabel
+from .widgets import label, button, configure_app, DeskSurface, PixelLabel, HudButton
 from .cards import PortraitCard
 from .dialogs import GameNotice, ModalScrim
 from .journal import SolverJournal
@@ -101,19 +101,16 @@ class Window(QMainWindow):
         self.header = QFrame()
         self.header.setObjectName('header')
         self.header.setFixedHeight(44)
-        hl = QHBoxLayout(self.header)
-        hl.setContentsMargins(4, 0, 0, 0)
+        hl = QGridLayout(self.header)
+        hl.setColumnStretch(0, 1)
+        hl.setColumnStretch(2, 1)
+        hl.setContentsMargins(0, 0, 0, 0)
         hl.setSpacing(10)
 
         brand = label('Griductive', 'brand')
         brand.setWordWrap(False)
-        hl.addWidget(brand)
+        hl.addWidget(brand, 0, 0, Qt.AlignmentFlag.AlignLeft)
 
-        dot = label('•', 'headerDot')
-        dot.setWordWrap(False)
-        hl.addWidget(dot)
-
-        # Clickable Case Selector directly in the title spot
         self._case_btn = QToolButton()
         self._case_btn.setObjectName('caseSelector')
         self._case_btn.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
@@ -128,31 +125,30 @@ class Window(QMainWindow):
                 lambda checked=False, p=path: self.load(p),
             )
         self._case_btn.setMenu(self._case_menu)
-        hl.addWidget(self._case_btn)
+        self._case_menu.ensurePolished()
+        self._case_btn.setFixedWidth(self._case_menu.sizeHint().width())
+        hl.addWidget(self._case_btn, 0, 1, Qt.AlignmentFlag.AlignCenter)
 
         # Keep hidden self.title synced for internal compatibility
         self.title = label('', 'title')
         self.title.hide()
 
-        hl.addStretch(1)
-
-        self.progress = ProgressLabel()
-        self.progress.setObjectName('progress')
-        self.progress.setFixedSize(78, 36)
-        hl.addWidget(self.progress)
+        actions = QHBoxLayout()
+        actions.setSpacing(10)
+        hl.addLayout(actions, 0, 2, Qt.AlignmentFlag.AlignRight)
 
         self.hint_button = HudButton()
         self.hint_button.setText('Gợi ý')
         self.hint_button.setObjectName('hint')
-        self.hint_button.setFixedSize(self.progress.size())
+        self.hint_button.setFixedSize(78, 36)
         self.hint_button.clicked.connect(self.show_hint)
         self.hint_button.setToolTip('Tìm một nhân vật suy ra được từ thông tin đã mở.')
-        hl.addWidget(self.hint_button)
+        actions.addWidget(self.hint_button)
 
         # Single compact ☰ menu button housing all secondary tools
         self.tools_button = HudButton()
         self.tools_button.setObjectName('menuButton')
-        self.tools_button.setFixedSize(self.progress.size())
+        self.tools_button.setFixedSize(78, 36)
         self.tools_button.setToolTip('Menu chính')
         self.tools_button.setAccessibleName('Menu chính')
         self.tools_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
@@ -160,7 +156,7 @@ class Window(QMainWindow):
         self.solve_action = self.tools_menu.addAction(icon('play', '#714D36'), 'Tự động giải', self.open_solver)
         self.tools_menu.addAction(icon('restart', '#714D36'), 'Làm lại màn này', self.restart)
         self.tools_button.setMenu(self.tools_menu)
-        hl.addWidget(self.tools_button)
+        actions.addWidget(self.tools_button)
 
         # Hidden legacy controls preserved for API compatibility
         self.load_button = QToolButton(self)
@@ -417,7 +413,6 @@ class Window(QMainWindow):
         card.clue = clue_text(self.state.clues[cell], self.state.board, self.clues, self.names)
         card.expression.set_status(verdict)
         self.select_person(cell)
-        self.progress.setText(f'{len(self.state.statuses)} / {len(self.state.board.cells)}')
         primary, auxiliary, clauses = metrics
         self.solver.stats.setText(f'{primary} biến chính, {auxiliary} biến phụ, {clauses} mệnh đề.')
         variables = {i + 1: f'{self.names[c]} ({c})' for i, c in enumerate(self.state.board.cells)}
@@ -502,7 +497,6 @@ class Window(QMainWindow):
         self.names = {c.cell: c.name for c in public.characters}
         self.title.setText(public.title)
         self._case_btn.setText(public.title)
-        self.progress.setText(f'{len(public.statuses)} / {len(board.cells)}')
         for char in public.characters:
             spec = public.clues.get(char.cell)
             desc = clue_text(spec, board, self.clues, self.names) if spec else None
