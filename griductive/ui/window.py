@@ -138,7 +138,7 @@ class Window(QMainWindow):
 
         self.progress = PixelLabel(
             '', 'progress',
-            bg=HUD_BACKGROUND.getRgb(), border=HUD_BORDER.getRgb(), fg='#FFFFFF', radius=None, font_px=15,
+            bg=HUD_BACKGROUND.getRgb(), border=HUD_BORDER.getRgb(), fg='#0F2942', radius=None, font_px=15,
         )
         self.progress.setFixedSize(78, 36)
         hl.addWidget(self.progress)
@@ -155,8 +155,8 @@ class Window(QMainWindow):
         self.tools_button = HudButton()
         self.tools_button.setObjectName('menuButton')
         self.tools_button.setFixedSize(self.progress.size())
-        self.tools_button.setToolTip('Công cụ')
-        self.tools_button.setAccessibleName('Công cụ')
+        self.tools_button.setToolTip('Menu chính')
+        self.tools_button.setAccessibleName('Menu chính')
         self.tools_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
         self.tools_menu = QMenu(self.tools_button)
         self.solve_action = self.tools_menu.addAction(icon('play', '#714D36'), 'Tự động giải', self.open_solver)
@@ -282,7 +282,7 @@ class Window(QMainWindow):
         self._case_btn.setIconSize(QSize(15, 15))
         self.hint_button.setIcon(icon('hint', '#0F2942'))
         self.hint_button.setIconSize(QSize(18, 18))
-        self.tools_button.setIcon(icon('wrench', '#38434A'))
+        self.tools_button.setIcon(icon('home', '#0F2942'))
         self.tools_button.setIconSize(QSize(24, 24))
         self.solver.set_theme(self.theme)
         for card in self.cards.values():
