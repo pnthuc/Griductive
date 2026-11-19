@@ -11,6 +11,49 @@ from .card_feedback import CardFeedback
 from .widgets import InlineClue, CardFadeEffect
 
 
+class VerdictButton(QPushButton):
+    """A stepped pixel keycap with a recessed pressed state."""
+
+    def paintEvent(self, event):
+        innocent = self.objectName() == 'innocent'
+        outline, shadow, face, light = (
+            ('#244D42', '#276547', '#327F58', '#81BC85') if innocent else
+            ('#632F39', '#8B3745', '#B54954', '#E69588')
+        )
+        painter = QPainter(self)
+        unit = max(2, round(self.height()/16))
+        top = unit if self.isDown() else 0
+        width, height = self.width(), self.height()
+        def slab(x, y, w, h, color):
+            painter.fillRect(x+unit, y, w-2*unit, h, QColor(color))
+            painter.fillRect(x, y+unit, w, h-2*unit, QColor(color))
+
+        slab(0, top, width, height-top, outline)
+        slab(unit, top+unit, width-2*unit, height-top-2*unit, shadow)
+        depth = unit if self.isDown() else 2*unit
+        slab(unit, top+unit, width-2*unit, height-top-unit-depth, face)
+        painter.fillRect(3*unit, top+unit, width-6*unit, unit, QColor(light))
+        if self.hasFocus() or self.underMouse():
+            painter.fillRect(3*unit, height-depth-unit, width-6*unit, unit, QColor(light))
+        font = self.font()
+        font.setBold(True)
+        font.setPixelSize(max(11, round(height*.38)))
+        painter.setFont(font)
+        label = self.text().strip()
+        size = painter.fontMetrics().horizontalAdvance(label)
+        pattern = ('00001','00010','10100','01000') if innocent else ('10001','01010','00100','01010','10001')
+        start = (width-size-7*unit)//2
+        mid = (height+top-depth)//2
+        ink = QColor('#FFF8E9' if self.isEnabled() else '#C6C1B8')
+        for row, bits in enumerate(pattern):
+            for col, bit in enumerate(bits):
+                if bit == '1':
+                    painter.fillRect(start+col*unit, mid+(row-len(pattern)//2)*unit, unit, unit, ink)
+        painter.setPen(ink)
+        painter.drawText(QRectF(start+7*unit, top, size+2, height-top-depth),
+                         Qt.AlignmentFlag.AlignVCenter, label)
+
+
 class PortraitCard(QWidget):
     selected = Signal(str)
     verdict_requested = Signal(str, str)
@@ -45,7 +88,6 @@ class PortraitCard(QWidget):
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.setAccessibleName(f'{character.cell} {character.name}')
 
-        # Flush Reigns-style 50/50 bottom split verdict bar
         self.actions = QWidget(self)
         self.actions.setObjectName('verdictActions')
         self.actions.setStyleSheet('QWidget#verdictActions {background:transparent;border:0;}')
@@ -54,7 +96,7 @@ class PortraitCard(QWidget):
         self.verdict_layout.setSpacing(0)
         self.verdict_buttons = {}
         for title in ('Innocent', 'Criminal'):
-            w = QPushButton(' ' + STATUS_TEXT[title.upper()])
+            w = VerdictButton(STATUS_TEXT[title.upper()])
             w.setObjectName(title.lower())
             w.setFixedHeight(38)
             w.setIconSize(QSize(16, 16))
@@ -127,31 +169,21 @@ class PortraitCard(QWidget):
         rect, panel_rect, content = self.content_geometry()
         s = max(0.58, min(1.65, self.height() / 200.))
         show_actions = self.is_selected and not self.status
-        ax = math.floor(panel_rect.right())
-        aw = max(48, math.ceil(rect.right() - 2) - ax)
-        compact = aw < 138
+        ax = math.floor(content.left())
+        aw = max(48, math.floor(content.right()) - ax)
+        gap = max(3, round(6*s))
+        self.verdict_layout.setSpacing(gap)
+        compact = aw < max(138, round(170*s))
         self.verdict_layout.setDirection(
             QBoxLayout.Direction.TopToBottom if compact else QBoxLayout.Direction.LeftToRight
         )
-        btn_h = max(25, round(44 * s))
-        action_h = 2 * btn_h if compact else btn_h
-        ay = max(round(rect.y() + 44 * s), math.ceil(rect.bottom() - 2) - action_h)
+        btn_h = max(23, round(34 * s))
+        action_h = 2 * btn_h + gap if compact else btn_h
+        ay = max(round(rect.y() + 44 * s), math.floor(rect.bottom() - gap) - action_h)
         self.actions.setGeometry(ax, ay, aw, action_h)
         self.actions.setVisible(show_actions)
-        font_px = max(11, round(15 * s))
-        for name, w in self.verdict_buttons.items():
-            w.setFixedHeight(btn_h)
-            w.setIconSize(QSize(max(13, round(18 * s)), max(13, round(18 * s))))
-            is_inn = name == 'Innocent'
-            bg = '#26975D' if is_inn else '#D94755'
-            hov = '#207D4E' if is_inn else '#BC3544'
-            r_br = '0px' if (is_inn and not compact) else '10px'
-            w.setStyleSheet(
-                f'QPushButton {{background:{bg};color:#FFFFFF;font-size:{font_px}px;font-weight:700;'
-                f'border:none;padding:0 6px;border-radius:0px;border-bottom-right-radius:{r_br};}}'
-                f'QPushButton:hover {{background:{hov};}}'
-            )
-            w.setIcon(icon('check' if is_inn else 'cross', '#FFFFFF'))
+        for button in self.verdict_buttons.values():
+            button.setFixedHeight(btn_h)
 
         if self.clue:
             raw_html = self.active_html if self.source and self.active_html else escape(self.clue)
