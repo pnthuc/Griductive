@@ -1,8 +1,8 @@
 # Griductive - Lab 2
 
 Game Python, dùng CNF và DPLL tự cài đặt, đồ họa pixel phố biển.
-Hai giao diện dùng chung engine: desktop PySide6 và web Dash. Bản web khai báo
-giao diện, style và callback bằng Python, không có file HTML/CSS/JavaScript tự viết.
+Hai giao diện dùng chung engine: desktop PySide6 và web Dash. Bản web dùng Dash cho giao diện và callback; `public/board.css` và
+`public/board.js` điều khiển cách trình bày và tương tác trong trình duyệt.
 
 ## Chạy bản web
 
@@ -11,7 +11,7 @@ giao diện, style và callback bằng Python, không có file HTML/CSS/JavaScri
 .\.venv\Scripts\python.exe -B app.py
 ```
 
-Mở http://127.0.0.1:8050. Có chọn màn, mở JSON, phán quyết thủ công, gợi ý,
+Mở http://127.0.0.1:8050. Có chọn màn, phán quyết thủ công, gợi ý,
 giải từng bước/tự động, chọn vùng highlight và tải nhật ký JSON. Tiến độ được
 giữ riêng cho mỗi tab bằng session storage. Mỗi yêu cầu dựng lại phiên và kiểm
 chứng lịch sử bằng engine; không tin trạng thái do trình duyệt tự khai báo,
@@ -25,7 +25,7 @@ mã để trình duyệt hiển thị; mọi luật chơi và suy luận chạy 
 
 Chọn framework Flask, dùng `app.py` làm entrypoint. `vercel.json` và
 `.python-version` đã cấu hình Python 3.12 và giới hạn request 60 giây.
-Atlas/background dùng chung cho web và desktop nằm trong `public/images`,
+Atlas/background dùng chung cho web và desktop nằm trong `public/pixel` và `public/images`,
 Vercel phục vụ trực tiếp qua CDN. Không cần Node/React build hay cơ sở dữ liệu.
 Dependencies web ở `requirements.txt`; PySide6 không được cài vào bản deploy.
 
@@ -54,7 +54,7 @@ python -m venv .venv
 ```
 
 Mở màn cụ thể bằng cách thêm `puzzles/case-5x5-01.json` sau `main.py`.
-Trong **Công cụ** có chọn màn, mở JSON, tự động giải và bật/tắt chuyển động.
+Bấm tên màn để đổi màn. Menu bánh răng chứa **Tự động giải** và **Làm lại màn này**.
 Chọn người rồi bấm **Vô tội** hoặc **Tội phạm**. Game chỉ mở thẻ khi chứng minh
 được phán quyết từ dữ kiện công khai. Gợi ý chỉ ra một người suy ra được tiếp.
 Chọn clue để xem highlight; bấm đoạn chữ màu để tập trung vào vùng/người đó.

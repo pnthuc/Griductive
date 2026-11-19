@@ -218,7 +218,7 @@ class DeskSurface(QWidget):
 
     def __init__(self):
         super().__init__()
-        self.harbor = QPixmap(str(ROOT / 'assets/scenery/harbor.png'))
+        self.harbor = QPixmap(str(ROOT / 'public/pixel/harbor.png'))
 
     def paintEvent(self, event):
         painter = QPainter(self)

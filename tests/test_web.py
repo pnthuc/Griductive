@@ -123,11 +123,24 @@ class WebHTTPTests(unittest.TestCase):
         self.assertEqual(hinted['selected'], 'A3')
         self.assertEqual(hinted['history'], [])
 
-    def test_vector_board_renders_split_verdicts_links_and_5x5(self):
-        # Selecting an unopened suspect renders the flush 50/50 split verdict bar
+    def test_desktop_assets_and_hint_dialog(self):
+        for filename in ('gear.png','glyphs.png','harbor.png','sprites.png','sprites-muted.png'):
+            with self.client.get('/pixel/'+filename) as response:
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.mimetype, 'image/png')
+        response = self.callback(new_session(), 'hint')
+        dialog = response['notice']['children']
+        self.assertEqual(dialog['type'], 'Dialog')
+        self.assertIn('Gwen', json.dumps(dialog, ensure_ascii=False))
+        self.assertIn('Xem nhân vật', json.dumps(dialog, ensure_ascii=False))
+
+    def test_pixel_board_renders_verdicts_links_and_5x5(self):
+        # The portrait and decision controls use the same assets and labels as desktop.
         sel_state = dict(new_session(), selected='B2')
         res = self.callback(sel_state, '')
         board_json = json.dumps(res['board']['children'], ensure_ascii=False)
+        self.assertIn('sprites-muted.png', board_json)
+        self.assertIn('/pixel/sprites.png', board_json)
         self.assertIn('card-verdict', board_json)
         self.assertIn('Vô tội', board_json)
         self.assertIn('Tội phạm', board_json)

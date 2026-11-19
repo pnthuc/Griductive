@@ -122,10 +122,11 @@ def transition(session, action=None, payload=None):
             owner = state.get('selected')
             if owner not in public.clues:
                 raise PuzzleError('Hãy chọn một lời khai đã mở.')
-            keys = {part.key for part in clue_parts(public.clues[owner], public.board, engine.registry)}
-            if payload not in keys:
+            parts = {part.key: part for part in clue_parts(public.clues[owner], public.board, engine.registry)}
+            if payload not in parts:
                 raise PuzzleError('Vùng được chọn không hợp lệ.')
-            state['focus'] = None if payload == state.get('focus') else payload
+            if parts[payload].is_region or parts[payload].named_cells:
+                state['focus'] = payload
         elif action == 'hint':
             cell, verdict = engine.hint(cancelled=cancelled)
             if cell:

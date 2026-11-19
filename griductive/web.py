@@ -1,6 +1,8 @@
 """Browser UI and callbacks for Griductive."""
+
 import json
 import re
+from uuid import uuid4
 from dataclasses import dataclass
 from html import unescape
 
@@ -13,18 +15,24 @@ from .presentation.references import reference_focus
 from .presentation.wording_vi import clue_html, clue_text
 from .web_game import ROOT, new_session, puzzle_options, restore, transition
 
-INK = '#0B192C'
-MUTED = '#52637A'
-SELECTED = '#1D4ED8'
-OPERAND_A = '#0284C7'
-OPERAND_B = '#7C3AED'
-ANCHOR = '#D97706'
-INNOCENT = '#2CC26B'
-CRIMINAL = '#EE505E'
+INK = "#0B192C"
+MUTED = "#52637A"
+SELECTED = "#1D4ED8"
+OPERAND_A = "#0284C7"
+OPERAND_B = "#7C3AED"
+ANCHOR = "#D97706"
+INNOCENT = "#2CC26B"
+CRIMINAL = "#EE505E"
 
-ROLE_COLORS = {'result': SELECTED, 'a': OPERAND_A, 'b': OPERAND_B, 'anchor': ANCHOR}
-STATUS = {'CRIMINAL': 'Tội phạm', 'INNOCENT': 'Vô tội'}
-IMAGE_FILES = {'backdrop.svg', 'sprites.png', 'sprites-silhouette.png', 'pixel-desk.png', 'pixel-profession-props.png'}
+ROLE_COLORS = {"result": SELECTED, "a": OPERAND_A, "b": OPERAND_B, "anchor": ANCHOR}
+STATUS = {"CRIMINAL": "Tội phạm", "INNOCENT": "Vô tội"}
+IMAGE_FILES = {
+    "backdrop.svg",
+    "sprites.png",
+    "sprites-silhouette.png",
+    "pixel-desk.png",
+    "pixel-profession-props.png",
+}
 
 
 @dataclass(frozen=True)
@@ -42,59 +50,74 @@ _LINK_RE = re.compile(r'<a href="([^"]+)" style="color:([^;]+);[^"]*">(.*?)</a>'
 
 
 CHARACTER_CATEGORIES = {
-    '0': 'medical', '1': 'painting', '2': 'journalism', '3': 'law', '4': 'academic',
-    '5': 'cooking', '6': 'library', '7': 'mechanics', '8': 'gardening', '9': 'photography',
-    '10': 'architecture', '11': 'watchmaking', '12': 'musician', '13': 'firefighting', '14': 'floristry',
-    '15': 'tailoring', '16': 'aviation', '17': 'baking', '18': 'detective', '19': 'engineering',
-    '20': 'bookselling', '21': 'nursing', '22': 'sailing', '23': 'music_teaching', '24': 'botany',
+    "0": "medical",
+    "1": "painting",
+    "2": "journalism",
+    "3": "law",
+    "4": "academic",
+    "5": "cooking",
+    "6": "library",
+    "7": "mechanics",
+    "8": "gardening",
+    "9": "photography",
+    "10": "architecture",
+    "11": "watchmaking",
+    "12": "musician",
+    "13": "firefighting",
+    "14": "floristry",
+    "15": "tailoring",
+    "16": "aviation",
+    "17": "baking",
+    "18": "detective",
+    "19": "engineering",
+    "20": "bookselling",
+    "21": "nursing",
+    "22": "sailing",
+    "23": "music_teaching",
+    "24": "botany",
 }
 
 
 PORTRAIT_COUNT = len(CHARACTER_CATEGORIES)
-IMAGE_FILES.update(f'profession-{category}.svg' for category in CHARACTER_CATEGORIES.values())
+IMAGE_FILES.update(
+    f"profession-{category}.svg" for category in CHARACTER_CATEGORIES.values()
+)
 
 
-def _portrait_url(portrait, silhouette=False):
-    kind = 'silhouette' if silhouette else 'portrait'
-    return f'/images/{kind}-{portrait % PORTRAIT_COUNT}.svg?v=2'
-
-
-def portrait_arch(portrait, status=None, is_selected=False, compact=False):
-    silhouette = (status is None and not is_selected)
-    if status == 'INNOCENT':
-        panel_bg, arch_bg = '#DCF9E8', '#2CC26B'
-    elif status == 'CRIMINAL':
-        panel_bg, arch_bg = '#FFE4E8', '#EE505E'
-    elif is_selected:
-        panel_bg, arch_bg = '#DCEBFE', '#99C2F6'
-    else:
-        panel_bg, arch_bg = 'transparent', '#D6E9FA'
-
-    return html.Div(
-        html.Div(
-            html.Img(
-                src=_portrait_url(portrait, silhouette),
-                alt=STATUS.get(status, 'Chưa xác định'),
-                style={
-                    'width': 'min(118cqw, 100cqh)', 'height': 'auto',
-                    'display': 'block', 'flexShrink': 0,
-                    'pointerEvents': 'none', 'userSelect': 'none',
-                },
-            ),
-            style={
-                'width': '100%', 'height': '100%', 'background': arch_bg,
-                'borderRadius': '999px 999px 0 0',
-                'display': 'flex', 'alignItems': 'flex-end', 'justifyContent': 'center',
-                'overflow': 'hidden', 'containerType': 'size',
-            },
-        ),
+def sprite(person, frame=0, muted=False):
+    columns = 2 if muted else 7
+    sheet = "sprites-muted" if muted else "sprites"
+    return html.Span(
+        className="sprite",
         style={
-            'width': '100%', 'height': '100%',
-            'background': panel_bg,
-            'padding': '9px 6px 0' if compact else '14px 10px 0',
-            'boxSizing': 'border-box',
-            'display': 'flex', 'alignItems': 'stretch', 'position': 'relative',
+            "backgroundImage": f'url("/pixel/{sheet}.png")',
+            "backgroundSize": f"{columns * 100}% 2500%",
+            "backgroundPositionY": f"{person.portrait / 24 * 100}%",
+            "--pose": f"{frame / (columns - 1) * 100}%",
+            "--blink": f"{(3 if frame == 4 else 1) / (columns - 1) * 100}%",
+            "--reaction": f"{(2 if frame == 0 and not muted else 5 if frame == 6 else 3 if frame == 4 else 0) / (columns - 1) * 100}%",
+            "--delay": f"{-person.portrait * 0.731}s",
         },
+    )
+
+
+def glyph(name):
+    names = (
+        "check",
+        "cross",
+        "hint",
+        "warning",
+        "step",
+        "export",
+        "pause",
+        "play",
+        "restart",
+        "chevron",
+    )
+    return html.Span(
+        className="glyph",
+        style={"--glyph": f"{names.index(name) / 9 * 100}%"},
+        **{"aria-hidden": "true"},
     )
 
 
@@ -106,21 +129,30 @@ def inline_clue_nodes(spec, board, registry, names, cell, pinned_key):
     idx = 0
     for match in _LINK_RE.finditer(rendered):
         if match.start() > cursor:
-            nodes.append(unescape(rendered[cursor:match.start()]))
+            nodes.append(unescape(rendered[cursor : match.start()]))
         key, color, raw_label = match.group(1), match.group(2), unescape(match.group(3))
         is_pinned = key == pinned_key
-        nodes.append(html.Button(
-            raw_label,
-            id={'kind': 'region', 'key': key, 'idx': f'{cell}-{idx}'},
-            n_clicks=0,
-            style={
-                'display': 'inline', 'padding': '0 2px', 'margin': 0,
-                'border': 0, 'borderRadius': '3px',
-                'background': '#EFF6FF' if is_pinned else 'transparent',
-                'color': color, 'fontWeight': 700, 'fontSize': 'inherit',
-                'fontFamily': 'inherit', 'lineHeight': 'inherit', 'cursor': 'pointer',
-            },
-        ))
+        nodes.append(
+            html.Button(
+                raw_label,
+                id={"kind": "region", "key": key, "idx": f"{cell}-{idx}"},
+                n_clicks=0,
+                style={
+                    "display": "inline",
+                    "padding": "0 2px",
+                    "margin": 0,
+                    "border": 0,
+                    "borderRadius": "3px",
+                    "background": "#EFF6FF" if is_pinned else "transparent",
+                    "color": color,
+                    "fontWeight": 700,
+                    "fontSize": "inherit",
+                    "fontFamily": "inherit",
+                    "lineHeight": "inherit",
+                    "cursor": "pointer",
+                },
+            )
+        )
         cursor = match.end()
         idx += 1
     if cursor < len(rendered):
@@ -130,598 +162,656 @@ def inline_clue_nodes(spec, board, registry, names, cell, pinned_key):
 
 def render_board(public, registry, session):
     size = public.board.size
-    selected = session.get('selected')
+    selected = session.get("selected")
     active = selected if selected in public.clues else None
     parts = (
-        {part.key: part for part in clue_parts(public.clues[active], public.board, registry)}
-        if active else {}
+        {
+            part.key: part
+            for part in clue_parts(public.clues[active], public.board, registry)
+        }
+        if active
+        else {}
     )
-    pinned = session.get('focus') if session.get('focus') in parts else None
+    pinned = session.get("focus") if session.get("focus") in parts else None
     focus = reference_focus(parts, active, pinned, pinned)
     names = {person.cell: person.name for person in public.characters}
-    compact = size == 5
-
-    coord_pill = {
-        'background': 'rgba(255, 255, 255, 0.30)', 'color': '#0D2744',
-        'border': 'none', 'borderRadius': '9px',
-        'fontSize': '15px', 'fontWeight': 800,
-        'display': 'flex', 'alignItems': 'center', 'justifyContent': 'center',
-    }
-
-    items = [html.Div()]  # empty top-left corner
-    for col in range(size):
-        items.append(html.Div(chr(65 + col), style=coord_pill | {'height': '28px'}))
-
+    items = [html.Div()]
+    items.extend(html.Div(chr(65 + c), className="coordinate") for c in range(size))
     by_cell = {p.cell: p for p in public.characters}
-    for row in range(size):
-        items.append(html.Div(str(row + 1), style=coord_pill | {'width': '32px'}))
+    for row in range(1, size + 1):
+        items.append(html.Div(str(row), className="coordinate"))
         for col in range(size):
-            cell = f'{chr(65 + col)}{row + 1}'
+            cell = f"{chr(65 + col)}{row}"
             person = by_cell[cell]
             status = public.statuses.get(cell)
-            is_sel = cell == selected
+            chosen = cell == selected
             roles = focus.roles(cell)
-            is_anchor = cell in focus.anchors
-            dimmed = bool(active and cell not in focus.focused)
-
-            shadow_parts = ['0 4px 12px rgba(16, 74, 142, 0.18)']
-            if is_sel:
-                border_css = f'3.5px solid {SELECTED}'
-            elif roles:
-                border_css = f'4.5px solid {ROLE_COLORS[roles[0]]}'
+            css = {}
+            if roles and not chosen:
+                css["--rim"] = ROLE_COLORS[roles[0]]
+                css["--edge"] = "6px"
                 if len(roles) > 1:
-                    shadow_parts.insert(0, f'inset 0 0 0 3.5px {ROLE_COLORS[roles[1]]}')
-            elif is_anchor:
-                border_css = f'3.5px solid {ANCHOR}'
-            else:
-                rim = '#A7E8C3' if status == 'INNOCENT' else '#FECDD3' if status == 'CRIMINAL' else '#D5E6F7'
-                border_css = f'1.5px solid {rim}'
-
-            chip_bg = (
-                '#27A860' if status == 'INNOCENT'
-                else '#E44555' if status == 'CRIMINAL'
-                else SELECTED if is_sel
-                else '#83A3C4'
-            )
-            name_color = ROLE_COLORS.get(focus.named.get(cell), INK)
-
-            # Circular check/cross badge ONLY on solved cards (NO '?' on unopened!)
-            status_mark = html.Span(
-                '✓' if status == 'INNOCENT' else '✕',
-                title=STATUS[status],
-                style={
-                    'marginLeft': 'auto', 'width': '22px', 'height': '22px',
-                    'borderRadius': '50%', 'flexShrink': 0,
-                    'background': INNOCENT if status == 'INNOCENT' else CRIMINAL,
-                    'color': '#FFFFFF', 'fontSize': '12px', 'fontWeight': 800,
-                    'display': 'inline-flex', 'alignItems': 'center', 'justifyContent': 'center',
-                },
-            ) if status else None
-
+                    css["--rim-fill"] = (
+                        f"conic-gradient({ROLE_COLORS[roles[0]]} 50%, {ROLE_COLORS[roles[1]]} 0)"
+                    )
+            elif cell in focus.anchors and not chosen:
+                css["--rim"] = ANCHOR
+            if active and cell not in focus.focused:
+                css["opacity"] = 0.28
+            state = (status or "unknown").lower()
+            frame = {"CRIMINAL": 6, "INNOCENT": 4}.get(status, 0)
             if cell in public.clues:
-                clue_len = len(clue_text(public.clues[cell], public.board, registry, names))
-                clue_fs = (
-                    'clamp(13px, 0.98vw, 16px)' if compact
-                    else ('clamp(16px, 1.18vw, 20.5px)' if clue_len > 125 else 'clamp(17px, 1.32vw, 23px)')
-                )
-                right_body = html.Div(
-                    inline_clue_nodes(public.clues[cell], public.board, registry, names, cell, pinned)
+                nodes = (
+                    inline_clue_nodes(
+                        public.clues[cell], public.board, registry, names, cell, pinned
+                    )
                     if cell == active
-                    else clue_text(public.clues[cell], public.board, registry, names),
-                    style={
-                        'position': 'relative', 'zIndex': 2 if cell == active else 0,
-                        'flex': '1 1 auto', 'marginTop': '8px',
-                        'fontSize': clue_fs, 'fontWeight': 500,
-                        'lineHeight': '1.42', 'color': '#1E293B',
-                        'overflowY': 'auto',
-                    },
+                    else clue_text(public.clues[cell], public.board, registry, names)
+                )
+                body = html.Div(nodes, className="statement")
+            elif chosen:
+                body = html.Div(
+                    [
+                        html.Button(
+                            [glyph(mark), STATUS[key]],
+                            id={"kind": "card-verdict", "cell": cell, "verdict": key},
+                            n_clicks=0,
+                            className="key verdict " + key.lower(),
+                        )
+                        for key, mark in [("INNOCENT", "check"), ("CRIMINAL", "cross")]
+                    ],
+                    className="verdicts",
                 )
             else:
-                cat = CHARACTER_CATEGORIES.get(str(person.portrait), 'detective')
-                prop_img = None if is_sel else html.Img(
-                    src=f'/images/profession-{cat}.svg',
-                    alt='',
-                    **{'aria-hidden': 'true'},
+                index = person.portrait
+                body = html.Div(
+                    className="prop",
                     style={
-                        'width': 'clamp(42px, 3.6vw, 66px)' if compact else 'clamp(64px, 5.6vw, 108px)',
-                        'height': 'clamp(42px, 3.6vw, 66px)' if compact else 'clamp(64px, 5.6vw, 108px)',
-                        'marginLeft': 'auto', 'marginTop': 'auto',
-                        'marginRight': '10px', 'marginBottom': '10px',
-                        'opacity': 0.92,
-                        'pointerEvents': 'none',
+                        "backgroundPosition": f"{(index % 5) * 25}% {(index // 5) * 25}%"
                     },
                 )
-                verdict_bar = html.Div([
-                    html.Button(
-                        '✓ Vô tội',
-                        id={'kind': 'card-verdict', 'cell': cell, 'verdict': 'INNOCENT'},
-                        n_clicks=0,
-                        style={
-                            'flex': '1 1 50%', 'padding': '10px 6px' if compact else '15px 8px', 'border': 0,
-                            'borderRadius': 0,
-                            'background': '#45CF80', 'color': '#FFFFFF',
-                            'fontWeight': 700, 'fontSize': 'clamp(13px, 1.05vw, 18.5px)', 'cursor': 'pointer',
-                        },
+            panel = html.Div(
+                [
+                    sprite(person, frame, not status and not chosen),
+                    html.Div([html.I() for _ in range(4)], className="bars")
+                    if status == "CRIMINAL"
+                    else None,
+                    html.Span(cell, className="chip"),
+                ],
+                className="portrait",
+            )
+            info = html.Div(
+                [
+                    html.Strong(
+                        person.name,
+                        style={"color": ROLE_COLORS.get(focus.named.get(cell), INK)},
                     ),
-                    html.Button(
-                        '✕ Tội phạm',
-                        id={'kind': 'card-verdict', 'cell': cell, 'verdict': 'CRIMINAL'},
-                        n_clicks=0,
-                        style={
-                            'flex': '1 1 50%', 'padding': '10px 6px' if compact else '15px 8px', 'border': 0,
-                            'borderRadius': '0 0 9px 0',
-                            'background': '#F9616E', 'color': '#FFFFFF',
-                            'fontWeight': 700, 'fontSize': 'clamp(13px, 1.05vw, 18.5px)', 'cursor': 'pointer',
-                        },
-                    ),
-                ], style={
-                    'position': 'relative', 'zIndex': 3, 'display': 'flex',
-                    'marginTop': 'auto', 'marginLeft': '-18px',
-                }) if is_sel else None
-
-                right_body = html.Div(
-                    [el for el in (prop_img, verdict_bar) if el is not None],
-                    style={'flex': '1 1 auto', 'display': 'flex', 'flexDirection': 'column'},
+                    html.Small(person.profession),
+                    body,
+                ],
+                className="info",
+            )
+            mark = (
+                html.Span(
+                    glyph("check" if status == "INNOCENT" else "cross"),
+                    className="mark",
+                    title=STATUS[status],
                 )
-
-            card = html.Div([
-                html.Button(
-                    '',
-                    id={'kind': 'card', 'cell': cell},
-                    n_clicks=0,
-                    **{'aria-label': f'{person.name} ({cell}), {STATUS.get(status, "chưa xác định")}'},
-                    style={
-                        'position': 'absolute', 'inset': 0, 'width': '100%', 'height': '100%',
-                        'background': 'transparent', 'border': 0, 'padding': 0,
-                        'cursor': 'pointer', 'zIndex': 1, 'borderRadius': '12px',
-                    },
-                ),
-                # Left 38.5%: Responsive Full-Height Tinted Panel + Semicircular Dome Arch
-                html.Div([
-                    portrait_arch(person.portrait, status, is_sel, compact),
-                    html.Span(cell, style={
-                        'position': 'absolute', 'top': '10px', 'left': '10px',
-                        'background': chip_bg, 'color': '#FFFFFF',
-                        'borderRadius': '7px', 'padding': '3px 9px',
-                        'fontSize': 'clamp(12px, 0.95vw, 16px)', 'fontWeight': 700, 'lineHeight': '1.3',
-                    }),
-                ], style={
-                    'position': 'relative', 'width': '38.5%', 'flexShrink': 0,
-                    'display': 'flex', 'alignItems': 'stretch',
-                }),
-                # Right 61.5%: Scaled Bold Name, Profession, Divider & Adaptive Clue
-                html.Div([
-                    html.Div([
-                        html.Div([
-                            html.Div(person.name, style={
-                                'fontSize': 'clamp(16px, 1.28vw, 22px)' if compact else 'clamp(22px, 1.85vw, 33px)',
-                                'fontWeight': 800, 'color': name_color, 'lineHeight': '1.15',
-                            }),
-                            html.Div(person.profession, style={
-                                'fontSize': 'clamp(11.5px, 0.9vw, 15px)' if compact else 'clamp(14px, 1.12vw, 19.5px)',
-                                'color': MUTED, 'fontWeight': 500, 'marginTop': '2px',
-                            }),
-                        ], style={'minWidth': 0}),
-                        status_mark,
-                    ], style={
-                        'display': 'flex', 'alignItems': 'flex-start', 'gap': '6px',
-                        'paddingRight': '12px', 'paddingTop': '12px', 'paddingBottom': '8px',
-                        'borderBottom': '1.5px solid #EBF2FA',
-                    }),
-                    html.Div(right_body, style={
-                        'flex': '1 1 auto', 'display': 'flex', 'flexDirection': 'column',
-                        'paddingRight': '0' if (is_sel and cell not in public.clues) else '14px',
-                        'paddingBottom': '0' if (is_sel and cell not in public.clues) else '12px',
-                    }),
-                ], style={
-                    'flex': '1 1 auto', 'minWidth': 0, 'paddingLeft': '18px',
-                    'display': 'flex', 'flexDirection': 'column',
-                }),
-            ], style={
-                'position': 'relative', 'display': 'flex', 'gap': 0,
-                'padding': 0, 'borderRadius': '12px', 'background': '#FFFFFF',
-                'overflow': 'hidden',
-                'border': border_css, 'boxShadow': ', '.join(shadow_parts),
-                'opacity': 0.28 if dimmed else 1.0,
-                'transform': 'scale(1.03)' if is_sel else 'none',
-                'zIndex': 4 if is_sel else 1,
-                'transition': 'transform 0.14s ease, opacity 0.14s ease',
-                'boxSizing': 'border-box', 'minHeight': '122px' if compact else '186px',
-            })
-            items.append(card)
-
-    return html.Div(items, style={
-        'flex': '1 1 auto', 'display': 'grid',
-        'gridTemplateColumns': f'32px repeat({size}, minmax({"165px" if compact else "220px"}, 1fr))',
-        'gridTemplateRows': f'28px repeat({size}, 1fr)',
-        'gap': '10px 11px' if compact else '13px 14px', 'alignItems': 'stretch',
-    })
+                if status
+                else None
+            )
+            items.append(
+                html.Div(
+                    html.Article(
+                        [
+                            panel,
+                            info,
+                            mark,
+                            html.Button(
+                                id={"kind": "card", "cell": cell},
+                                n_clicks=0,
+                                className="card-hit",
+                                **{
+                                    "aria-label": f"{person.name} ({cell}), {STATUS.get(status, 'chưa xác định')}"
+                                },
+                            ),
+                        ],
+                        className="card " + state + (" chosen" if chosen else ""),
+                        style=css,
+                        **{"data-cell": cell},
+                    ),
+                    className="slot",
+                )
+            )
+    return html.Div(items, className="grid", style={"--n": size})
 
 
 def render_journal(engine):
     public = engine.public_state()
     names = {person.cell: person.name for person in public.characters}
     if not engine.trace:
-        return html.P(
-            'Chưa có bước suy luận. Chọn Bước tiếp hoặc Chạy tự động để xem từng phán quyết.',
-            style={'color': MUTED, 'fontSize': '13.5px', 'padding': '14px 8px', 'margin': 0},
+        return html.Div(
+            [
+                "Chưa có bước suy luận.",
+                html.P("Chạy tự động hoặc chọn Bước tiếp để xem từng phán quyết."),
+            ],
+            className="empty-entry",
         )
     entries = []
+    sources = {
+        spec["id"]: f"{names[cell]} ({cell})" for cell, spec in public.clues.items()
+    }
+    people = {p.cell: p for p in public.characters}
     for entry in engine.trace:
-        is_crim = entry['verdict'] == 'CRIMINAL'
-        v_color = CRIMINAL if is_crim else '#1E9E5A'
-        person = next(p for p in public.characters if p.cell == entry['cell'])
+        cell = entry["cell"]
+        person = people[cell]
+        verdict = entry["verdict"]
         queries = []
-        for query in entry['queries']:
+        for query in entry["queries"]:
             assumptions = []
-            for literal in query['assumptions']:
-                cell = public.board.cells[abs(literal) - 1]
-                assumptions.append(f'{names[cell]} ({cell}) là {STATUS["CRIMINAL" if literal > 0 else "INNOCENT"]}')
-            q_label = 'Giả sử ' + ', '.join(assumptions) if assumptions else 'Dữ kiện đã mở'
-            q_res = 'Nhất quán (SAT)' if query['result'] == 'SAT' else 'Mâu thuẫn (UNSAT)'
-            queries.append(html.Li(f'{q_label} → {q_res}', style={'marginBottom': '4px'}))
-        entries.append(html.Details([
-            html.Summary([
-                html.Span(f"{entry['step']:02d}", style={
-                    'color': SELECTED, 'fontWeight': 700, 'fontSize': '13px', 'width': '22px',
-                }),
-                html.Img(
-                    src=_portrait_url(person.portrait),
-                    alt='',
-                    style={
-                        'width': '38px', 'height': '38px', 'borderRadius': '50%', 'flexShrink': 0,
-                        'backgroundColor': CRIMINAL if is_crim else INNOCENT,
-                    },
-                ),
-                html.Div([
-                    html.Div([
-                        html.Strong(names[entry['cell']], style={'fontSize': '15px', 'color': INK}),
-                        html.Span(entry['cell'], style={
-                            'fontSize': '11px', 'background': '#83A3C4', 'color': '#FFFFFF',
-                            'padding': '1px 5px', 'borderRadius': '4px', 'marginLeft': '6px',
-                            'fontWeight': 700,
-                        }),
-                    ]),
-                    html.Div(STATUS[entry['verdict']], style={'color': v_color, 'fontSize': '12.5px', 'fontWeight': 700}),
-                ], style={'flex': '1 1 auto'}),
-                html.Span('Chi tiết ▾', style={'fontSize': '11.5px', 'color': SELECTED, 'fontWeight': 600}),
-            ], style={
-                'display': 'flex', 'alignItems': 'center', 'gap': '9px',
-                'cursor': 'pointer', 'listStyle': 'none',
-            }),
-            html.Div([
-                html.Div(
-                    clue_text(entry['new_clue_content'], public.board, engine.registry, names),
-                    style={'fontSize': '13px', 'lineHeight': '1.45', 'marginBottom': '6px', 'color': INK},
-                ),
-                html.Div(
-                    'Lời khai trước đó: ' + ', '.join(entry['active_clues']),
-                    style={'fontSize': '11.5px', 'color': MUTED, 'marginBottom': '6px'},
-                ),
-                html.Ul(queries, style={
-                    'paddingLeft': '18px', 'margin': '0 0 6px', 'fontSize': '12px', 'lineHeight': '1.45',
-                }),
-                html.Div(
-                    f"KB: {entry['primary_variables']} biến chính, "
-                    f"{entry['auxiliary_variables']} biến phụ, {entry['clauses']} mệnh đề.",
-                    style={'fontSize': '11.5px', 'color': MUTED},
-                ),
-            ], style={'marginTop': '10px', 'paddingTop': '8px', 'borderTop': '1px solid #E2E8F0'}),
-        ], style={
-            'background': '#FFFFFF', 'border': '1px solid #E2E8F0',
-            'borderRadius': '9px', 'padding': '10px 12px', 'marginBottom': '8px',
-        }))
+            for literal in query["assumptions"]:
+                target = public.board.cells[abs(literal) - 1]
+                assumptions.append(
+                    f"{names[target]} ({target}) là {STATUS['CRIMINAL' if literal > 0 else 'INNOCENT']}"
+                )
+            condition = (
+                "Giả sử " + ", ".join(assumptions) if assumptions else "Dữ kiện đã mở"
+            )
+            result = (
+                "Nhất quán (SAT)" if query["result"] == "SAT" else "Mâu thuẫn (UNSAT)"
+            )
+            queries.append(html.Div([condition, html.Br(), result]))
+        entries.append(
+            html.Article(
+                [
+                    html.Header(
+                        [
+                            html.B(f"{entry['step']:02d}"),
+                            html.Div(sprite(person), className="journal-portrait"),
+                            html.Div(
+                                [
+                                    html.Strong(person.name),
+                                    html.Small(cell),
+                                    html.Div(
+                                        [
+                                            glyph(
+                                                "cross"
+                                                if verdict == "CRIMINAL"
+                                                else "check"
+                                            ),
+                                            STATUS[verdict],
+                                        ],
+                                        className=verdict.lower(),
+                                    ),
+                                ]
+                            ),
+                        ]
+                    ),
+                    html.Details(
+                        [
+                            html.Summary(
+                                [
+                                    f"Đã mở lời khai của {person.name}",
+                                    html.B("Chi tiết"),
+                                ]
+                            ),
+                            html.H4(f"Lời khai của {person.name} ({cell})"),
+                            clue_text(
+                                entry["new_clue_content"],
+                                public.board,
+                                engine.registry,
+                                names,
+                            ),
+                            html.H4("Lời khai có trước bước này"),
+                            html.Div(
+                                [
+                                    html.Div(sources.get(i, i))
+                                    for i in entry["active_clues"]
+                                ]
+                            ),
+                            html.H4("Kiểm chứng"),
+                            *queries,
+                            html.P(
+                                f"KB trước bước này: {entry['primary_variables']} biến chính, {entry['auxiliary_variables']} biến phụ, {entry['clauses']} mệnh đề."
+                            ),
+                        ]
+                    ),
+                ],
+                className="entry",
+            )
+        )
     return entries
 
 
 def layout():
-    session = dict(new_session(), journal_open=False, menu_open=False)
-    return html.Main([
-        dcc.Store(id='session', storage_type='session', data=session),
-        dcc.Interval(id='clock', interval=2500, disabled=True),
-        dcc.Download(id='download'),
-
-        # Single Ultra-Minimal Top HUD Bar (NO bottom bar!)
-        html.Header([
-            html.Div([
-                html.Span('Griductive', style={
-                    'fontSize': '26px', 'fontWeight': 800, 'color': '#FFFFFF', 'letterSpacing': '-0.3px',
-                }),
-                html.Span('•', style={'color': 'rgba(255,255,255,0.75)', 'fontSize': '18px'}),
-                html.Div(
-                    dcc.Dropdown(
-                        id='puzzle', options=puzzle_options(), value=session['puzzle'],
-                        clearable=False, searchable=False,
-                        style={'minWidth': '250px', 'color': INK, 'fontSize': '14px', 'fontWeight': 600},
-                    ),
-                ),
-                html.Span(id='puzzle-title', style={'display': 'none'}),
-                html.Span(id='detail', style={'display': 'none'}),
-            ], style={'display': 'flex', 'alignItems': 'center', 'gap': '10px', 'flexWrap': 'wrap'}),
-
-            # Subtle inline toast notice in top bar only when needed
-            dcc.Loading(
-                html.Div(id='notice', role='status', style={
-                    'color': '#FFFFFF', 'fontSize': '13px', 'fontWeight': 600,
-                    'background': 'rgba(15, 23, 42, 0.28)', 'padding': '4px 12px',
-                    'borderRadius': '14px',
-                }),
-                delay_show=250,
+    session = new_session()
+    options = puzzle_options()
+    return html.Main(
+        [
+            dcc.Store(id="session", storage_type="session", data=session),
+            dcc.Interval(id="clock", interval=650, disabled=True),
+            dcc.Download(id="download"),
+            html.Div(
+                [
+                    dcc.Dropdown(id="puzzle", options=options, value=session["puzzle"]),
+                    dcc.Upload(id="upload"),
+                    html.Div(id="detail"),
+                    html.Div(id="progress"),
+                    *[html.Button(id=i) for i in ("innocent", "criminal", "clear")],
+                ],
+                hidden=True,
             ),
+            html.Div(
+                [
+                    html.Header(
+                        [
+                            html.B("Griductive", className="brand"),
+                            html.Span("•"),
+                            html.Details(
+                                [
+                                    html.Summary(
+                                        [html.Span(id="puzzle-title"), glyph("chevron")]
+                                    ),
+                                    html.Div(
+                                        [
+                                            html.Button(
+                                                o["label"],
+                                                **{"data-puzzle": o["value"]},
+                                            )
+                                            for o in options
+                                        ],
+                                        className="case-list menu",
+                                    ),
+                                ],
+                                id="cases",
+                            ),
+                            html.Div(className="spacer"),
+                            html.Button(
+                                [glyph("hint"), "Gợi ý"], id="hint", className="key hud"
+                            ),
+                            html.Div(
+                                [
+                                    html.Button(
+                                        html.Img(src="/pixel/gear.png", alt=""),
+                                        id="menu-toggle",
+                                        className="key hud",
+                                        title="Menu chính",
+                                        **{"aria-label": "Menu chính"},
+                                    ),
+                                    html.Div(
+                                        [
+                                            html.Button(
+                                                [glyph("play"), "Tự động giải"],
+                                                id="journal-toggle",
+                                            ),
+                                            html.Button(
+                                                [glyph("restart"), "Làm lại màn này"],
+                                                id="restart",
+                                            ),
+                                        ],
+                                        id="menu-popup",
+                                        className="menu",
+                                        style={"display": "none"},
+                                    ),
+                                ],
+                                className="tools",
+                            ),
+                        ]
+                    ),
+                    html.Fieldset(html.Div(id="board"), id="controls"),
+                ],
+                className="desk",
+            ),
+            html.Aside(
+                [
+                    html.Div(className="dock-grip", title="Kéo để đổi chiều rộng"),
+                    html.Header(
+                        [
+                            html.B("Tự động giải"),
+                            html.Button("×", id="journal-close", title="Đóng"),
+                        ]
+                    ),
+                    html.Small(id="journal-case"),
+                    html.Div(
+                        [
+                            html.Button(id="auto", className="key"),
+                            html.Button(
+                                [glyph("step"), "Bước tiếp"], id="step", className="key"
+                            ),
+                        ],
+                        className="solver-controls",
+                    ),
+                    html.Div(id="solver-status"),
+                    html.Div(id="journal"),
+                    html.Button("Đến bước mới nhất ↓", id="latest", hidden=True),
+                    html.Footer(
+                        [
+                            html.Details(
+                                [html.Summary("Thông số KB"), html.Div(id="kb-stats")]
+                            ),
+                            html.Button([glyph("export"), "Xuất JSON"], id="export"),
+                        ]
+                    ),
+                ],
+                id="journal-panel",
+                style={"display": "none"},
+            ),
+            html.Div(id="notice"),
+        ],
+        className="workspace",
+    )
 
-            html.Div([
-                html.Div(id='progress', style={
-                    'background': 'rgba(255, 255, 255, 0.24)', 'color': '#FFFFFF',
-                    'border': '1.5px solid rgba(255, 255, 255, 0.50)', 'borderRadius': '16px',
-                    'padding': '5px 14px', 'fontSize': '14px', 'fontWeight': 700,
-                }),
-                html.Button('💡 Gợi ý', id='hint', n_clicks=0, style={
-                    'background': '#FFFFFF', 'color': '#0F2942', 'border': 0,
-                    'borderRadius': '17px', 'padding': '6px 16px',
-                    'fontSize': '14px', 'fontWeight': 700, 'cursor': 'pointer',
-                    'boxShadow': '0 2px 8px rgba(15, 41, 66, 0.15)',
-                }),
-                html.Div([
-                    html.Button('☰', id='menu-toggle', n_clicks=0, title='Công cụ', style={
-                        'width': '36px', 'height': '36px', 'borderRadius': '10px',
-                        'background': 'rgba(255, 255, 255, 0.22)', 'color': '#FFFFFF',
-                        'border': '1.5px solid rgba(255, 255, 255, 0.45)',
-                        'fontSize': '18px', 'fontWeight': 700, 'cursor': 'pointer',
-                    }),
-                    html.Div([
-                        html.Button('Nhật ký & Tự động giải', id='journal-toggle', n_clicks=0, style={
-                            'width': '100%', 'textAlign': 'left', 'padding': '8px 12px',
-                            'border': 0, 'borderRadius': '6px', 'background': 'transparent',
-                            'color': INK, 'fontSize': '13.5px', 'fontWeight': 600, 'cursor': 'pointer',
-                        }),
-                        html.Button('Làm lại màn này', id='restart', n_clicks=0, style={
-                            'width': '100%', 'textAlign': 'left', 'padding': '8px 12px',
-                            'border': 0, 'borderRadius': '6px', 'background': 'transparent',
-                            'color': INK, 'fontSize': '13.5px', 'fontWeight': 600, 'cursor': 'pointer',
-                        }),
-                        dcc.Upload(
-                            id='upload',
-                            children=html.Div('Mở tệp JSON…', style={
-                                'padding': '8px 12px', 'borderRadius': '6px',
-                                'color': INK, 'fontSize': '13.5px', 'fontWeight': 600, 'cursor': 'pointer',
-                            }),
-                            accept='.json,application/json',
-                            multiple=False,
-                        ),
-                    ], id='menu-popup', style={
-                        'display': 'none', 'position': 'absolute', 'right': 0, 'top': '44px',
-                        'width': '210px', 'background': '#FFFFFF', 'border': '1px solid #CBD5E1',
-                        'borderRadius': '10px', 'padding': '6px', 'zIndex': 30,
-                        'boxShadow': '0 10px 25px rgba(15, 23, 42, 0.18)',
-                    }),
-                ], style={'position': 'relative'}),
-                # Hidden compatibility triggers
-                html.Button(id='innocent', n_clicks=0, style={'display': 'none'}),
-                html.Button(id='criminal', n_clicks=0, style={'display': 'none'}),
-                html.Button(id='clear', n_clicks=0, style={'display': 'none'}),
-            ], style={'display': 'flex', 'alignItems': 'center', 'gap': '10px'}),
-        ], style={
-            'display': 'flex', 'justifyContent': 'space-between', 'alignItems': 'center',
-            'gap': '12px', 'flexWrap': 'wrap', 'marginBottom': '8px',
-        }),
 
-        # Full-Screen Edge-to-Edge Board + Collapsible Right Solver Journal
-        html.Fieldset([
-            html.Div([
-                html.Section(
-                    html.Div(id='board', style={'height': '100%', 'display': 'flex', 'flexDirection': 'column'}),
-                    style={'flex': '1 1 640px', 'minWidth': 0, 'display': 'flex', 'flexDirection': 'column'},
-                ),
-                html.Aside([
-                    html.Div([
-                        html.H2('Nhật ký suy luận', style={'fontSize': '19px', 'fontWeight': 800, 'margin': 0}),
-                        html.Button('✕', id='journal-close', n_clicks=0, title='Đóng', style={
-                            'background': 'transparent', 'border': 0, 'color': MUTED,
-                            'fontSize': '16px', 'cursor': 'pointer', 'padding': '2px 6px',
-                        }),
-                    ], style={
-                        'padding': '12px 16px', 'borderBottom': '1px solid #E2E8F0',
-                        'display': 'flex', 'justifyContent': 'space-between', 'alignItems': 'center',
-                    }),
-                    html.Div([
-                        html.Div([
-                            html.Button('Chạy tự động', id='auto', n_clicks=0, style={
-                                'flex': '1 1 0', 'padding': '8px 10px', 'borderRadius': '8px',
-                                'border': 0, 'background': SELECTED, 'color': '#FFFFFF',
-                                'fontWeight': 700, 'fontSize': '13px', 'cursor': 'pointer',
-                            }),
-                            html.Button('Bước tiếp', id='step', n_clicks=0, style={
-                                'flex': '1 1 0', 'padding': '8px 10px', 'borderRadius': '8px',
-                                'border': '1.5px solid #CBD5E1', 'background': '#FFFFFF',
-                                'color': INK, 'fontWeight': 700, 'fontSize': '13px', 'cursor': 'pointer',
-                            }),
-                        ], style={'display': 'flex', 'gap': '8px', 'marginBottom': '10px'}),
-                        html.Div(id='journal', style={
-                            'background': '#F1F5F9', 'borderRadius': '9px', 'padding': '8px',
-                            'maxHeight': 'calc(100vh - 220px)', 'overflowY': 'auto',
-                        }),
-                        html.Div([
-                            html.Button('Xuất JSON', id='export', n_clicks=0, style={
-                                'marginLeft': 'auto', 'padding': '5px 10px', 'fontSize': '12px',
-                                'fontWeight': 600, 'borderRadius': '6px', 'border': '1px solid #CBD5E1',
-                                'background': '#FFFFFF', 'color': SELECTED, 'cursor': 'pointer',
-                            }),
-                        ], style={'display': 'flex', 'marginTop': '10px'}),
-                    ], style={'padding': '14px'}),
-                ], id='journal-panel', style={'display': 'none'}),
-            ], style={'flex': '1 1 auto', 'display': 'flex', 'gap': '14px', 'alignItems': 'stretch'}),
-        ], id='controls', style={
-            'flex': '1 1 auto', 'display': 'flex', 'flexDirection': 'column',
-            'border': 0, 'padding': 0, 'margin': 0,
-        }),
-    ], style={
-        'minHeight': '100vh', 'boxSizing': 'border-box', 'padding': '10px 32px 28px',
-        'display': 'flex', 'flexDirection': 'column',
-        'fontFamily': '"Segoe UI", Inter, Arial, sans-serif', 'color': INK,
-        'backgroundImage': 'url("/images/backdrop.svg")', 'backgroundSize': 'cover',
-        'backgroundPosition': 'center bottom',
-        'backgroundRepeat': 'no-repeat', 'backgroundColor': '#2A84E5',
-    })
+def notice_view(title, message, person=None):
+    return html.Dialog(
+        [
+            html.Div(
+                [
+                    glyph("hint" if title == "Gợi ý" else "warning"),
+                    html.B(title),
+                    html.Button("×", className="dismiss", title="Đóng"),
+                ],
+                className="notice-heading",
+            ),
+            html.Div(
+                [
+                    html.Div(sprite(person), className="notice-portrait")
+                    if person
+                    else None,
+                    html.Div(
+                        [html.Strong(person.name) if person else None, html.P(message)]
+                    ),
+                ],
+                className="notice-body",
+            ),
+            html.Button(
+                "Xem nhân vật" if person else "Đã hiểu", className="key dismiss"
+            ),
+        ],
+        className="notice-box",
+        key=f"{title}-{message}-{uuid4().hex}",
+    )
 
 
 def create_app():
     server = Flask(__name__, static_folder=None)
-    server.config['MAX_CONTENT_LENGTH'] = 2_000_000
+    server.config["MAX_CONTENT_LENGTH"] = 2_000_000
 
-    @server.get('/health')
+    @server.get("/pixel/<name>")
+    def pixel_asset(name):
+        if name not in {
+            "gear.png",
+            "glyphs.png",
+            "sprites.png",
+            "sprites-muted.png",
+            "harbor.png",
+        }:
+            abort(404)
+        return send_file(ROOT / "public/pixel" / name, conditional=True, max_age=86400)
+
+    @server.get("/board.css")
+    def board_styles():
+        return send_file(ROOT / "public/board.css", conditional=True)
+
+    @server.get("/board.js")
+    def board_events():
+        return send_file(ROOT / "public/board.js", conditional=True)
+
+    @server.get("/health")
     def health():
-        return {'status': 'ok'}
+        return {"status": "ok"}
 
-    @server.get('/images/<name>')
+    @server.get("/images/<name>")
     def image(name):
-        m = re.fullmatch(r'(portrait|silhouette)-([0-9]{1,2})\.svg', name)
+        m = re.fullmatch(r"(portrait|silhouette)-([0-9]{1,2})\.svg", name)
         if m and int(m.group(2)) < PORTRAIT_COUNT:
-            name = f'{m.group(1)}-{int(m.group(2))}.svg'
+            name = f"{m.group(1)}-{int(m.group(2))}.svg"
         elif name not in IMAGE_FILES:
             abort(404)
-        path = ROOT / 'public/images' / name
+        path = ROOT / "public/images" / name
         if not path.is_file():
             abort(404)
         return send_file(path, conditional=True, max_age=86400)
 
     dashboard = Dash(
-        __name__, server=server, title='Griductive',
-        assets_folder=str(ROOT / 'public'), include_assets_files=False,
-        meta_tags=[{'name': 'viewport', 'content': 'width=device-width, initial-scale=1'}],
-        suppress_callback_exceptions=True, update_title='Đang suy luận…',
+        __name__,
+        server=server,
+        title="Griductive",
+        assets_folder=str(ROOT / "public"),
+        include_assets_files=False,
+        external_stylesheets=["/board.css"],
+        external_scripts=["/board.js"],
+        meta_tags=[
+            {"name": "viewport", "content": "width=device-width, initial-scale=1"}
+        ],
+        suppress_callback_exceptions=True,
+        update_title="Đang suy luận…",
     )
     dashboard.layout = layout
 
     @dashboard.callback(
-        Output('session', 'data'), Output('board', 'children'), Output('detail', 'children'),
-        Output('journal', 'children'), Output('progress', 'children'), Output('notice', 'children'),
-        Output('auto', 'children'), Output('clock', 'disabled'),
-        Output('innocent', 'disabled'), Output('criminal', 'disabled'), Output('download', 'data'),
-        Output('puzzle-title', 'children'), Output('puzzle', 'options'), Output('puzzle', 'value'),
-        Output('journal-panel', 'style'), Output('menu-popup', 'style'),
-        Input('puzzle', 'value'), Input('upload', 'contents'), Input('restart', 'n_clicks'),
-        Input('hint', 'n_clicks'), Input('step', 'n_clicks'), Input('auto', 'n_clicks'),
-        Input('innocent', 'n_clicks'), Input('criminal', 'n_clicks'),
-        Input('clear', 'n_clicks'), Input('export', 'n_clicks'), Input('clock', 'n_intervals'),
-        Input('menu-toggle', 'n_clicks'), Input('journal-toggle', 'n_clicks'), Input('journal-close', 'n_clicks'),
-        Input({'kind': 'card', 'cell': ALL}, 'n_clicks'),
-        Input({'kind': 'card-verdict', 'cell': ALL, 'verdict': ALL}, 'n_clicks'),
-        Input({'kind': 'region', 'key': ALL, 'idx': ALL}, 'n_clicks'),
-        State('session', 'data'),
-        running=[(Output('controls', 'disabled'), True, False)],
+        Output("session", "data"),
+        Output("board", "children"),
+        Output("detail", "children"),
+        Output("journal", "children"),
+        Output("progress", "children"),
+        Output("notice", "children"),
+        Output("auto", "children"),
+        Output("clock", "disabled"),
+        Output("innocent", "disabled"),
+        Output("criminal", "disabled"),
+        Output("download", "data"),
+        Output("puzzle-title", "children"),
+        Output("puzzle", "options"),
+        Output("puzzle", "value"),
+        Output("journal-panel", "style"),
+        Output("menu-popup", "style"),
+        Output("journal-case", "children"),
+        Output("solver-status", "children"),
+        Output("kb-stats", "children"),
+        Output("step", "disabled"),
+        Output("auto", "disabled"),
+        Output("export", "disabled"),
+        Input("puzzle", "value"),
+        Input("upload", "contents"),
+        Input("restart", "n_clicks"),
+        Input("hint", "n_clicks"),
+        Input("step", "n_clicks"),
+        Input("auto", "n_clicks"),
+        Input("innocent", "n_clicks"),
+        Input("criminal", "n_clicks"),
+        Input("clear", "n_clicks"),
+        Input("export", "n_clicks"),
+        Input("clock", "n_intervals"),
+        Input("menu-toggle", "n_clicks"),
+        Input("journal-toggle", "n_clicks"),
+        Input("journal-close", "n_clicks"),
+        Input({"kind": "card", "cell": ALL}, "n_clicks"),
+        Input({"kind": "card-verdict", "cell": ALL, "verdict": ALL}, "n_clicks"),
+        Input({"kind": "region", "key": ALL, "idx": ALL}, "n_clicks"),
+        State("session", "data"),
+        running=[(Output("controls", "disabled"), True, False)],
     )
-    def update(puzzle, upload, restart, hint, step, auto, innocent, criminal,
-               clear, export, ticks, menu_toggle, journal_toggle, journal_close,
-               cards, card_verdicts, regions, session):
+    def update(
+        puzzle,
+        upload,
+        restart,
+        hint,
+        step,
+        auto,
+        innocent,
+        criminal,
+        clear,
+        export,
+        ticks,
+        menu_toggle,
+        journal_toggle,
+        journal_close,
+        cards,
+        card_verdicts,
+        regions,
+        session,
+    ):
         trigger = ctx.triggered_id
         session = session if isinstance(session, dict) else new_session()
-        journal_open = bool(session.get('journal_open', False))
-        menu_open = bool(session.get('menu_open', False))
+        journal_open = bool(session.get("journal_open", False))
+        menu_open = bool(session.get("menu_open", False))
         action, payload = None, None
 
         if isinstance(trigger, dict):
             menu_open = False
-            kind = trigger.get('kind')
-            if kind == 'card':
+            kind = trigger.get("kind")
+            if kind == "card":
                 if not any(cards):
                     raise PreventUpdate
-                action, payload = 'select', trigger['cell']
-            elif kind == 'card-verdict':
+                action, payload = "select", trigger["cell"]
+            elif kind == "card-verdict":
                 if not any(card_verdicts):
                     raise PreventUpdate
-                session = dict(session, selected=trigger['cell'])
-                action, payload = 'verdict', trigger['verdict']
+                session = dict(session, selected=trigger["cell"])
+                action, payload = "verdict", trigger["verdict"]
             else:
                 if not any(regions):
                     raise PreventUpdate
-                action, payload = 'focus', trigger['key']
-        elif trigger == 'menu-toggle':
+                action, payload = "focus", trigger["key"]
+        elif trigger == "menu-toggle":
             menu_open = not menu_open
-        elif trigger == 'journal-toggle':
+        elif trigger == "journal-toggle":
             journal_open = not journal_open
             menu_open = False
-        elif trigger == 'journal-close':
+        elif trigger == "journal-close":
             journal_open = False
             menu_open = False
-            action = 'pause_if_running'
-        elif trigger == 'puzzle':
-            if puzzle != session.get('puzzle'):
-                action, payload = 'load', puzzle
+            action = "pause_if_running"
+        elif trigger == "puzzle":
+            if puzzle != session.get("puzzle"):
+                action, payload = "load", puzzle
                 journal_open = False
                 menu_open = False
-        elif trigger == 'upload' and upload:
-            action, payload = 'upload', upload
+        elif trigger == "upload" and upload:
+            action, payload = "upload", upload
             journal_open = False
             menu_open = False
-        elif trigger == 'restart':
-            action = 'restart'
+        elif trigger == "restart":
+            action = "restart"
             journal_open = False
             menu_open = False
-        elif trigger in ('innocent', 'criminal'):
-            action, payload = 'verdict', trigger.upper()
+        elif trigger in ("innocent", "criminal"):
+            action, payload = "verdict", trigger.upper()
             menu_open = False
-        elif trigger == 'clock':
-            if not session.get('running'):
+        elif trigger == "clock":
+            if not session.get("running"):
                 raise PreventUpdate
-            action = 'tick'
+            action = "tick"
         elif trigger:
             action = trigger
             menu_open = False
-            if trigger in ('step', 'auto'):
+            if trigger in ("step", "auto"):
                 journal_open = True
 
         download = no_update
         try:
-            if action == 'pause_if_running':
+            if action == "pause_if_running":
                 engine = restore(session)
                 updated = dict(session, running=False)
             else:
                 updated, engine = transition(session, action, payload)
-                if action == 'export':
+                if action == "export":
                     download = dcc.send_string(
                         json.dumps(engine.trace, ensure_ascii=False, indent=2),
-                        'griductive-trace.json',
+                        "griductive-trace.json",
                     )
         except (PuzzleError, SolverTimeout, ValueError, TypeError) as exc:
+            action = "error"
             try:
                 engine = restore(session)
                 updated = dict(session, running=False, notice=str(exc))
             except (PuzzleError, SolverTimeout, ValueError, TypeError):
                 updated = new_session()
                 engine = restore(updated)
-                updated['notice'] = str(exc)
+                updated["notice"] = str(exc)
 
-        updated['journal_open'] = journal_open
-        updated['menu_open'] = menu_open
+        updated["journal_open"] = journal_open
+        updated["menu_open"] = menu_open
         public = engine.public_state()
-        selected = updated.get('selected')
+        selected = updated.get("selected")
         disabled = selected not in public.board.cells or selected in public.statuses
         options = puzzle_options()
-        if updated.get('custom'):
-            options.append({'label': public.title + ' (JSON)', 'value': 'custom'})
+        if updated.get("custom"):
+            options.append({"label": public.title + " (JSON)", "value": "custom"})
 
-        panel_style = {
-            'display': 'block' if journal_open else 'none',
-            'flex': '0 0 365px', 'width': '365px', 'maxWidth': '100%',
-            'background': '#FFFFFF', 'border': '1.5px solid #CBD5E1',
-            'borderRadius': '12px', 'boxSizing': 'border-box',
-            'boxShadow': '0 8px 24px rgba(15, 41, 66, 0.18)',
-        }
-        popup_style = {
-            'display': 'block' if menu_open else 'none',
-            'position': 'absolute', 'right': 0, 'top': '44px',
-            'width': '210px', 'background': '#FFFFFF', 'border': '1px solid #CBD5E1',
-            'borderRadius': '10px', 'padding': '6px', 'zIndex': 30,
-            'boxShadow': '0 10px 25px rgba(15, 23, 42, 0.18)',
-        }
+        panel_style = {"display": "flex" if journal_open else "none"}
+        popup_style = {"display": "block" if menu_open else "none"}
+        notice = None
+        if action == "error":
+            notice = notice_view("Suy luận", updated["notice"])
+        elif action == "hint":
+            person = (
+                next((p for p in public.characters if p.cell == selected), None)
+                if updated["notice"].startswith("Có thể chứng minh")
+                else None
+            )
+            notice = notice_view(
+                "Gợi ý",
+                "Các lời khai đã mở đủ để xác định trạng thái của nhân vật này."
+                if person
+                else updated["notice"],
+                person,
+            )
+        elif action in ("step", "tick", "verdict") and engine.solved:
+            notice = notice_view(
+                "Hoàn thành", "Đã chứng minh được trạng thái của tất cả nhân vật."
+            )
+        elif action == "verdict" and not updated["notice"].startswith("Đã chứng minh"):
+            notice = notice_view("Phán quyết", updated["notice"])
+        run_label = (
+            "Tạm dừng"
+            if updated.get("running")
+            else "Chạy tiếp"
+            if engine.trace
+            else "Chạy tự động"
+        )
+        last = engine.trace[-1] if engine.trace else {}
+        stats = (
+            f"{last['primary_variables']} biến chính, {last['auxiliary_variables']} biến phụ, {last['clauses']} mệnh đề."
+            if last
+            else ""
+        )
         return (
-            updated, render_board(public, engine.registry, updated),
-            '', render_journal(engine),
-            f'{len(public.statuses)}/{len(public.board.cells)}', updated['notice'],
-            'Tạm dừng' if updated.get('running') else 'Chạy tự động', not updated.get('running'),
-            disabled, disabled, download, public.title, options, updated['puzzle'],
-            panel_style, popup_style,
+            updated,
+            render_board(public, engine.registry, updated),
+            "",
+            render_journal(engine),
+            f"{len(public.statuses)}/{len(public.board.cells)}",
+            notice,
+            [glyph("pause" if updated.get("running") else "play"), run_label],
+            not updated.get("running"),
+            disabled,
+            disabled,
+            download,
+            public.title,
+            options,
+            updated["puzzle"],
+            panel_style,
+            popup_style,
+            public.title,
+            [
+                html.B(
+                    "Hoàn thành"
+                    if engine.solved
+                    else "Đang chạy"
+                    if updated.get("running")
+                    else "Đang xem từng bước"
+                    if engine.trace
+                    else "Sẵn sàng"
+                ),
+                html.Span(f"{len(engine.trace)} bước"),
+            ],
+            stats,
+            bool(updated.get("running") or engine.solved),
+            engine.solved,
+            not bool(engine.trace),
         )
 
-    server.extensions['griductive_dash'] = dashboard
+    server.extensions["griductive_dash"] = dashboard
     return server

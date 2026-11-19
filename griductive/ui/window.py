@@ -270,7 +270,7 @@ class Window(QMainWindow):
         self._case_btn.setIconSize(QSize(15, 15))
         self.hint_button.setIcon(icon('hint', '#0F2942'))
         self.hint_button.setIconSize(QSize(18, 18))
-        self.tools_button.setIcon(QIcon(str(ROOT / 'assets/ui/gear.png')))
+        self.tools_button.setIcon(QIcon(str(ROOT / 'public/pixel/gear.png')))
         self.tools_button.setIconSize(QSize(24, 24))
         self.solver.set_theme(self.theme)
         for card in self.cards.values():
