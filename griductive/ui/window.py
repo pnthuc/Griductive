@@ -389,7 +389,7 @@ class Window(QMainWindow):
         subject = None
         if person:
             card = self.cards[person]
-            subject = (card.character.name, person, card.expression_frames[0])
+            subject = (card.character.name, card.expression_frames[0])
         dialog = GameNotice(self, self.theme, title, message, tone=tone, subject=subject, action=action)
         self.notice = dialog
         dialog.finished.connect(lambda result, d=dialog, c=person: self.close_notice(d, c))
