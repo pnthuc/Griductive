@@ -40,7 +40,6 @@ class GameNotice(QDialog):
 QFrame#gameNotice {{background:transparent;border:0;}}
 QFrame#gameNotice QLabel {{background:transparent;border:0;color:{theme.text};}}
 QFrame#gameNotice QLabel#noticeSymbol {{background:#F1D7A1;border:2px solid #9C7952;}}
-QFrame#gameNotice QLabel#noticeFigure {{background:#EADCC4;border:2px solid #BCA688;}}
 QLabel#noticeTitle {{font-family:"Segoe UI";font-size:22px;font-weight:800;}}
 QLabel#noticeSubject {{font-family:"Segoe UI";font-size:23px;font-weight:700;}}
 QLabel#noticeMessage {{font-family:"Segoe UI";font-size:15px;color:#334155;}}
@@ -66,8 +65,8 @@ QPushButton#noticeAction:hover {{background:#1E40AF;}}
         body=QHBoxLayout();body.setSpacing(18)
         if subject:
             name,portrait=subject
-            figure=QLabel();figure.setObjectName('noticeFigure');figure.setFixedSize(104,116);figure.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            figure.setPixmap(portrait.scaled(104,116,Qt.AspectRatioMode.KeepAspectRatio,Qt.TransformationMode.FastTransformation))
+            figure=QLabel();figure.setObjectName('noticeFigure');figure.setFixedSize(150,150);figure.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            figure.setPixmap(portrait.scaled(figure.size(),Qt.AspectRatioMode.KeepAspectRatio,Qt.TransformationMode.FastTransformation))
             body.addWidget(figure,0,Qt.AlignmentFlag.AlignTop)
         words=QVBoxLayout();words.setSpacing(10)
         if subject:
