@@ -22,6 +22,11 @@ document.addEventListener("click", event => {
   if (event.target.matches("#board,.slot,.grid,.coordinate,.desk")) document.querySelector("#clear").click();
 });
 document.addEventListener("keydown", event => {
+  if (event.target.matches(".clue-reference") && (event.key === "Enter" || event.key === " ")) {
+    event.preventDefault();
+    if (!event.repeat) event.target.click();
+    return;
+  }
   if (event.key !== "Escape" || document.querySelector("dialog[open]")) return;
   const cases = document.querySelector("#cases");
   if (cases.open) cases.open = false;

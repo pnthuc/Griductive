@@ -133,23 +133,16 @@ def inline_clue_nodes(spec, board, registry, names, cell, pinned_key):
         key, color, raw_label = match.group(1), match.group(2), unescape(match.group(3))
         is_pinned = key == pinned_key
         nodes.append(
-            html.Button(
+            html.Span(
                 raw_label,
                 id={"kind": "region", "key": key, "idx": f"{cell}-{idx}"},
                 n_clicks=0,
+                className="clue-reference",
+                role="button",
+                tabIndex=0,
+                **{"aria-pressed": "true" if is_pinned else "false"},
                 style={
-                    "display": "inline",
-                    "padding": "0 2px",
-                    "margin": 0,
-                    "border": 0,
-                    "borderRadius": "3px",
-                    "background": "#EFF6FF" if is_pinned else "transparent",
                     "color": color,
-                    "fontWeight": 700,
-                    "fontSize": "inherit",
-                    "fontFamily": "inherit",
-                    "lineHeight": "inherit",
-                    "cursor": "pointer",
                 },
             )
         )
