@@ -11,20 +11,15 @@ from dash.exceptions import PreventUpdate
 from flask import Flask, abort, send_file
 
 from .engine import PuzzleError, SolverTimeout, clue_parts
-from .presentation.references import reference_focus
+from .presentation.references import ANCHOR, CLUE_LINK, OPERAND_A, OPERAND_B, SELECTED, inspect_references
 from .presentation.wording_vi import clue_html, clue_text
 from .web_game import ROOT, new_session, puzzle_options, restore, transition
 
 INK = "#0B192C"
 MUTED = "#52637A"
-SELECTED = "#1D4ED8"
-OPERAND_A = "#0284C7"
-OPERAND_B = "#7C3AED"
-ANCHOR = "#D97706"
 INNOCENT = "#2CC26B"
 CRIMINAL = "#EE505E"
 
-ROLE_COLORS = {"result": SELECTED, "a": OPERAND_A, "b": OPERAND_B, "anchor": ANCHOR}
 STATUS = {"CRIMINAL": "Tội phạm", "INNOCENT": "Vô tội"}
 IMAGE_FILES = {
     "backdrop.svg",
@@ -46,7 +41,6 @@ class _WebPaperTheme:
 
 
 WEB_PAPER_THEME = _WebPaperTheme()
-_LINK_RE = re.compile(r'<a href="([^"]+)" style="color:([^;]+);[^"]*">(.*?)</a>')
 
 
 CHARACTER_CATEGORIES = {
@@ -121,13 +115,12 @@ def glyph(name):
     )
 
 
-def inline_clue_nodes(spec, board, registry, names, cell, pinned_key):
+def inline_clue_nodes(rendered, cell, pinned_key):
     """Exact old-version pill-free bold colored links inside the active card."""
-    rendered = clue_html(spec, board, registry, WEB_PAPER_THEME, names)
     nodes = []
     cursor = 0
     idx = 0
-    for match in _LINK_RE.finditer(rendered):
+    for match in CLUE_LINK.finditer(rendered):
         if match.start() > cursor:
             nodes.append(unescape(rendered[cursor : match.start()]))
         key, color, raw_label = match.group(1), match.group(2), unescape(match.group(3))
@@ -166,8 +159,9 @@ def render_board(public, registry, session):
         else {}
     )
     pinned = session.get("focus") if session.get("focus") in parts else None
-    focus = reference_focus(parts, active, pinned, pinned)
     names = {person.cell: person.name for person in public.characters}
+    markup = clue_html(public.clues[active], public.board, registry, WEB_PAPER_THEME, names) if active else ""
+    markup, focus = inspect_references(markup, parts, WEB_PAPER_THEME, active, pinned)
     items = [html.Div()]
     items.extend(html.Div(chr(65 + c), className="coordinate") for c in range(size))
     by_cell = {p.cell: p for p in public.characters}
@@ -178,15 +172,17 @@ def render_board(public, registry, session):
             person = by_cell[cell]
             status = public.statuses.get(cell)
             chosen = cell == selected
-            roles = focus.roles(cell)
+            colors = focus.colors_for(cell)
             css = {}
-            if roles and not chosen:
-                css["--rim"] = ROLE_COLORS[roles[0]]
-                css["--edge"] = "6px"
-                if len(roles) > 1:
-                    css["--rim-fill"] = (
-                        f"conic-gradient({ROLE_COLORS[roles[0]]} 50%, {ROLE_COLORS[roles[1]]} 0)"
+            if colors and not chosen:
+                css["--rim"] = colors[0]
+                css["--edge"] = "7px"
+                if len(colors) > 1:
+                    stops = ", ".join(
+                        f"{color} {i / len(colors):.4%} {(i + 1) / len(colors):.4%}"
+                        for i, color in enumerate(colors)
                     )
+                    css["--rim-fill"] = f"conic-gradient({stops})"
             elif cell in focus.anchors and not chosen:
                 css["--rim"] = ANCHOR
             if active and cell not in focus.focused:
@@ -195,9 +191,7 @@ def render_board(public, registry, session):
             frame = {"CRIMINAL": 6, "INNOCENT": 4}.get(status, 0)
             if cell in public.clues:
                 nodes = (
-                    inline_clue_nodes(
-                        public.clues[cell], public.board, registry, names, cell, pinned
-                    )
+                    inline_clue_nodes(markup, cell, pinned)
                     if cell == active
                     else clue_text(public.clues[cell], public.board, registry, names)
                 )
@@ -239,7 +233,7 @@ def render_board(public, registry, session):
                 [
                     html.Strong(
                         person.name,
-                        style={"color": ROLE_COLORS.get(focus.named.get(cell), INK)},
+                        style={"color": focus.named.get(cell, INK)},
                     ),
                     html.Small(person.profession),
                     body,

@@ -1,5 +1,6 @@
 """Alto's Odyssey x Reigns luminous sky & crisp white flat-vector palette."""
 from dataclasses import dataclass
+from ..presentation.references import ANCHOR, OPERAND_A, OPERAND_B, SELECTED
 
 
 @dataclass(frozen=True)
@@ -33,10 +34,10 @@ THEMES = {
         '#64748B',  # muted: cool slate subtitle
         '#D5E6F7',  # border: airy sky-white card rim
         '#0F2942',  # gold: deep navy ink accent
-        '#1D4ED8',  # selected: royal cobalt
-        '#D97706',  # anchor: warm amber
-        '#0284C7',  # operand_a: ocean blue
-        '#7C3AED',  # operand_b: vivid purple
+        SELECTED,
+        ANCHOR,
+        OPERAND_A,
+        OPERAND_B,
         '#34C774',  # innocent: meadow green
         '#F85A6A',  # criminal: poppy coral
         '#EFF6FF',  # badge: soft sky tint

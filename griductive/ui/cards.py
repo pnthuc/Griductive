@@ -71,8 +71,8 @@ class PortraitCard(QWidget):
         self.source = False
         self.dimmed = False
         self.preview_role = None
-        self.region_roles = ()
-        self.name_role = None
+        self.region_colors = ()
+        self.name_color = None
         self.motion = True
         self.pixel_style = True
         self.feedback = CardFeedback()
@@ -347,9 +347,7 @@ class PortraitCard(QWidget):
         tx = content.x()
         tw = max(24., content.width() - badge_reserved)
         name_size = max(14, round(23.5 * s))
-        name_color = {
-            'result': t.selected, 'a': t.operand_a, 'b': t.operand_b, 'anchor': t.anchor,
-        }.get(self.name_role, '#0B192C')
+        name_color = self.name_color or '#0B192C'
         f_name = QFont('Segoe UI')
         f_name.setPixelSize(name_size)
         f_name.setWeight(QFont.Weight.ExtraBold)
@@ -375,13 +373,7 @@ class PortraitCard(QWidget):
         p.setPen(QPen(QColor('#EBF2FA'), max(1.0, 1.15 * min(1.3, s))))
         p.drawLine(QPointF(tx, div_y), QPointF(content.right(), div_y))
 
-        # Perimeter border: exact original region highlight rules
-        colors = []
-        if not self.is_selected:
-            colors = [
-                {'result': t.selected, 'a': t.operand_a, 'b': t.operand_b}[role]
-                for role in self.region_roles
-            ]
+        colors = self.region_colors
         p.setClipping(False)
         p.setBrush(Qt.BrushStyle.NoBrush)
         status_rim = {'INNOCENT': '#478453', 'CRIMINAL': '#BB5751'}.get(self.status)

@@ -15,7 +15,7 @@ from ..engine.models import load_puzzle
 from ..engine.game import GameEngine
 from ..engine.sat import SolverTimeout
 from ..presentation.wording_vi import clue_html, clue_text
-from ..presentation.references import reference_focus
+from ..presentation.references import inspect_references
 from .themes import THEMES, stylesheet
 from .icons import icon
 from .portraits import load_expression_frames, load_silhouette_frames
@@ -618,19 +618,21 @@ class Window(QMainWindow):
         return super().eventFilter(watched, event)
 
     def refresh_cards(self):
-        focus = reference_focus(self.parts, self.active_clue, self.pinned_key, self.preview_key)
+        markup = ""
+        if self.active_clue:
+            markup = clue_html(self.state.clues[self.active_clue], self.state.board,
+                               self.clues, self.paper_theme, self.names)
+        markup, focus = inspect_references(markup, self.parts, self.paper_theme,
+                                           self.active_clue, self.pinned_key, self.preview_key)
         for cell, card in self.cards.items():
             card.is_selected = cell == self.selected_cell
             card.source = cell == self.active_clue
-            card.active_html = (
-                clue_html(self.state.clues[cell], self.state.board, self.clues, self.paper_theme, self.names)
-                if card.source else None
-            )
+            card.active_html = markup if card.source else None
             card.counted = cell in focus.counted
             card.anchor = cell in focus.anchors
             card.preview_role = focus.preview_role(cell)
-            card.region_roles = focus.roles(cell)
-            card.name_role = focus.named.get(cell)
+            card.region_colors = focus.colors_for(cell)
+            card.name_color = focus.named.get(cell)
             card.dimmed = bool(self.active_clue and cell not in focus.focused)
             card.feedback.emphasize(card.is_selected, card.dimmed, self.motion_enabled)
             card.place_actions()

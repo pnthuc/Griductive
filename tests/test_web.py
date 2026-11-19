@@ -157,3 +157,33 @@ class WebHTTPTests(unittest.TestCase):
         j_open = self.callback(toggled['session']['data'], 'journal-toggle')
         self.assertTrue(j_open['session']['data']['journal_open'])
 
+    def test_conditional_regions_have_distinct_link_and_border_colors(self):
+        state = new_session()
+        for _ in range(4):
+            state, _ = transition(state, 'step')
+        state, _ = transition(state, 'select', 'B2')
+
+        def board_cards(session):
+            grid = self.callback(session, '')['board']['children']
+            return {
+                slot['props']['children']['props']['data-cell']: slot['props']['children']['props']
+                for slot in grid['props']['children'] if slot['props'].get('className') == 'slot'
+            }
+
+        cards = board_cards(state)
+        statement = cards['B2']['children'][1]['props']['children'][2]
+        first, second = [
+            child['props']['style']['color']
+            for child in statement['props']['children'] if isinstance(child, dict)
+        ]
+        self.assertNotEqual(first, second)
+        self.assertEqual(cards['A2']['style']['--rim'], first)
+        self.assertEqual(cards['C3']['style']['--rim'], second)
+        overlap = cards['A3']['style']['--rim-fill']
+        self.assertIn(first, overlap)
+        self.assertIn(second, overlap)
+
+        pinned = board_cards(dict(state, focus='then.region'))
+        self.assertEqual(pinned['A3']['style']['--rim'], second)
+        self.assertNotIn('--rim-fill', pinned['A3']['style'])
+

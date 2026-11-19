@@ -102,9 +102,10 @@ class InteractionTest(unittest.TestCase):
         cards=self.window.cards
         # DIFFERENCE(neighbors(B2), row(1)): top row belongs to A AND B,
         # but is excluded from the final counted set.
-        self.assertEqual({c for c,w in cards.items() if 'a' in w.region_roles},set(self.window.state.board.cells)-{'B2'})
-        self.assertEqual({c for c,w in cards.items() if 'b' in w.region_roles},{'A1','B1','C1'})
-        self.assertEqual(cards['A1'].region_roles,('a','b'))
+        a, b = self.window.theme.operand_a, self.window.theme.operand_b
+        self.assertEqual({c for c,w in cards.items() if a in w.region_colors},set(self.window.state.board.cells)-{'B2'})
+        self.assertEqual({c for c,w in cards.items() if b in w.region_colors},{'A1','B1','C1'})
+        self.assertEqual(cards['A1'].region_colors,(a,b))
         self.assertFalse(cards['A1'].counted)
         self.assertFalse(cards['B2'].counted)
         self.assertTrue(cards['B2'].anchor)
@@ -113,9 +114,10 @@ class InteractionTest(unittest.TestCase):
 
     def test_union_shows_both_regions_and_counts_overlap_once(self):
         self.window.select_person('C3');self.app.processEvents();cards=self.window.cards
-        self.assertEqual({c for c,w in cards.items() if 'a' in w.region_roles},{'A1','B1','C1'})
-        self.assertEqual({c for c,w in cards.items() if 'b' in w.region_roles},{'A1','A2','A3'})
-        self.assertEqual(cards['A1'].region_roles,('a','b'))
+        a, b = self.window.theme.operand_a, self.window.theme.operand_b
+        self.assertEqual({c for c,w in cards.items() if a in w.region_colors},{'A1','B1','C1'})
+        self.assertEqual({c for c,w in cards.items() if b in w.region_colors},{'A1','A2','A3'})
+        self.assertEqual(cards['A1'].region_colors,(a,b))
         self.assertEqual(len([w for w in cards.values() if w.counted]),5)
 
     def test_escape_clears_highlight_and_revealed_card_reopens_clue(self):
@@ -156,6 +158,42 @@ class InteractionTest(unittest.TestCase):
         self.assertEqual(self.window.cards['A1'].grab().toImage(),overlap)
         self.assertFalse(any(c.dimmed for c in self.window.cards.values()))
         self.assertIn('href=',self.window.cards['B2'].clue_text.text())
+
+    def test_reference_highlights_match_web_for_conditional_clues(self):
+        from griductive.web import CLUE_LINK, render_board
+
+        self.assertTrue(self.window.load(ROOT/'puzzles/case-3x3-01.json'))
+        for _ in range(4):
+            self.window.solve_step()
+            self.wait_engine()
+
+        for source, pinned in [('C1', None), ('B2', None), ('B2', 'then.region')]:
+            with self.subTest(source=source, pinned=pinned):
+                self.window.select_person(source)
+                if pinned:
+                    self.window.pin_part(pinned)
+                grid = render_board(self.window.state, self.window.clues,
+                                    {'selected': source, 'focus': pinned})
+                expected_links = [color for _, color, _ in
+                                  CLUE_LINK.findall(self.window.cards[source].active_html)]
+                self.assertEqual(len(expected_links), len(set(expected_links)))
+                for slot in grid.children:
+                    if getattr(slot, 'className', None) != 'slot':
+                        continue
+                    web_card = slot.children
+                    card = self.window.cards[getattr(web_card, 'data-cell')]
+                    style = web_card.style
+                    self.assertEqual(card.dimmed, style.get('opacity') == 0.28)
+                    if card.source:
+                        statement = web_card.children[1].children[2]
+                        self.assertEqual(expected_links, [link.style['color'] for link in
+                                         statement.children if not isinstance(link, str)])
+                    elif card.region_colors:
+                        self.assertEqual(style['--rim'], card.region_colors[0])
+                        for color in card.region_colors[1:]:
+                            self.assertIn(color, style['--rim-fill'])
+                    else:
+                        self.assertNotIn('--edge', style)
 
     def test_clues_scroll_without_resizing_any_card(self):
         self.window.resize(1050,760);QTest.qWait(80)
@@ -247,11 +285,12 @@ class InteractionTest(unittest.TestCase):
         self.assertEqual(self.window.pinned_key,'region.right')
         self.assertEqual({c for c,w in self.window.cards.items() if not w.dimmed},{'A1','A2','A3','C3'})
         self.assertAlmostEqual(self.window.cards['B1'].fade_effect.opacity(),.28)
-        self.assertEqual(self.window.cards['A1'].region_roles,('b',))
+        a, b = self.window.theme.operand_a, self.window.theme.operand_b
+        self.assertEqual(self.window.cards['A1'].region_colors,(b,))
         self.assertIs(self.window.state,before)
         self.window.select_person('C3')
         self.assertIsNone(self.window.pinned_key)
-        self.assertEqual(self.window.cards['A1'].region_roles,('a','b'))
+        self.assertEqual(self.window.cards['A1'].region_colors,(a,b))
 
     def test_one_click_on_clue_does_not_also_trigger_its_parent_card(self):
         self.window.select_person('C3')
