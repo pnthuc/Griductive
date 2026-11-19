@@ -79,14 +79,19 @@ def icon(name,color):
     elif name=='gear':
         p.save()
         p.resetTransform()
-        gear = ('.....###.....', '.##..###..##.', '.###########.',
-                '..#########..', '..###...###..', '####.....####',
-                '####.....####', '####.....####', '..###...###..',
-                '..#########..', '.###########.', '.##..###..##.', '.....###.....')
+        gear = (
+            '......OOO......', '..OO..OHH..OO..', '.OHOOOOHHOOOHO.',
+            '..OHHHHHHHHHO..', '...OHHHHHHHOO..', '..OOHHOOOHHOO..',
+            'OOHHHOO.OOHHOOO', 'OHHHHO...OHHSSO',
+            'OOSSHOO.OOHSSOO', '..OSSHOOOHSSO..', '..OOSSSSSSSSO..',
+            '..OSSSSSSSSSO..', '.OSOOOOSSOOOSO.', '..OO..OSS..OO..',
+            '......OOO......',
+        )
+        colors = {'O': color, 'H': '#8DB4B1', 'S': '#557F84'}
         for y, row in enumerate(gear):
             for x, tile in enumerate(row):
-                if tile == '#':
-                    p.fillRect(x+2, y+2, 1, 1, QColor(color))
+                if tile in colors:
+                    p.fillRect(x+1, y+1, 1, 1, QColor(colors[tile]))
         p.restore()
     elif name=='menu':
         pen.setWidthF(2.5);p.setPen(pen)

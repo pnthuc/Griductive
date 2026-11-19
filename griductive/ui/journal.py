@@ -1,13 +1,23 @@
 """The solver's journal view. It displays trace records without changing them."""
 from PySide6.QtCore import Qt, Signal, QSize, QTimer
-from PySide6.QtGui import QColor, QPalette
+from PySide6.QtGui import QColor, QPalette, QPainter
 from PySide6.QtWidgets import (
     QDockWidget, QFrame, QHBoxLayout, QLabel, QPushButton, QScrollArea,
     QSizePolicy, QToolButton, QVBoxLayout, QWidget,
 )
 from .icons import icon
 from ..presentation.wording_vi import STATUS_TEXT
-from .widgets import label
+from .widgets import label, PixelHintButton
+
+
+class LedgerPaper(QWidget):
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.fillRect(event.rect(), QColor('#F7EDD8'))
+        painter.setPen(QColor('#E9DCC4'))
+        for y in range(20, self.height(), 24):
+            painter.drawLine(0, y, self.width(), y)
+        painter.fillRect(6, 0, 2, self.height(), QColor('#D7B69D'))
 
 
 class JournalEntry(QFrame):
@@ -136,7 +146,7 @@ class SolverJournal(QDockWidget):
         title_row.addWidget(label('Tự động giải', 'journalTitle'), 1)
         self.close_button = QToolButton()
         self.close_button.setObjectName('journalClose')
-        self.close_button.setAccessibleName('Đóng nhật ký')
+        self.close_button.setAccessibleName('Đóng bảng Tự động giải')
         self.close_button.setToolTip('Đóng và tạm dừng')
         self.close_button.setFixedSize(30, 30)
         self.close_button.clicked.connect(self.close)
@@ -147,21 +157,23 @@ class SolverJournal(QDockWidget):
         panel.setObjectName('journalPanel')
         self.setWidget(panel)
         layout = QVBoxLayout(panel)
-        layout.setContentsMargins(17, 0, 17, 14)
+        layout.setContentsMargins(13, 10, 13, 12)
         layout.setSpacing(12)
         self.case_title = label('', 'journalMuted')
         layout.addWidget(self.case_title)
 
         controls = QHBoxLayout()
         controls.setSpacing(8)
-        self.play_button = QPushButton('Chạy tự động')
+        self.play_button = PixelHintButton('Chạy tự động')
         self.play_button.setObjectName('journalPrimary')
         self.play_button.setIconSize(QSize(18, 18))
         self.play_button.clicked.connect(self.request_play)
-        self.step_button = QPushButton('Bước tiếp')
+        self.step_button = PixelHintButton('Bước tiếp')
         self.step_button.setObjectName('journalSecondary')
         self.step_button.setIconSize(QSize(18, 18))
         self.step_button.clicked.connect(self.step_requested.emit)
+        self.play_button.setFixedHeight(39)
+        self.step_button.setFixedHeight(39)
         controls.addWidget(self.play_button, 1)
         controls.addWidget(self.step_button, 1)
         layout.addLayout(controls)
@@ -179,7 +191,7 @@ class SolverJournal(QDockWidget):
         self.scroll.setWidgetResizable(True)
         self.scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.scroll.setFrameShape(QFrame.Shape.NoFrame)
-        self.content = QWidget()
+        self.content = LedgerPaper()
         self.content.setObjectName('journalPaper')
         self.rows = QVBoxLayout(self.content)
         self.rows.setContentsMargins(9, 10, 9, 10)
@@ -220,20 +232,20 @@ class SolverJournal(QDockWidget):
     def set_theme(self, theme):
         self.theme = theme
         self.setStyleSheet(f'''
-QFrame#journalHeading {{background:#FFFFFF;border:1.5px solid #CBD5E1;border-bottom:1px solid #E2E8F0;border-top-left-radius:12px;border-top-right-radius:12px;}}
-QFrame#journalPanel {{background:#FFFFFF;border:1.5px solid #CBD5E1;border-top:0;border-bottom-left-radius:12px;border-bottom-right-radius:12px;}}
+QFrame#journalHeading {{background:#49595C;border:3px solid #433B38;border-bottom:4px solid #2F393B;}}
+QFrame#journalPanel {{background:#EFE0BF;border:3px solid #514344;border-top:0;border-bottom-width:5px;}}
 QDockWidget#solverDock QLabel {{border:0;background:transparent;color:{theme.text};font-family:"Segoe UI";font-size:14px;}}
-QDockWidget#solverDock QLabel#journalTitle {{font-family:"Segoe UI";font-size:20px;font-weight:800;color:{theme.text};}}
+QDockWidget#solverDock QLabel#journalTitle {{font-family:"Segoe UI";font-size:20px;font-weight:800;color:#FFF0CA;}}
 QDockWidget#solverDock QLabel#journalName {{font-family:"Segoe UI";font-size:18px;font-weight:700;}}
 QDockWidget#solverDock QLabel#journalNumber {{font-size:14px;font-weight:700;color:{theme.primary};}}
-QDockWidget#solverDock QLabel#journalCell {{font-size:11px;font-weight:700;color:#FFFFFF;background:#83A3C4;border-radius:2px;padding:1px 6px;}}
+QDockWidget#solverDock QLabel#journalCell {{font-size:11px;font-weight:700;color:#FFFFFF;background:#6E7770;border-radius:2px;padding:1px 6px;}}
 QDockWidget#solverDock QLabel#journalVerdict {{font-size:13px;font-weight:700;}}
 QDockWidget#solverDock QLabel#journalMuted {{color:{theme.muted};font-size:12px;}}
 QDockWidget#solverDock QLabel#journalStatus {{font-size:13px;font-weight:600;}}
 QDockWidget#solverDock QLabel#journalCaption {{font-size:12px;font-weight:700;color:{theme.primary};}}
-QDockWidget#solverDock QLabel#journalEmpty {{padding:22px 14px;color:{theme.muted};font-size:14px;}}
-QScrollArea#journalScroll, QWidget#journalPaper {{background:#F1F5F9;border:0;border-radius:2px;}}
-QFrame#journalEntry {{background:#FAF8F2;border:2px solid #C7BBA6;border-radius:2px;}}
+QDockWidget#solverDock QLabel#journalEmpty {{padding:10px 12px;background:#FFF8E8;border:2px solid #CBB694;color:#655747;font-size:14px;}}
+QScrollArea#journalScroll {{background:#F7EDD8;border:2px solid #A28D70;}}
+QFrame#journalEntry {{background:#FFF8E8;border:2px solid #A38B6B;border-bottom:4px solid #8F795F;}}
 QFrame#journalDetails {{background:transparent;border:0;border-top:1px solid #E2E8F0;}}
 QPushButton#journalPrimary, QPushButton#journalSecondary {{font-size:13px;font-weight:700;border-radius:2px;padding:8px 10px;}}
 QPushButton#journalPrimary {{background:{theme.primary};color:#FFFFFF;border:2px solid #243D67;border-bottom-width:4px;}}
@@ -242,8 +254,8 @@ QPushButton#journalSecondary {{background:#FFFFFF;color:{theme.text};border:1.5p
 QPushButton#journalSecondary:hover {{background:#F1F5F9;}}
 QPushButton#journalPrimary:disabled, QPushButton#journalSecondary:disabled {{background:#E2E8F0;color:#94A3B8;border:1px solid #CBD5E1;}}
 QToolButton#journalClose {{background:transparent;border:1px solid transparent;border-radius:2px;padding:3px;}}
-QToolButton#journalClose:hover {{background:#F1F5F9;border-color:#CBD5E1;}}
-QToolButton#journalDetailsButton, QPushButton#journalQuiet, QToolButton#journalQuiet {{background:transparent;border:1px solid transparent;border-radius:2px;color:{theme.primary};font-size:12px;font-weight:600;padding:4px 6px;}}
+QToolButton#journalClose:hover {{background:#607477;border-color:#B9AB90;}}
+QToolButton#journalDetailsButton, QPushButton#journalQuiet, QToolButton#journalQuiet {{background:#F7EBCE;border:2px solid #A28A6C;border-bottom-width:3px;color:#514539;font-size:12px;font-weight:600;padding:4px 6px;}}
 QToolButton#journalDetailsButton:hover, QPushButton#journalQuiet:hover, QToolButton#journalQuiet:hover {{background:#EFF6FF;border-color:#BFDBFE;}}
 QToolButton#journalClose:focus, QToolButton#journalDetailsButton:focus, QToolButton#journalQuiet:focus, QToolButton#journalQuiet:focus {{border-color:{theme.selected};}}
 QPushButton#journalPrimary:focus, QPushButton#journalSecondary:focus {{border-color:{theme.selected};}}
@@ -254,11 +266,11 @@ QScrollArea#journalScroll QScrollBar::add-page:vertical, QScrollArea#journalScro
 ''')
         for widget in (self.scroll.viewport(), self.content):
             palette = widget.palette()
-            palette.setColor(QPalette.ColorRole.Window, QColor('#F1F5F9'))
-            palette.setColor(QPalette.ColorRole.Base, QColor('#F1F5F9'))
+            palette.setColor(QPalette.ColorRole.Window, QColor('#F7EDD8'))
+            palette.setColor(QPalette.ColorRole.Base, QColor('#F7EDD8'))
             widget.setPalette(palette)
             widget.setAutoFillBackground(True)
-        self.close_button.setIcon(icon('cross', theme.muted))
+        self.close_button.setIcon(icon('cross', '#FFF0CA'))
         self.step_button.setIcon(icon('step', theme.text))
         self.export_button.setIcon(icon('export', theme.primary))
         self.set_running(self.running)
@@ -289,7 +301,7 @@ QScrollArea#journalScroll QScrollBar::add-page:vertical, QScrollArea#journalScro
     def set_running(self, running):
         self.running = running
         self.play_button.setText('Tạm dừng' if running else 'Chạy tiếp' if self.entries else 'Chạy tự động')
-        self.play_button.setIcon(icon('pause' if running else 'play', '#FFFFFF'))
+        self.play_button.setIcon(icon('pause' if running else 'play', '#463D39'))
         self.play_button.setEnabled(not self.complete)
         self.step_button.setEnabled(not running and not self.complete)
         message = 'Đang tự động giải…' if running else 'Đã tạm dừng' if self.entries else 'Sẵn sàng'
