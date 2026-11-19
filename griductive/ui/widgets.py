@@ -93,6 +93,18 @@ class HudButton(QToolButton):
                          Qt.AlignmentFlag.AlignVCenter, text)
 
 
+class ProgressLabel(QLabel):
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        face = paint_key_frame(painter, self.rect())
+        font = QFont('Segoe UI')
+        font.setBold(True)
+        font.setPixelSize(15)
+        painter.setFont(font)
+        painter.setPen(QColor('#0F2942'))
+        painter.drawText(face, Qt.AlignmentFlag.AlignCenter, self.text())
+
+
 class PixelLabel(QLabel):
     """Stepped board label."""
 

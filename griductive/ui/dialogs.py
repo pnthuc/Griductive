@@ -26,22 +26,6 @@ class NoticePanel(QFrame):
         painter.fillRect(8, 5, self.width()-16, 2, QColor('#FFFDF1'))
 
 
-class NoticeTile(QLabel):
-    def __init__(self, fill, edge, text=''):
-        super().__init__(text)
-        self.fill = QColor(fill)
-        self.edge = QColor(edge)
-        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        box = QRectF(self.rect())
-        painter.fillPath(pixel_frame(box, 5), self.edge)
-        painter.fillPath(pixel_frame(box.adjusted(2, 2, -2, -3), 3), self.fill)
-        painter.end()
-        super().paintEvent(event)
-
-
 class GameNotice(QDialog):
     def __init__(self,parent,theme,title,message,*,tone='info',subject=None,action='Đã hiểu'):
         super().__init__(parent,Qt.WindowType.Dialog|Qt.WindowType.FramelessWindowHint)
@@ -55,9 +39,11 @@ class GameNotice(QDialog):
         self.setStyleSheet(f'''
 QFrame#gameNotice {{background:transparent;border:0;}}
 QFrame#gameNotice QLabel {{background:transparent;border:0;color:{theme.text};}}
+QFrame#gameNotice QLabel#noticeSymbol {{background:#F1D7A1;border:2px solid #9C7952;}}
+QFrame#gameNotice QLabel#noticeFigure {{background:#EADCC4;border:2px solid #BCA688;}}
 QLabel#noticeTitle {{font-family:"Segoe UI";font-size:22px;font-weight:800;}}
 QLabel#noticeSubject {{font-family:"Segoe UI";font-size:23px;font-weight:700;}}
-QFrame#gameNotice QLabel#noticeCell {{font-size:12px;font-weight:700;color:#FFFFFF;background:transparent;padding:4px 9px;}}
+QFrame#gameNotice QLabel#noticeCell {{font-size:12px;font-weight:700;color:#FFFFFF;background:{theme.primary};border-radius:2px;padding:3px 8px;}}
 QLabel#noticeMessage {{font-family:"Segoe UI";font-size:15px;color:#334155;}}
 QToolButton#noticeClose {{background:transparent;border:1px solid transparent;border-radius:2px;padding:3px;}}
 QToolButton#noticeClose:hover {{background:#F1F5F9;border-color:#CBD5E1;}}
@@ -68,7 +54,7 @@ QPushButton#noticeAction:hover {{background:#1E40AF;}}
         shadow.setOffset(4,4);shadow.setColor(QColor(20,43,58,95));self.panel.setGraphicsEffect(shadow)
         layout=QVBoxLayout(self.panel);layout.setContentsMargins(23,20,23,20);layout.setSpacing(19)
         heading=QHBoxLayout();heading.setSpacing(13)
-        symbol=NoticeTile('#F1D7A1','#9C7952');symbol.setObjectName('noticeSymbol');symbol.setFixedSize(42,42)
+        symbol=QLabel();symbol.setObjectName('noticeSymbol');symbol.setFixedSize(42,42)
         symbol.setAlignment(Qt.AlignmentFlag.AlignCenter)
         symbol.setPixmap(icon('check' if tone=='success' else 'warning' if tone=='warning' else 'hint',accent).pixmap(QSize(26,26)))
         heading.addWidget(symbol)
@@ -81,14 +67,14 @@ QPushButton#noticeAction:hover {{background:#1E40AF;}}
         body=QHBoxLayout();body.setSpacing(18)
         if subject:
             name,cell,portrait=subject
-            figure=NoticeTile('#EADCC4','#9C8769');figure.setObjectName('noticeFigure');figure.setFixedSize(104,116);figure.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            figure.setPixmap(portrait.scaled(96,108,Qt.AspectRatioMode.KeepAspectRatio,Qt.TransformationMode.FastTransformation))
+            figure=QLabel();figure.setObjectName('noticeFigure');figure.setFixedSize(104,116);figure.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            figure.setPixmap(portrait.scaled(104,116,Qt.AspectRatioMode.KeepAspectRatio,Qt.TransformationMode.FastTransformation))
             body.addWidget(figure,0,Qt.AlignmentFlag.AlignTop)
         words=QVBoxLayout();words.setSpacing(10)
         if subject:
             identity=QHBoxLayout();identity.setSpacing(10)
             name_label=QLabel(name);name_label.setObjectName('noticeSubject');identity.addWidget(name_label)
-            cell_label=NoticeTile(theme.primary,'#253D67',cell);cell_label.setObjectName('noticeCell');identity.addWidget(cell_label,0,Qt.AlignmentFlag.AlignVCenter)
+            cell_label=QLabel(cell);cell_label.setObjectName('noticeCell');identity.addWidget(cell_label,0,Qt.AlignmentFlag.AlignVCenter)
             identity.addStretch();words.addLayout(identity)
         self.message=QLabel(message);self.message.setObjectName('noticeMessage');self.message.setWordWrap(True)
         self.message.setTextFormat(Qt.TextFormat.PlainText);words.addWidget(self.message);words.addStretch()
