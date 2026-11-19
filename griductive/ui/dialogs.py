@@ -9,7 +9,7 @@ class ModalScrim(QFrame):
     def __init__(self,parent):
         super().__init__(parent)
         self.setObjectName('noticeScrim')
-        self.setStyleSheet('QFrame#noticeScrim {background:rgba(25,49,65,85);border:0;}')
+        self.setStyleSheet('QFrame#noticeScrim {background:rgba(15,35,66,95);border:0;}')
 
     def mousePressEvent(self,event):event.accept()
     def mouseReleaseEvent(self,event):event.accept()
@@ -24,20 +24,18 @@ class GameNotice(QDialog):
         self.setFixedWidth(480)
         outer=QVBoxLayout(self);outer.setContentsMargins(16,16,16,22)
         self.panel=QFrame();self.panel.setObjectName('gameNotice');outer.addWidget(self.panel)
-        accent=theme.innocent if tone=='success' else '#AC732A' if tone=='warning' else theme.gold
+        accent=theme.innocent if tone=='success' else '#D97706' if tone=='warning' else theme.primary
         self.setStyleSheet(f'''
-QFrame#gameNotice {{background:{theme.surface};border:4px solid {theme.gold};border-radius:14px;}}
+QFrame#gameNotice {{background:#FFFFFF;border:1.5px solid #CBD5E1;border-radius:16px;}}
 QFrame#gameNotice QLabel {{background:transparent;border:0;color:{theme.text};}}
-QLabel#noticeTitle {{font-family:Cambria;font-size:27px;font-weight:bold;}}
-QLabel#noticeSubject {{font-family:Cambria;font-size:29px;font-weight:bold;}}
-QFrame#gameNotice QLabel#noticeCell {{font-size:13px;font-weight:700;background:#F4EAD5;border:2px solid {theme.border};border-radius:6px;padding:3px 7px;}}
-QLabel#noticeMessage {{font-family:"Segoe UI";font-size:16px;}}
-QToolButton#noticeClose {{background:transparent;border:2px solid transparent;border-radius:6px;padding:3px;}}
-QToolButton#noticeClose:hover {{background:#F1E7D6;border-color:{theme.border};}}
-QToolButton#noticeClose:focus {{border-color:{theme.gold};}}
-QPushButton#noticeAction {{background:{theme.primary};color:#FFFCF5;border:3px solid {theme.gold};border-radius:9px;padding:9px 19px;font-size:16px;font-weight:600;}}
-QPushButton#noticeAction:hover {{background:#317391;}}
-QPushButton#noticeAction:focus {{border-color:{theme.text};}}
+QLabel#noticeTitle {{font-family:"Segoe UI";font-size:22px;font-weight:800;}}
+QLabel#noticeSubject {{font-family:"Segoe UI";font-size:23px;font-weight:700;}}
+QFrame#gameNotice QLabel#noticeCell {{font-size:12px;font-weight:700;color:#FFFFFF;background:{theme.primary};border-radius:6px;padding:3px 8px;}}
+QLabel#noticeMessage {{font-family:"Segoe UI";font-size:15px;color:#334155;}}
+QToolButton#noticeClose {{background:transparent;border:1px solid transparent;border-radius:6px;padding:3px;}}
+QToolButton#noticeClose:hover {{background:#F1F5F9;border-color:#CBD5E1;}}
+QPushButton#noticeAction {{background:{theme.primary};color:#FFFFFF;border:none;border-radius:10px;padding:9px 20px;font-size:15px;font-weight:700;}}
+QPushButton#noticeAction:hover {{background:#1E40AF;}}
 ''')
         shadow=QGraphicsDropShadowEffect(self.panel);shadow.setBlurRadius(24)
         shadow.setOffset(0,6);shadow.setColor(QColor(20,43,58,95));self.panel.setGraphicsEffect(shadow)

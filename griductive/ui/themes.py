@@ -1,4 +1,4 @@
-"""Bright coastal palette shared by the desktop widgets and card painter."""
+"""Alto's Odyssey x Reigns luminous sky & crisp white flat-vector palette."""
 from dataclasses import dataclass
 
 
@@ -25,63 +25,180 @@ class Theme:
 
 
 THEMES = {
-    'pixel': Theme('Phố biển', '#DCEFF6', '#FFF7E8', '#302D29', '#80786F',
-        '#817D75', '#28576F', '#287DB6', '#BC810C', '#287DB6', '#9C45BE',
-        '#3F7F59', '#AF5145', '#F4EAD5', '#245D7A',
-        '#FAF8F2', '#F2F4ED', '#F8EFEA'),
+    'pixel': Theme(
+        'Thảo nguyên xanh',
+        '#2A84E5',  # background: luminous cerulean sky
+        '#FFFFFF',  # surface: pure crisp white vector card
+        '#0F172A',  # text: deep slate ink
+        '#64748B',  # muted: cool slate subtitle
+        '#D5E6F7',  # border: airy sky-white card rim
+        '#0F2942',  # gold: deep navy ink accent
+        '#1D4ED8',  # selected: royal cobalt
+        '#D97706',  # anchor: warm amber
+        '#0284C7',  # operand_a: ocean blue
+        '#7C3AED',  # operand_b: vivid purple
+        '#34C774',  # innocent: meadow green
+        '#F85A6A',  # criminal: poppy coral
+        '#EFF6FF',  # badge: soft sky tint
+        '#1D4ED8',  # primary: royal cobalt
+        '#FFFFFF',  # card_unknown
+        '#FFFFFF',  # card_innocent
+        '#FFFFFF',  # card_criminal
+    ),
 }
 
 
 def stylesheet(t):
-    css = f'''
+    return f'''
 QMainWindow, QWidget#workspace {{background:{t.background};}}
 QWidget {{font-family:"Segoe UI";font-size:14px;color:{t.text};}}
-QLabel#brand {{font-family:Cambria;font-size:34px;font-weight:bold;color:{t.gold};}}
-QLabel#title {{font-family:Cambria;font-size:23px;font-weight:bold;}}
+QFrame#header {{background:transparent;border:none;}}
+QLabel#brand {{
+    font-family:"Segoe UI";
+    font-size:27px;
+    font-weight:800;
+    color:#FFFFFF;
+}}
+QLabel#headerDot {{
+    color:rgba(255,255,255,195);
+    font-size:19px;
+    font-weight:700;
+}}
+QToolButton#caseSelector {{
+    background:transparent;
+    color:rgba(255,255,255,245);
+    border:1px solid transparent;
+    border-radius:8px;
+    padding:4px 8px;
+    font-family:"Segoe UI";
+    font-size:18px;
+    font-weight:600;
+}}
+QToolButton#caseSelector:hover {{
+    background:rgba(255,255,255,36);
+    border-color:rgba(255,255,255,90);
+    color:#FFFFFF;
+}}
+QLabel#title {{color:#FFFFFF;font-size:16px;font-weight:600;}}
 QLabel#muted {{color:{t.muted};font-size:13px;}}
-QLabel#section {{font-family:Cambria;font-size:23px;font-weight:bold;}}
-QFrame#header, QFrame#footer {{background:{t.surface};border:4px solid {t.border};border-radius:10px;}}
+QLabel#section {{font-size:20px;font-weight:700;}}
 QWidget#boardCanvas {{background:transparent;}}
-QLabel#progress {{font-family:"Segoe UI";font-size:17px;font-weight:600;color:{t.text};background:#F6C789;border:3px solid {t.gold};border-radius:19px;padding:8px 17px;}}
-QLabel#coordinate {{font-family:Cambria;font-size:23px;font-weight:bold;color:{t.text};background:{t.surface};border:3px solid {t.border};border-radius:7px;padding:3px 14px;}}
-QMenu {{background:{t.surface};color:{t.text};border:4px solid {t.gold};padding:6px;}}
-QMenu::item {{padding:10px 18px;}}
+QLabel#coordHeader {{
+    background:rgba(255,255,255,74);
+    color:#0D2744;
+    border:none;
+    border-radius:9px;
+    font-family:"Segoe UI";
+    font-size:15px;
+    font-weight:800;
+    padding:2px 6px;
+}}
+QLabel#progress {{
+    font-family:"Segoe UI";
+    font-size:15px;
+    font-weight:700;
+    color:#FFFFFF;
+    background:rgba(255,255,255,58);
+    border:1px solid rgba(255,255,255,105);
+    border-radius:18px;
+    padding:0px 18px;
+}}
+QPushButton#hint {{
+    background:#FFFFFF;
+    color:#0F2038;
+    border:none;
+    border-radius:18px;
+    padding:0px 18px;
+    font-family:"Segoe UI";
+    font-size:15px;
+    font-weight:700;
+}}
+QPushButton#hint:hover {{background:#F0F7FF;}}
+QPushButton#hint:disabled {{
+    background:rgba(255,255,255,110);
+    color:rgba(15,41,66,120);
+}}
+QToolButton#menuButton {{
+    background:transparent;
+    color:#FFFFFF;
+    border:none;
+    border-radius:9px;
+    padding:4px;
+}}
+QToolButton#menuButton:hover {{
+    background:rgba(255,255,255,52);
+}}
+QToolButton#menuButton::menu-indicator {{image:none;width:0px;}}
+QToolButton#caseSelector::menu-indicator {{image:none;width:0px;}}
+QMenu {{
+    background:#FFFFFF;
+    color:{t.text};
+    border:1.5px solid #CBD5E1;
+    border-radius:10px;
+    padding:6px;
+}}
+QMenu::item {{padding:8px 16px;border-radius:6px;font-weight:500;}}
 QMenu::item:selected {{background:{t.primary};color:#FFFFFF;}}
-QPushButton, QToolButton, QComboBox {{background:{t.surface};border:3px solid {t.border};border-radius:9px;padding:10px 18px;font-size:15px;}}
-QPushButton:hover, QToolButton:hover {{background:{t.badge};border-color:{t.gold};}}
-QPushButton:focus, QToolButton:focus, QComboBox:focus {{border:3px solid {t.selected};}}
-QPushButton:checked {{background:{t.badge};border-color:{t.gold};}}
-QPushButton#primary {{background:{t.primary};color:#F4EDDB;border:2px solid {t.gold};border-radius:22px;padding:12px 25px;font-family:Cambria;font-size:19px;font-weight:bold;}}
-QPushButton:disabled {{color:{t.muted};border-color:{t.border};}}
-QPushButton#primary:disabled {{background:transparent;color:{t.muted};}}
-QToolButton#verdict {{background:{t.surface};border-radius:12px;padding:5px 7px;font-size:12px;}}
-QToolButton#verdict:disabled {{color:{t.muted};}}
-QPushButton#innocent, QPushButton#criminal {{font-family:"Segoe UI";font-size:14px;font-weight:600;border:2px solid transparent;border-radius:7px;background:transparent;padding:4px 6px;}}
-QPushButton#innocent {{color:#34724B;}}
-QPushButton#criminal {{color:#A24A3F;}}
-QPushButton#innocent:hover {{background:#E3EFDF;}}
-QPushButton#criminal:hover {{background:#F6E4DC;}}
-QPushButton#innocent:pressed {{background:#CFE2C8;}}
-QPushButton#criminal:pressed {{background:#EECFC2;}}
-QPushButton#innocent:focus {{border-color:{t.innocent};}}
-QPushButton#criminal:focus {{border-color:{t.criminal};}}
-QToolButton#chrome {{background:{t.surface};border:3px solid {t.border};border-radius:9px;padding:8px 10px;font-size:14px;}}
-QToolButton#chrome:hover {{background:{t.surface};color:{t.text};}}
-QToolButton#chrome:focus {{border:3px solid {t.gold};}}
-QPushButton#motion {{border:2px solid transparent;border-radius:17px;padding:9px 12px;font-size:13px;color:{t.muted};}}
-QPushButton#motion:checked {{background:{t.surface};color:{t.text};}}
-QPushButton#hint {{background:#F6C789;color:{t.text};border:3px solid {t.text};border-radius:11px;padding:9px 20px;font-family:"Segoe UI";font-size:18px;font-weight:600;}}
-QComboBox QAbstractItemView {{background:{t.surface};color:{t.text};selection-background-color:{t.primary};selection-color:#FFFFFF;}}
-QCheckBox {{color:{t.muted};spacing:6px;font-size:12px;}}
+QMenu::separator {{height:1px;background:#E2E8F0;margin:4px 6px;}}
+QPushButton, QToolButton, QComboBox {{
+    background:#FFFFFF;
+    border:1.5px solid #CBD5E1;
+    border-radius:8px;
+    padding:7px 14px;
+    font-size:14px;
+    font-weight:600;
+}}
+QPushButton:hover, QToolButton:hover {{background:#F1F5F9;border-color:#94A3B8;}}
+QPushButton:focus, QToolButton:focus, QComboBox:focus {{border:2px solid {t.selected};}}
+QPushButton#primary {{
+    background:{t.primary};
+    color:#FFFFFF;
+    border:none;
+    border-radius:10px;
+    padding:9px 20px;
+    font-size:15px;
+    font-weight:700;
+}}
+QPushButton#innocent {{
+    font-family:"Segoe UI";
+    font-size:13px;
+    font-weight:700;
+    color:#FFFFFF;
+    background:#43CE80;
+    border:none;
+    border-bottom:3px solid #2BA862;
+    border-top-left-radius:6px;
+    border-bottom-left-radius:0px;
+    border-top-right-radius:0px;
+    border-bottom-right-radius:0px;
+    padding:2px 6px;
+}}
+QPushButton#innocent:hover {{background:#36BE72;}}
+QPushButton#criminal {{
+    font-family:"Segoe UI";
+    font-size:13px;
+    font-weight:700;
+    color:#FFFFFF;
+    background:#FA6473;
+    border:none;
+    border-bottom:3px solid #DE4454;
+    border-top-left-radius:0px;
+    border-bottom-left-radius:0px;
+    border-top-right-radius:6px;
+    border-bottom-right-radius:9px;
+    padding:2px 6px;
+}}
+QPushButton#criminal:hover {{background:#F05060;}}
 QScrollArea {{border:none;background:transparent;}}
-QScrollBar:vertical {{background:{t.background};width:10px;}}
-QScrollBar::handle:vertical {{background:{t.border};border-radius:4px;min-height:30px;}}
-QToolTip {{background:{t.surface};color:{t.text};border:2px solid {t.border};padding:6px;}}
-QStatusBar {{background:{t.background};color:{t.muted};font-size:12px;}}
+QScrollBar:vertical {{background:transparent;width:6px;}}
+QScrollBar::handle:vertical {{background:#CBD5E1;border-radius:3px;min-height:24px;}}
+QToolTip {{
+    background:#0F172A;
+    color:#FFFFFF;
+    border:none;
+    border-radius:6px;
+    padding:6px 10px;
+}}
+QStatusBar {{background:transparent;color:#FFFFFF;font-size:12px;}}
+QDockWidget {{color:{t.text};}}
 '''
-
-    css += """
-QPushButton#hint:hover {background:#FFD79F;}
-QDockWidget {color:#193B53;}
-"""
-    return css

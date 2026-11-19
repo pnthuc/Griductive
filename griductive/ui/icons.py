@@ -4,8 +4,8 @@ from PySide6.QtGui import QColor,QIcon,QPainter,QPainterPath,QPen,QPixmap
 
 
 def icon(name,color):
-    image=QPixmap(64,64);image.fill(Qt.GlobalColor.transparent)
-    p=QPainter(image);p.setRenderHint(QPainter.RenderHint.Antialiasing);p.scale(2,2)
+    image=QPixmap(128,128);image.fill(Qt.GlobalColor.transparent)
+    p=QPainter(image);p.setRenderHint(QPainter.RenderHint.Antialiasing);p.scale(4,4)
     pen=QPen(QColor(color),1.6);pen.setCapStyle(Qt.PenCapStyle.RoundCap);pen.setJoinStyle(Qt.PenJoinStyle.RoundJoin)
     p.setPen(pen);p.setBrush(Qt.BrushStyle.NoBrush)
     if name=='folder':
@@ -23,9 +23,15 @@ def icon(name,color):
         path=QPainterPath();path.moveTo(22,5);path.cubicTo(3,0,0,27,18,27)
         path.cubicTo(25,27,29,22,28,19);path.cubicTo(15,24,11,10,22,5);p.drawPath(path)
     elif name=='hint':
-        p.drawArc(QRectF(8,4,16,18),-30*16,240*16)
-        p.drawLine(9,18,13,24);p.drawLine(23,18,19,24);p.drawLine(13,24,19,24)
-        p.drawLine(13,28,19,28)
+        p.setPen(Qt.PenStyle.NoPen);p.setBrush(QColor(color))
+        bulb=QPainterPath()
+        bulb.addEllipse(QRectF(8.5,3.5,15,14.5))
+        p.drawPath(bulb)
+        neck=QPainterPath()
+        neck.moveTo(11,15);neck.lineTo(21,15);neck.lineTo(19.5,22.5);neck.lineTo(12.5,22.5);neck.closeSubpath()
+        p.drawPath(neck)
+        p.drawRoundedRect(QRectF(12.5,24.2,7,2.4),1.2,1.2)
+        p.drawRoundedRect(QRectF(13.8,27.5,4.4,2.2),1.1,1.1)
     elif name=='play':
         p.setBrush(QColor(color));p.setPen(Qt.PenStyle.NoPen)
         path=QPainterPath();path.moveTo(11,6);path.lineTo(26,16);path.lineTo(11,26);path.closeSubpath();p.drawPath(path)
@@ -45,8 +51,8 @@ def icon(name,color):
         path.cubicTo(25,24,20,28,16,30);path.cubicTo(12,28,7,24,6,18);path.lineTo(5,7);path.closeSubpath();p.drawPath(path)
         p.drawLine(10,15,14,19);p.drawLine(14,19,22,11)
     elif name=='check':
-        pen.setWidthF(2.7);p.setPen(pen)
-        p.drawLine(6,16,13,23);p.drawLine(13,23,27,8)
+        pen.setWidthF(3.2);p.setPen(pen)
+        p.drawLine(6,16.5,13,23.5);p.drawLine(13,23.5,26.5,8.5)
     elif name=='mask':
         path=QPainterPath();path.moveTo(3,10);path.quadTo(16,6,29,10)
         path.lineTo(27,19);path.quadTo(23,26,16,20)
@@ -55,8 +61,8 @@ def icon(name,color):
         p.setBrush(QColor('#FFFCF5'))
         p.drawEllipse(QRectF(7,12,7,5));p.drawEllipse(QRectF(18,12,7,5))
     elif name=='cross':
-        pen.setWidthF(2.4);p.setPen(pen)
-        p.drawLine(8,8,24,24);p.drawLine(24,8,8,24)
+        pen.setWidthF(2.9);p.setPen(pen)
+        p.drawLine(8.5,8.5,23.5,23.5);p.drawLine(23.5,8.5,8.5,23.5)
     elif name=='warning':
         path=QPainterPath();path.moveTo(16,4);path.lineTo(29,27);path.lineTo(3,27);path.closeSubpath();p.drawPath(path)
         p.drawLine(16,11,16,18);p.drawPoint(16,23)
@@ -64,6 +70,16 @@ def icon(name,color):
         p.save();p.translate(16,14);p.rotate(-40)
         p.drawRoundedRect(QRectF(-8,-6,16,9),2,2);p.drawLine(0,3,0,17);p.restore()
         p.drawLine(4,28,15,28)
+    elif name=='journal':
+        p.drawRoundedRect(QRectF(6,4,20,24),2.5,2.5)
+        p.drawLine(10,4,10,28)
+        for y in (10,15,20):p.drawLine(14,y,22,y)
+    elif name=='menu':
+        pen.setWidthF(2.5);p.setPen(pen)
+        for y in (9,16,23):p.drawLine(6,y,26,y)
+    elif name=='chevron':
+        pen.setWidthF(2.4);p.setPen(pen)
+        p.drawLine(9,13,16,20);p.drawLine(16,20,23,13)
     elif name in ('motion','still'):
         for offset in (0,7,14):
             path=QPainterPath();path.moveTo(4,9+offset);path.cubicTo(10,2+offset,20,16+offset,28,9+offset);p.drawPath(path)

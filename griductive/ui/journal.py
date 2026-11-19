@@ -28,11 +28,11 @@ class JournalEntry(QFrame):
         number.setFixedWidth(26)
         heading.addWidget(number, 0, Qt.AlignmentFlag.AlignTop)
         figure = QLabel()
-        figure.setFixedSize(44, 54)
+        figure.setFixedSize(44, 50)
         figure.setAlignment(Qt.AlignmentFlag.AlignCenter)
         figure.setPixmap(portrait.scaled(
-            44, 54, Qt.AspectRatioMode.KeepAspectRatio,
-            Qt.TransformationMode.FastTransformation))
+            44, 50, Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.SmoothTransformation))
         heading.addWidget(figure)
         identity = QVBoxLayout()
         identity.setSpacing(3)
@@ -45,10 +45,10 @@ class JournalEntry(QFrame):
         status_row = QHBoxLayout()
         status_row.setSpacing(6)
         criminal = entry['verdict'] == 'CRIMINAL'
-        color = theme.criminal if criminal else theme.innocent
+        color = theme.criminal if criminal else '#1E9E5A'
         mark = QLabel()
-        mark.setFixedSize(18, 18)
-        mark.setPixmap(icon('mask' if criminal else 'check', color).pixmap(18, 18))
+        mark.setFixedSize(16, 16)
+        mark.setPixmap(icon('cross' if criminal else 'check', color).pixmap(16, 16))
         status_row.addWidget(mark)
         verdict = label(STATUS_TEXT[entry['verdict']], 'journalVerdict')
         verdict.setStyleSheet(f'color:{color};')
@@ -78,7 +78,7 @@ class JournalEntry(QFrame):
         details.addWidget(label(f"Lời khai của {name} ({entry['cell']})", 'journalCaption'))
         details.addWidget(label(clue, 'journalClue'))
         details.addWidget(label('Lời khai có trước bước này', 'journalCaption'))
-        details.addWidget(label('\n'.join((clue_names or {}).get(cid,cid) for cid in entry['active_clues']), 'journalClue'))
+        details.addWidget(label('\n'.join((clue_names or {}).get(cid, cid) for cid in entry['active_clues']), 'journalClue'))
         details.addWidget(label('Kiểm chứng', 'journalCaption'))
         for query in entry['queries']:
             assumptions = [
@@ -103,7 +103,6 @@ class JournalEntry(QFrame):
         self.fit_height()
 
     def fit_height(self):
-        # The scroll list must measure wrapped text at the actual row width.
         self.layout().invalidate()
         self.setFixedHeight(self.layout().totalHeightForWidth(self.width()))
 
@@ -221,48 +220,47 @@ class SolverJournal(QDockWidget):
     def set_theme(self, theme):
         self.theme = theme
         self.setStyleSheet(f'''
-QFrame#journalHeading {{background:{theme.surface};border:4px solid {theme.gold};border-bottom:0;border-top-left-radius:11px;border-top-right-radius:11px;}}
-QFrame#journalPanel {{background:{theme.surface};border:4px solid {theme.gold};border-top:0;border-bottom-left-radius:11px;border-bottom-right-radius:11px;}}
+QFrame#journalHeading {{background:#FFFFFF;border:1.5px solid #CBD5E1;border-bottom:1px solid #E2E8F0;border-top-left-radius:12px;border-top-right-radius:12px;}}
+QFrame#journalPanel {{background:#FFFFFF;border:1.5px solid #CBD5E1;border-top:0;border-bottom-left-radius:12px;border-bottom-right-radius:12px;}}
 QDockWidget#solverDock QLabel {{border:0;background:transparent;color:{theme.text};font-family:"Segoe UI";font-size:14px;}}
-QDockWidget#solverDock QLabel#journalTitle {{font-family:Cambria;font-size:24px;font-weight:bold;color:{theme.gold};}}
-QDockWidget#solverDock QLabel#journalName {{font-family:Cambria;font-size:21px;font-weight:bold;}}
-QDockWidget#solverDock QLabel#journalNumber {{font-size:16px;font-weight:700;color:{theme.gold};}}
-QDockWidget#solverDock QLabel#journalCell {{font-size:12px;color:#68645C;}}
-QDockWidget#solverDock QLabel#journalVerdict {{font-size:14px;font-weight:600;}}
-QDockWidget#solverDock QLabel#journalMuted {{color:#68645C;font-size:12px;}}
+QDockWidget#solverDock QLabel#journalTitle {{font-family:"Segoe UI";font-size:20px;font-weight:800;color:{theme.text};}}
+QDockWidget#solverDock QLabel#journalName {{font-family:"Segoe UI";font-size:18px;font-weight:700;}}
+QDockWidget#solverDock QLabel#journalNumber {{font-size:14px;font-weight:700;color:{theme.primary};}}
+QDockWidget#solverDock QLabel#journalCell {{font-size:11px;font-weight:700;color:#FFFFFF;background:#83A3C4;border-radius:4px;padding:1px 6px;}}
+QDockWidget#solverDock QLabel#journalVerdict {{font-size:13px;font-weight:700;}}
+QDockWidget#solverDock QLabel#journalMuted {{color:{theme.muted};font-size:12px;}}
 QDockWidget#solverDock QLabel#journalStatus {{font-size:13px;font-weight:600;}}
-QDockWidget#solverDock QLabel#journalCaption {{font-size:12px;font-weight:600;color:{theme.gold};}}
-QDockWidget#solverDock QLabel#journalEmpty {{padding:22px 14px;color:#68645C;font-size:15px;}}
-QScrollArea#journalScroll, QWidget#journalPaper {{background:#EEE9DF;border:0;border-radius:8px;}}
-QFrame#journalEntry {{background:#FFFCF6;border:2px solid #C6C0B5;border-radius:8px;}}
-QFrame#journalDetails {{background:transparent;border:0;border-top:1px solid #D5CEC1;}}
-QPushButton#journalPrimary, QPushButton#journalSecondary {{font-size:14px;font-weight:600;border:3px solid {theme.gold};border-radius:8px;padding:9px 8px;}}
-QPushButton#journalPrimary {{background:{theme.primary};color:#FFFCF6;}}
-QPushButton#journalPrimary:hover {{background:#317391;}}
-QPushButton#journalSecondary {{background:#FFFCF6;color:{theme.gold};}}
-QPushButton#journalSecondary:hover {{background:#E6F0F2;}}
-QPushButton#journalPrimary:disabled, QPushButton#journalSecondary:disabled {{background:#ECE8DF;color:#77746D;border-color:#C6C0B5;}}
-QToolButton#journalClose {{background:transparent;border:2px solid transparent;border-radius:6px;padding:3px;}}
-QToolButton#journalClose:hover {{background:#E9E2D4;border-color:{theme.border};}}
-QToolButton#journalDetailsButton, QPushButton#journalQuiet, QToolButton#journalQuiet {{background:transparent;border:2px solid transparent;border-radius:6px;color:{theme.gold};font-size:12px;padding:4px;}}
-QToolButton#journalDetailsButton:hover, QPushButton#journalQuiet:hover, QToolButton#journalQuiet:hover {{background:#E6F0F2;border-color:#B1C5CE;}}
-QToolButton#journalClose:focus, QToolButton#journalDetailsButton:focus, QPushButton#journalQuiet:focus, QToolButton#journalQuiet:focus {{border-color:{theme.gold};}}
-QPushButton#journalPrimary:focus, QPushButton#journalSecondary:focus {{border-color:{theme.text};}}
-QScrollArea#journalScroll QScrollBar:vertical {{width:8px;background:#EEE9DF;margin:3px 0;}}
-QScrollArea#journalScroll QScrollBar::handle:vertical {{background:#A4A096;min-height:28px;border-radius:4px;}}
+QDockWidget#solverDock QLabel#journalCaption {{font-size:12px;font-weight:700;color:{theme.primary};}}
+QDockWidget#solverDock QLabel#journalEmpty {{padding:22px 14px;color:{theme.muted};font-size:14px;}}
+QScrollArea#journalScroll, QWidget#journalPaper {{background:#F1F5F9;border:0;border-radius:9px;}}
+QFrame#journalEntry {{background:#FFFFFF;border:1px solid #E2E8F0;border-radius:9px;}}
+QFrame#journalDetails {{background:transparent;border:0;border-top:1px solid #E2E8F0;}}
+QPushButton#journalPrimary, QPushButton#journalSecondary {{font-size:13px;font-weight:700;border-radius:8px;padding:8px 10px;}}
+QPushButton#journalPrimary {{background:{theme.primary};color:#FFFFFF;border:none;}}
+QPushButton#journalPrimary:hover {{background:#1E40AF;}}
+QPushButton#journalSecondary {{background:#FFFFFF;color:{theme.text};border:1.5px solid #CBD5E1;}}
+QPushButton#journalSecondary:hover {{background:#F1F5F9;}}
+QPushButton#journalPrimary:disabled, QPushButton#journalSecondary:disabled {{background:#E2E8F0;color:#94A3B8;border:1px solid #CBD5E1;}}
+QToolButton#journalClose {{background:transparent;border:1px solid transparent;border-radius:6px;padding:3px;}}
+QToolButton#journalClose:hover {{background:#F1F5F9;border-color:#CBD5E1;}}
+QToolButton#journalDetailsButton, QPushButton#journalQuiet, QToolButton#journalQuiet {{background:transparent;border:1px solid transparent;border-radius:6px;color:{theme.primary};font-size:12px;font-weight:600;padding:4px 6px;}}
+QToolButton#journalDetailsButton:hover, QPushButton#journalQuiet:hover, QToolButton#journalQuiet:hover {{background:#EFF6FF;border-color:#BFDBFE;}}
+QToolButton#journalClose:focus, QToolButton#journalDetailsButton:focus, QToolButton#journalQuiet:focus, QToolButton#journalQuiet:focus {{border-color:{theme.selected};}}
+QPushButton#journalPrimary:focus, QPushButton#journalSecondary:focus {{border-color:{theme.selected};}}
+QScrollArea#journalScroll QScrollBar:vertical {{width:6px;background:transparent;margin:3px 0;}}
+QScrollArea#journalScroll QScrollBar::handle:vertical {{background:#CBD5E1;min-height:28px;border-radius:3px;}}
 QScrollArea#journalScroll QScrollBar::add-line:vertical, QScrollArea#journalScroll QScrollBar::sub-line:vertical {{height:0;}}
 QScrollArea#journalScroll QScrollBar::add-page:vertical, QScrollArea#journalScroll QScrollBar::sub-page:vertical {{background:transparent;}}
 ''')
-        # A scroll area's auto-fill otherwise inherits Windows' dark base color.
         for widget in (self.scroll.viewport(), self.content):
             palette = widget.palette()
-            palette.setColor(QPalette.ColorRole.Window, QColor('#EEE9DF'))
-            palette.setColor(QPalette.ColorRole.Base, QColor('#EEE9DF'))
+            palette.setColor(QPalette.ColorRole.Window, QColor('#F1F5F9'))
+            palette.setColor(QPalette.ColorRole.Base, QColor('#F1F5F9'))
             widget.setPalette(palette)
             widget.setAutoFillBackground(True)
-        self.close_button.setIcon(icon('cross', theme.gold))
-        self.step_button.setIcon(icon('step', theme.gold))
-        self.export_button.setIcon(icon('export', theme.gold))
+        self.close_button.setIcon(icon('cross', theme.muted))
+        self.step_button.setIcon(icon('step', theme.text))
+        self.export_button.setIcon(icon('export', theme.primary))
         self.set_running(self.running)
 
     def reset(self, title):
@@ -291,7 +289,7 @@ QScrollArea#journalScroll QScrollBar::add-page:vertical, QScrollArea#journalScro
     def set_running(self, running):
         self.running = running
         self.play_button.setText('Tạm dừng' if running else 'Chạy tiếp' if self.entries else 'Chạy tự động')
-        self.play_button.setIcon(icon('pause' if running else 'play', '#FFFCF6'))
+        self.play_button.setIcon(icon('pause' if running else 'play', '#FFFFFF'))
         self.play_button.setEnabled(not self.complete)
         self.step_button.setEnabled(not running and not self.complete)
         message = 'Đang tự động giải…' if running else 'Đã tạm dừng' if self.entries else 'Sẵn sàng'
@@ -331,7 +329,7 @@ QScrollArea#journalScroll QScrollBar::add-page:vertical, QScrollArea#journalScro
         self.set_running(False)
 
     def set_message(self, message, tone='info'):
-        color = {'info': self.theme.gold, 'success': self.theme.innocent,
+        color = {'info': self.theme.primary, 'success': '#1E9E5A',
                  'warning': self.theme.criminal}[tone]
         self.status.setText(message)
         self.status.setStyleSheet(f'color:{color};')

@@ -107,6 +107,11 @@ class WebHTTPTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.mimetype, 'image/png')
         response.close()
+        for svg_name in ('backdrop.svg', 'portrait-0.svg', 'silhouette-0.svg'):
+            svg_res = self.client.get(f'/images/{svg_name}')
+            self.assertEqual(svg_res.status_code, 200)
+            self.assertEqual(svg_res.mimetype, 'image/svg+xml')
+            svg_res.close()
 
     def test_real_dash_callback_proves_a_move_and_keeps_solution_on_server(self):
         response = self.callback(new_session(), 'step')
@@ -117,3 +122,25 @@ class WebHTTPTests(unittest.TestCase):
         hinted = self.callback(new_session(), 'hint')['session']['data']
         self.assertEqual(hinted['selected'], 'A3')
         self.assertEqual(hinted['history'], [])
+
+    def test_vector_board_renders_split_verdicts_links_and_5x5(self):
+        # Selecting an unopened suspect renders the flush 50/50 split verdict bar
+        sel_state = dict(new_session(), selected='B2')
+        res = self.callback(sel_state, '')
+        board_json = json.dumps(res['board']['children'], ensure_ascii=False)
+        self.assertIn('card-verdict', board_json)
+        self.assertIn('Vô tội', board_json)
+        self.assertIn('Tội phạm', board_json)
+        # Selecting an opened clue renders inline clickable region buttons
+        clue_state = dict(new_session(), selected='B1')
+        res_clue = self.callback(clue_state, '')
+        self.assertIn('"kind": "region"', json.dumps(res_clue['board']['children']))
+        # 5x5 board renders cleanly
+        res_5x5 = self.callback(new_session('case-5x5-01'), 'puzzle', puzzle='case-5x5-01')
+        self.assertIn('3/25', res_5x5['progress']['children'])
+        # Menu & Journal toggles update style cleanly
+        toggled = self.callback(new_session(), 'menu-toggle')
+        self.assertTrue(toggled['session']['data']['menu_open'])
+        j_open = self.callback(toggled['session']['data'], 'journal-toggle')
+        self.assertTrue(j_open['session']['data']['journal_open'])
+
