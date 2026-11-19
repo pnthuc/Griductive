@@ -76,20 +76,22 @@ def icon(name,color):
         p.drawRoundedRect(QRectF(6,4,20,24),2.5,2.5)
         p.drawLine(10,4,10,28)
         for y in (10,15,20):p.drawLine(14,y,22,y)
-    elif name=='home':
+    elif name=='gear':
         p.save()
         p.resetTransform()
-        ink = QColor(color)
-        for step in range(6):
-            p.fillRect(7-step, 1+step, 2, 2, ink)
-            p.fillRect(7+step, 1+step, 2, 2, ink)
-        p.fillRect(3, 8, 2, 6, ink)
-        p.fillRect(11, 8, 2, 6, ink)
-        p.fillRect(3, 13, 4, 2, ink)
-        p.fillRect(9, 13, 4, 2, ink)
-        p.fillRect(6, 10, 4, 2, ink)
-        p.fillRect(6, 12, 1, 2, ink)
-        p.fillRect(9, 12, 1, 2, ink)
+        gear = (
+            '......OOO......', '..OO..OHH..OO..', '.OHOOOOHHOOOHO.',
+            '..OHHHHHHHHHO..', '...OHHHHHHHOO..', '..OOHHOOOHHOO..',
+            'OOHHHOO.OOHHOOO', 'OHHHHO...OHHSSO',
+            'OOSSHOO.OOHSSOO', '..OSSHOOOHSSO..', '..OOSSSSSSSSO..',
+            '..OSSSSSSSSSO..', '.OSOOOOSSOOOSO.', '..OO..OSS..OO..',
+            '......OOO......',
+        )
+        colors = {'O': color, 'H': '#8DB4B1', 'S': '#557F84'}
+        for y, row in enumerate(gear):
+            for x, tile in enumerate(row):
+                if tile in colors:
+                    p.fillRect(x+1, y+1, 1, 1, QColor(colors[tile]))
         p.restore()
     elif name=='menu':
         pen.setWidthF(2.5);p.setPen(pen)
