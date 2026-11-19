@@ -127,8 +127,6 @@ class Window(QMainWindow):
                 f"{size}×{size} — {data['title']}",
                 lambda checked=False, p=path: self.load(p),
             )
-        self._case_menu.addSeparator()
-        self._case_menu.addAction('Mở tệp màn chơi…', self.choose_file)
         self._case_btn.setMenu(self._case_menu)
         hl.addWidget(self._case_btn)
 
@@ -156,17 +154,12 @@ class Window(QMainWindow):
         self.tools_button = QToolButton()
         self.tools_button.setObjectName('menuButton')
         self.tools_button.setFixedSize(36, 36)
-        self.tools_button.setToolTip('Home · Công cụ')
-        self.tools_button.setAccessibleName('Home')
+        self.tools_button.setToolTip('Công cụ')
+        self.tools_button.setAccessibleName('Công cụ')
         self.tools_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
         self.tools_menu = QMenu(self.tools_button)
-        self.solve_action = self.tools_menu.addAction(icon('journal', '#714D36'), 'Nhật ký & Tự động giải', self.open_solver)
+        self.solve_action = self.tools_menu.addAction(icon('play', '#714D36'), 'Tự động giải', self.open_solver)
         self.tools_menu.addAction(icon('restart', '#714D36'), 'Làm lại màn này', self.restart)
-        self.tools_menu.addAction(icon('folder', '#714D36'), 'Mở tệp màn chơi…', self.choose_file)
-        self.tools_menu.addSeparator()
-        self.motion_action = self.tools_menu.addAction('Chuyển động')
-        self.motion_action.setCheckable(True)
-        self.motion_action.setChecked(True)
         self.tools_button.setMenu(self.tools_menu)
         hl.addWidget(self.tools_button)
 
@@ -181,7 +174,6 @@ class Window(QMainWindow):
         self.motion.setCheckable(True)
         self.motion.setChecked(True)
         self.motion.toggled.connect(self.toggle_motion)
-        self.motion_action.toggled.connect(self.motion.setChecked)
         self.motion.hide()
 
         layout.addWidget(self.header)
@@ -289,7 +281,7 @@ class Window(QMainWindow):
         self._case_btn.setIconSize(QSize(15, 15))
         self.hint_button.setIcon(icon('hint', '#0F2942'))
         self.hint_button.setIconSize(QSize(18, 18))
-        self.tools_button.setIcon(icon('home', '#493A37'))
+        self.tools_button.setIcon(icon('gear', '#493A37'))
         self.tools_button.setIconSize(QSize(24, 24))
         self.solver.set_theme(self.theme)
         for card in self.cards.values():

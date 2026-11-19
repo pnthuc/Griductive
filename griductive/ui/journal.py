@@ -118,7 +118,7 @@ class SolverJournal(QDockWidget):
     export_requested = Signal()
 
     def __init__(self, theme, parent=None):
-        super().__init__('Nhật ký suy luận', parent)
+        super().__init__('Tự động giải', parent)
         self.setObjectName('solverDock')
         self.setAllowedAreas(Qt.DockWidgetArea.RightDockWidgetArea)
         self.setMinimumWidth(360)
@@ -133,7 +133,7 @@ class SolverJournal(QDockWidget):
         heading.setToolTip('Kéo để di chuyển; nhấn đúp để tách hoặc ghim bảng.')
         title_row = QHBoxLayout(heading)
         title_row.setContentsMargins(17, 14, 12, 8)
-        title_row.addWidget(label('Nhật ký suy luận', 'journalTitle'), 1)
+        title_row.addWidget(label('Tự động giải', 'journalTitle'), 1)
         self.close_button = QToolButton()
         self.close_button.setObjectName('journalClose')
         self.close_button.setAccessibleName('Đóng nhật ký')
