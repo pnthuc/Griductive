@@ -59,12 +59,12 @@ def paint_label_frame(p, rect, background, border):
 class HudButton(QToolButton):
     def paintEvent(self, event):
         painter = QPainter(self)
-        fill = HUD_BACKGROUND
+        fill = QColor('#F5DEAD')
         if self.isDown():
             fill = fill.darker(120)
         elif self.underMouse() or self.hasFocus():
             fill = fill.lighter(115)
-        box = paint_label_frame(painter, self.rect(), fill, HUD_BORDER)
+        box = paint_label_frame(painter, self.rect(), fill, QColor('#463D39'))
         painter.setOpacity(1 if self.isEnabled() else .55)
         font = QFont('Segoe UI')
         font.setBold(True)
@@ -77,7 +77,7 @@ class HudButton(QToolButton):
         x = round(box.center().x() - (side + gap + width)/2)
         y = round(box.center().y() - side/2) + int(self.isDown())
         painter.drawPixmap(x, y, self.icon().pixmap(side, side))
-        painter.setPen(Qt.GlobalColor.white)
+        painter.setPen(QColor('#0F2942'))
         painter.drawText(QRectF(x+side+gap, box.y()+int(self.isDown()), width+1, box.height()),
                          Qt.AlignmentFlag.AlignVCenter, text)
 

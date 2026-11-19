@@ -76,14 +76,18 @@ def icon(name,color):
         p.drawRoundedRect(QRectF(6,4,20,24),2.5,2.5)
         p.drawLine(10,4,10,28)
         for y in (10,15,20):p.drawLine(14,y,22,y)
-    elif name=='sliders':
+    elif name=='wrench':
         p.save()
         p.resetTransform()
-        ink = QColor(color)
-        for y, knob in ((4, 5), (11, 10)):
-            p.fillRect(1, y, 14, 2, ink)
-            p.fillRect(knob-2, y-2, 5, 6, ink)
-            p.fillRect(knob-1, y-1, 3, 3, QColor('#A5CAC0'))
+        rows = ('........HH.....', '.......HHS.....', '......HHHS...H.',
+                '......HHHSS.HH.', '......SHHHSSHH.', '.......SHHHHHS.',
+                '.......HHHSSS..', '......HHS......', '.....HHS.......',
+                '....HHS........', '...HHS.........', '..HHSS.........',
+                '.HH.S..........', '.SHHS..........', '..SS...........')
+        for y, row in enumerate(rows):
+            for x, tile in enumerate(row):
+                if tile != '.':
+                    p.fillRect(x, y, 1, 1, QColor(color if tile == 'S' else '#627E83'))
         p.restore()
     elif name=='menu':
         pen.setWidthF(2.5);p.setPen(pen)

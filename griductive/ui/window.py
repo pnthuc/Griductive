@@ -280,9 +280,9 @@ class Window(QMainWindow):
         self.setPalette(palette)
         self._case_btn.setIcon(icon('chevron', '#FFFFFF'))
         self._case_btn.setIconSize(QSize(15, 15))
-        self.hint_button.setIcon(icon('hint', '#FFFFFF'))
+        self.hint_button.setIcon(icon('hint', '#0F2942'))
         self.hint_button.setIconSize(QSize(18, 18))
-        self.tools_button.setIcon(icon('sliders', '#FFFFFF'))
+        self.tools_button.setIcon(icon('wrench', '#38434A'))
         self.tools_button.setIconSize(QSize(24, 24))
         self.solver.set_theme(self.theme)
         for card in self.cards.values():
