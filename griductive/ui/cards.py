@@ -143,8 +143,8 @@ class PortraitCard(QWidget):
             w.setFixedHeight(btn_h)
             w.setIconSize(QSize(max(13, round(18 * s)), max(13, round(18 * s))))
             is_inn = name == 'Innocent'
-            bg = '#45CF80' if is_inn else '#F9616E'
-            hov = '#37BF71' if is_inn else '#EB4E5C'
+            bg = '#26975D' if is_inn else '#D94755'
+            hov = '#207D4E' if is_inn else '#BC3544'
             r_br = '0px' if (is_inn and not compact) else '10px'
             w.setStyleSheet(
                 f'QPushButton {{background:{bg};color:#FFFFFF;font-size:{font_px}px;font-weight:700;'
@@ -369,7 +369,7 @@ class PortraitCard(QWidget):
         p.setClipping(False)
         p.setBrush(Qt.BrushStyle.NoBrush)
         if self.is_selected:
-            p.setPen(QPen(QColor(t.selected), 3.5))
+            p.setPen(QPen(QColor(t.selected), 4.5))
             p.drawRoundedRect(rect, radius, radius)
         elif colors:
             for i, color in enumerate(colors):
