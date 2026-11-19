@@ -6,7 +6,7 @@ from PySide6.QtGui import QColor, QImage, QPainter, QPainterPath, QPen, QFont, Q
 from PySide6.QtWidgets import QWidget, QPushButton, QBoxLayout, QFrame, QScrollArea
 from ..presentation.wording_vi import STATUS_TEXT
 from .icons import icon
-from .portraits import portrait_svg_renderer, profession_renderer
+from .portraits import profession_renderer
 from .character_animation import CharacterAnimation
 from .card_feedback import CardFeedback
 from .widgets import InlineClue, CardFadeEffect
@@ -245,7 +245,7 @@ class PortraitCard(QWidget):
         card_path = QPainterPath()
         card_path.addRoundedRect(rect, radius, radius)
 
-        # Render card surface + left panel + dome arch + TRUE 4K/8K VECTOR SVG portrait
+        # Render card surface + left panel + dome arch + pixel portrait
         # at exact 1:1 physical device pixel coordinates (zero fractional DPI blur!)
         dpr = max(1.0, p.deviceTransform().m11(), self.devicePixelRatioF())
         w_log = max(1.0, float(self.width()))
@@ -308,11 +308,27 @@ class PortraitCard(QWidget):
         px = arch_box.center().x() - side / 2.0
         dest = QRectF(px, arch_box.bottom() - side, side, side)
 
-        pid = self.character.portrait
-        portrait_svg_renderer(pid, frame, silhouette).render(ab, dest)
-        if blink > 0.02:
+        frames = self.silhouette_frames if silhouette else self.expression_frames
+        sprite = frames[0 if silhouette else frame] if frames else self.portrait
+        # Frame the upper body consistently across all registered animation poses.
+        crop = QRectF(sprite.width()*.16, sprite.height()*.015,
+                      sprite.width()*.68, sprite.height()*.68)
+        ab.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform, False)
+        ab.drawPixmap(dest, sprite, crop)
+        if blink > 0.02 and frames:
             ab.setOpacity(blink)
-            portrait_svg_renderer(pid, self.expression.blink_frame, silhouette).render(ab, dest)
+            ab.drawPixmap(dest, frames[1 if silhouette else self.expression.blink_frame], crop)
+        if self.status == 'CRIMINAL':
+            progress = self.expression.bars_progress if self.motion else 1.
+            top = arch_box.top() - (1. - progress) * arch_box.height()
+            bar_width = max(3., arch_box.width() * .035)
+            for fraction in (.18, .39, .61, .82):
+                x = arch_box.left() + arch_box.width() * fraction
+                ab.fillRect(QRectF(x, top, bar_width, arch_box.height()), QColor('#34494E'))
+                ab.fillRect(QRectF(x, top, bar_width*.32, arch_box.height()), QColor('#A9BBB2'))
+            for fraction in (.17, .86):
+                ab.fillRect(QRectF(arch_box.left(), top + arch_box.height()*fraction,
+                                   arch_box.width(), bar_width), QColor('#465A5A'))
         ab.end()
 
         cb.drawImage(QRectF(0, 0, w_log, h_log), arch_buf)

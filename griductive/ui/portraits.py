@@ -49,9 +49,7 @@ def _cached_frames(asset_dir):
     manifest = json.loads((root / 'sprites.json').read_text(encoding='utf-8'))
     tile = manifest['tile_size']
     columns = len(manifest['slots'])
-    atlas_path = Path(asset_dir).parent / 'public/images/sprites.png'
-    if not atlas_path.is_file():
-        atlas_path = root / 'sprites.png'
+    atlas_path = root / 'sprites.png'
     atlas = QPixmap(str(atlas_path))
     if atlas.isNull() or atlas.width() != tile * columns or atlas.height() != tile * PORTRAIT_COUNT:
         raise ValueError('Invalid character sprite sheet dimensions')
@@ -67,7 +65,7 @@ def _cached_silhouettes(asset_dir):
     from PySide6.QtGui import QPixmap
 
     tile = 256
-    sil_path = Path(asset_dir).parent / 'public/images/sprites-silhouette.png'
+    sil_path = Path(asset_dir) / 'characters/pixel/sprites-muted.png'
     atlas = QPixmap(str(sil_path))
     if atlas.isNull() or atlas.height() != tile * PORTRAIT_COUNT:
         frames = _cached_frames(asset_dir)
