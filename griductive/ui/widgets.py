@@ -5,6 +5,7 @@ from PySide6.QtCore import Qt, QRectF, Signal
 from PySide6.QtGui import QColor, QPainter, QFont, QFontDatabase, QPixmap
 from PySide6.QtWidgets import QWidget, QLabel, QPushButton, QGraphicsOpacityEffect
 from .assets import ROOT
+from .themes import THEMES
 
 
 def label(value='', name=None):
@@ -181,20 +182,8 @@ class CardFadeEffect(QGraphicsOpacityEffect):
 
 
 class DeskSurface(QWidget):
-    """Renders the infinite-resolution 4K vector sky, mountains, hills & coral poppies."""
-
-    def __init__(self):
-        super().__init__()
-        self.pixel_style = True
+    """Quiet matte surface behind the desktop board."""
 
     def paintEvent(self, event):
-        from .portraits import backdrop_svg_renderer
-        p = QPainter(self)
-        p.setRenderHint(QPainter.RenderHint.Antialiasing, True)
-        w, h = float(self.width()), float(self.height())
-        bw, bh = 1600.0, 900.0
-        scale = max(w / bw, h / bh)
-        dw, dh = bw * scale, bh * scale
-        dx = (w - dw) * 0.5
-        dy = h - dh
-        backdrop_svg_renderer().render(p, QRectF(dx, dy, dw, dh))
+        painter = QPainter(self)
+        painter.fillRect(event.rect(), QColor(THEMES['pixel'].background))

@@ -27,7 +27,7 @@ class Theme:
 THEMES = {
     'pixel': Theme(
         'Thảo nguyên xanh',
-        '#2A84E5',  # background: luminous cerulean sky
+        '#455B60',  # matte slate board
         '#FFFFFF',  # surface: pure crisp white vector card
         '#0F172A',  # text: deep slate ink
         '#64748B',  # muted: cool slate subtitle

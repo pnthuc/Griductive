@@ -2,7 +2,7 @@
 import math
 from html import escape
 from PySide6.QtCore import Qt, QRectF, QPointF, Signal, QSize
-from PySide6.QtGui import QColor, QImage, QPainter, QPainterPath, QPen, QFont, QTextDocument
+from PySide6.QtGui import QColor, QPainter, QPainterPath, QPen, QFont, QTextDocument
 from PySide6.QtWidgets import QWidget, QPushButton, QBoxLayout, QFrame, QScrollArea
 from ..presentation.wording_vi import STATUS_TEXT
 from .icons import icon
@@ -206,28 +206,6 @@ class PortraitCard(QWidget):
             self.note_scroll.hide()
             self.clue_text.hide()
 
-    @staticmethod
-    def _dome_arch_path(box: QRectF) -> QPainterPath:
-        """Continuous semicircular dome top extending flush to the bottom edge of the card."""
-        path = QPainterPath()
-        r_top = min(box.width() * 0.5, box.height() * 0.54)
-        if abs(r_top * 2.0 - box.width()) < 0.5:
-            # Pure single 180-degree semicircle — zero two-arc midpoint seam!
-            path.moveTo(box.right(), box.bottom())
-            path.lineTo(box.right(), box.top() + r_top)
-            path.arcTo(QRectF(box.left(), box.top(), box.width(), box.width()), 0, 180)
-            path.lineTo(box.left(), box.bottom())
-            path.closeSubpath()
-            return path
-        path.moveTo(box.left(), box.bottom())
-        path.lineTo(box.left(), box.top() + r_top)
-        path.arcTo(QRectF(box.left(), box.top(), 2 * r_top, 2 * r_top), 180, -90)
-        path.lineTo(box.right() - r_top, box.top())
-        path.arcTo(QRectF(box.right() - 2 * r_top, box.top(), 2 * r_top, 2 * r_top), 90, -90)
-        path.lineTo(box.right(), box.bottom())
-        path.closeSubpath()
-        return path
-
     def paintEvent(self, event):
         p = QPainter(self)
         p.setRenderHint(QPainter.RenderHint.Antialiasing, True)
@@ -245,96 +223,48 @@ class PortraitCard(QWidget):
         card_path = QPainterPath()
         card_path.addRoundedRect(rect, radius, radius)
 
-        # Render card surface + left panel + dome arch + pixel portrait
-        # at exact 1:1 physical device pixel coordinates (zero fractional DPI blur!)
-        dpr = max(1.0, p.deviceTransform().m11(), self.devicePixelRatioF())
-        w_log = max(1.0, float(self.width()))
-        h_log = max(1.0, float(self.height()))
-        bw = max(1, round(w_log * dpr))
-        bh = max(1, round(h_log * dpr))
-        sx, sy = bw / w_log, bh / h_log
-
-        card_buf = QImage(bw, bh, QImage.Format.Format_ARGB32_Premultiplied)
-        card_buf.fill(Qt.GlobalColor.transparent)
-
-        cb = QPainter(card_buf)
-        cb.setRenderHint(QPainter.RenderHint.Antialiasing, True)
-        cb.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform, True)
-        cb.scale(sx, sy)
-        cb.setPen(Qt.PenStyle.NoPen)
-        cb.setBrush(QColor('#FFFFFF'))
-        cb.drawPath(card_path)
-
-        # Left 36.5% Full-Height Tinted Panel + Semicircular Dome Arch
-        if self.status == 'INNOCENT':
-            panel_bg, arch_bg = '#DCF9E8', '#2CC26B'
-        elif self.status == 'CRIMINAL':
-            panel_bg, arch_bg = '#FFE4E8', '#EE505E'
-        elif self.is_selected:
-            panel_bg, arch_bg = '#DCEBFE', '#99C2F6'
-        else:
-            panel_bg, arch_bg = None, '#D6E9FA'
-
-        cb.setCompositionMode(QPainter.CompositionMode.CompositionMode_SourceAtop)
-        if panel_bg:
-            cb.setBrush(QColor(panel_bg))
-            cb.drawRect(panel_rect)
-
-        inset_x = max(5., round(8.5 * s))
-        inset_top = max(8., round(13 * s))
-        arch_box = QRectF(
-            panel_rect.left() + inset_x,
-            panel_rect.top() + inset_top,
-            max(0., panel_rect.width() - 2 * inset_x),
-            max(0., panel_rect.height() - inset_top),
-        )
-
-        arch_buf = QImage(bw, bh, QImage.Format.Format_ARGB32_Premultiplied)
-        arch_buf.fill(Qt.GlobalColor.transparent)
-        ab = QPainter(arch_buf)
-        ab.setRenderHint(QPainter.RenderHint.Antialiasing, True)
-        ab.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform, True)
-        ab.scale(sx, sy)
-        ab.setPen(Qt.PenStyle.NoPen)
-        ab.setBrush(QColor(arch_bg))
-        ab.drawPath(self._dome_arch_path(arch_box))
+        p.fillPath(card_path, QColor('#FFFFFF'))
+        p.save()
+        p.setClipPath(card_path)
+        p.setClipRect(panel_rect, Qt.ClipOperation.IntersectClip)
+        panel_color = {
+            'INNOCENT': '#CDE9D6',
+            'CRIMINAL': '#F3CCC6',
+        }.get(self.status, '#D0E1EB' if self.is_selected else '#E0E8EA')
+        p.fillRect(panel_rect, QColor(panel_color))
 
         silhouette = (not self.status and not self.is_selected)
         frame = self.expression.frame if self.motion else {None: 0, 'INNOCENT': 4, 'CRIMINAL': 6}[self.status]
         blink = self.expression.blink_amount if self.motion else 0.
 
-        ab.setCompositionMode(QPainter.CompositionMode.CompositionMode_SourceAtop)
-        side = min(arch_box.height(), arch_box.width() * 1.18)
-        px = arch_box.center().x() - side / 2.0
-        dest = QRectF(px, arch_box.bottom() - side, side, side)
+        # Center the face in the panel; extend the bust through its lower edge.
+        side = min(panel_rect.width()*1.06, panel_rect.height())
+        dest = QRectF(panel_rect.center().x()-side/2, panel_rect.center().y()-side*.53,
+                      side, side*1.5)
 
         frames = self.silhouette_frames if silhouette else self.expression_frames
         sprite = frames[0 if silhouette else frame] if frames else self.portrait
         # Frame the upper body consistently across all registered animation poses.
-        crop = QRectF(sprite.width()*.16, sprite.height()*.015,
-                      sprite.width()*.68, sprite.height()*.68)
-        ab.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform, False)
-        ab.drawPixmap(dest, sprite, crop)
+        crop = QRectF(sprite.width()*.16, 0.,
+                      sprite.width()*.68, sprite.height())
+        p.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform, False)
+        p.drawPixmap(dest, sprite, crop)
         if blink > 0.02 and frames:
-            ab.setOpacity(blink)
-            ab.drawPixmap(dest, frames[1 if silhouette else self.expression.blink_frame], crop)
+            p.setOpacity(blink)
+            p.drawPixmap(dest, frames[1 if silhouette else self.expression.blink_frame], crop)
+        p.setOpacity(1.)
         if self.status == 'CRIMINAL':
             progress = self.expression.bars_progress if self.motion else 1.
-            top = arch_box.top() - (1. - progress) * arch_box.height()
-            bar_width = max(3., arch_box.width() * .035)
+            top = panel_rect.top() - (1. - progress) * panel_rect.height()
+            bar_width = max(3., panel_rect.width() * .035)
             for fraction in (.18, .39, .61, .82):
-                x = arch_box.left() + arch_box.width() * fraction
-                ab.fillRect(QRectF(x, top, bar_width, arch_box.height()), QColor('#34494E'))
-                ab.fillRect(QRectF(x, top, bar_width*.32, arch_box.height()), QColor('#A9BBB2'))
+                x = panel_rect.left() + panel_rect.width() * fraction
+                p.fillRect(QRectF(x, top, bar_width, panel_rect.height()), QColor('#34494E'))
+                p.fillRect(QRectF(x, top, bar_width*.32, panel_rect.height()), QColor('#A9BBB2'))
             for fraction in (.17, .86):
-                ab.fillRect(QRectF(arch_box.left(), top + arch_box.height()*fraction,
-                                   arch_box.width(), bar_width), QColor('#465A5A'))
-        ab.end()
-
-        cb.drawImage(QRectF(0, 0, w_log, h_log), arch_buf)
-        cb.end()
-
-        p.drawImage(QRectF(0, 0, w_log, h_log), card_buf)
+                p.fillRect(QRectF(panel_rect.left(), top + panel_rect.height()*fraction,
+                                   panel_rect.width(), bar_width), QColor('#465A5A'))
+        p.restore()
 
         # Subtle monochrome vector profession emblem on unopened, unselected cards (scaled generously!)
         if not self.clue and not self.is_selected:
