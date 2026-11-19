@@ -20,11 +20,21 @@ from .themes import THEMES, stylesheet
 from .icons import icon
 from .portraits import load_expression_frames, load_silhouette_frames
 from .assets import ROOT, scenery_catalog, scenery_image
-from .widgets import label, button, configure_app, DeskSurface, PixelLabel, HudButton, ProgressLabel
+from .widgets import label, button, configure_app, DeskSurface, PixelLabel, HudButton
 from .cards import PortraitCard
 from .dialogs import GameNotice, ModalScrim
 from .journal import SolverJournal
 from .game_controller import GameController
+
+
+class CaseMenu(QMenu):
+    def showEvent(self, event):
+        super().showEvent(event)
+        button = self.parentWidget()
+        center = button.mapToGlobal(button.rect().center())
+        screen = button.screen().availableGeometry()
+        left = center.x() - self.rect().center().x()
+        self.move(max(screen.left(), min(left, screen.right()-self.width()+1)), self.y())
 
 
 class Window(QMainWindow):
@@ -119,7 +129,7 @@ class Window(QMainWindow):
         self._case_btn.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         self._case_btn.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
         self._case_btn.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
-        self._case_menu = QMenu(self._case_btn)
+        self._case_menu = CaseMenu(self._case_btn)
         for path in sorted((ROOT / 'puzzles').glob('case-*.json')):
             data = json.loads(path.read_text(encoding='utf-8'))
             size = data['size']
@@ -136,15 +146,11 @@ class Window(QMainWindow):
 
         hl.addStretch(1)
 
-        self.progress = ProgressLabel()
-        self.progress.setObjectName('progress')
-        self.progress.setFixedSize(78, 36)
-        hl.addWidget(self.progress)
 
         self.hint_button = HudButton()
         self.hint_button.setText('Gợi ý')
         self.hint_button.setObjectName('hint')
-        self.hint_button.setFixedSize(self.progress.size())
+        self.hint_button.setFixedSize(78, 36)
         self.hint_button.clicked.connect(self.show_hint)
         self.hint_button.setToolTip('Tìm một nhân vật suy ra được từ thông tin đã mở.')
         hl.addWidget(self.hint_button)
@@ -152,7 +158,7 @@ class Window(QMainWindow):
         # Single compact ☰ menu button housing all secondary tools
         self.tools_button = HudButton()
         self.tools_button.setObjectName('menuButton')
-        self.tools_button.setFixedSize(self.progress.size())
+        self.tools_button.setFixedSize(78, 36)
         self.tools_button.setToolTip('Menu chính')
         self.tools_button.setAccessibleName('Menu chính')
         self.tools_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
@@ -417,7 +423,6 @@ class Window(QMainWindow):
         card.clue = clue_text(self.state.clues[cell], self.state.board, self.clues, self.names)
         card.expression.set_status(verdict)
         self.select_person(cell)
-        self.progress.setText(f'{len(self.state.statuses)} / {len(self.state.board.cells)}')
         primary, auxiliary, clauses = metrics
         self.solver.stats.setText(f'{primary} biến chính, {auxiliary} biến phụ, {clauses} mệnh đề.')
         variables = {i + 1: f'{self.names[c]} ({c})' for i, c in enumerate(self.state.board.cells)}
@@ -502,7 +507,6 @@ class Window(QMainWindow):
         self.names = {c.cell: c.name for c in public.characters}
         self.title.setText(public.title)
         self._case_btn.setText(public.title)
-        self.progress.setText(f'{len(public.statuses)} / {len(board.cells)}')
         for char in public.characters:
             spec = public.clues.get(char.cell)
             desc = clue_text(spec, board, self.clues, self.names) if spec else None
