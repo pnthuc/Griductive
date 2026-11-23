@@ -47,42 +47,45 @@ def solve(clauses, variable_count=None, assumptions=(), heuristic="ordered", tim
 
     def search(current, assignment):
         check_control()
-        while True:
-            check_control()
-            if any(not clause for clause in current):
-                return None
-            units = [clause[0] for clause in current if len(clause) == 1]
-            if not units:
-                break
-            for unit in units:
-                variable, value = abs(unit), unit > 0
-                if variable in assignment:
-                    if assignment[variable] != value:
-                        return None
-                else:
-                    assignment[variable] = value
-                    stats.propagations += 1
-            simplified = []
-            for clause in current:
-                if any(abs(v) in assignment and assignment[abs(v)] == (v > 0) for v in clause):
-                    continue
-                simplified.append(tuple(v for v in clause if abs(v) not in assignment))
-            current = simplified
-        if not current:
-            return assignment
-        frequencies = {}
-        for clause in current:
-            for literal in clause:
-                frequencies[abs(literal)] = frequencies.get(abs(literal), 0) + 1
-        variable = min(frequencies) if heuristic == "ordered" else min(
-            frequencies, key=lambda v: (-frequencies[v], v))
-        stats.decisions += 1
-        for literal in (variable, -variable):
-            result = search(current + [(literal,)], assignment.copy())
-            if result is not None:
-                return result
-            stats.backtracks += 1
-        return None
+        # TODO(Nam): Cài đặt thuật toán DPLL đệ quy tìm phép gán thỏa mãn tập mệnh đề `current`.
+        #
+        # Input:
+        #   - `current`: list các clause, mỗi clause là 1 tuple các số nguyên (literal).
+        #     Ví dụ: [(1, -2), (2,)] tương ứng với (x1 v ~x2) ^ (x2).
+        #   - `assignment`: dict {variable_id (int > 0): bool} lưu các biến đã gán giá trị.
+        #
+        # Các bước cần thực hiện:
+        # 1. Vòng lặp Unit Propagation:
+        #    - Gọi `check_control()` mỗi đầu vòng lặp để kiểm tra timeout / cancel.
+        #    - Nếu trong `current` có mệnh đề rỗng `()` -> mâu thuẫn, trả về `None`.
+        #    - Tìm tất cả unit clauses (các mệnh đề có `len(clause) == 1`).
+        #    - Nếu không còn unit clause nào -> thoát vòng lặp Unit Propagation.
+        #    - Duyệt từng `unit` (literal duy nhất trong unit clause):
+        #        + `variable, value = abs(unit), unit > 0`
+        #        + Nếu `variable` đã có trong `assignment`:
+        #            * Nếu `assignment[variable] != value` -> mâu thuẫn, trả về `None`.
+        #        + Nếu chưa có: gán `assignment[variable] = value` và tăng `stats.propagations += 1`.
+        #    - Rút gọn `current` thành danh sách mệnh đề mới `simplified`:
+        #        + Bỏ qua (xóa) các clause đã thỏa mãn (có chứa literal `v` mà `assignment[abs(v)] == (v > 0)`).
+        #        + Với các clause còn lại, loại bỏ những literal mà biến `abs(v)` đã có trong `assignment`.
+        #
+        # 2. Kiểm tra điều kiện dừng sau Unit Propagation:
+        #    - Nếu `current` rỗng (tất cả mệnh đề đã thỏa mãn) -> trả về `assignment`.
+        #
+        # 3. Chọn biến phân nhánh (Branching Heuristic):
+        #    - Đếm tần suất xuất hiện `frequencies[abs(literal)]` của từng biến trong `current`.
+        #    - Nếu `heuristic == "ordered"`: chọn biến có chỉ số nhỏ nhất (`min(frequencies)`).
+        #    - Nếu `heuristic == "frequency"`: chọn biến xuất hiện nhiều nhất, nếu bằng nhau ưu tiên chỉ số nhỏ hơn
+        #      (`min(frequencies, key=lambda v: (-frequencies[v], v))`).
+        #    - Tăng `stats.decisions += 1`.
+        #
+        # 4. Đệ quy thử gán True rồi False (Backtracking):
+        #    - Thử lần lượt `literal` trong `(variable, -variable)`:
+        #        + Gọi đệ quy `search(current + [(literal,)], assignment.copy())`.
+        #        + Nếu kết quả khác `None` -> trả về kết quả đó.
+        #        + Nếu thất bại (`None`) -> tăng `stats.backtracks += 1` rồi thử nhánh tiếp theo.
+        #    - Nếu cả 2 nhánh đều thất bại -> trả về `None`.
+        raise NotImplementedError("TODO(Nam): Cài đặt hàm search() của thuật toán DPLL trong sat.py")
 
     try:
         result = search(formula, {})

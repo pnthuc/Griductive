@@ -27,46 +27,61 @@ class Encoder:
         return not value if type(value) is bool else -value
 
     def gate(self, kind, operands):
-        identity = kind == "AND"
-        values = set()
-        for value in operands:
-            if type(value) is bool:
-                if value != identity:
-                    return value
-            else:
-                if -value in values:
-                    return not identity
-                values.add(value)
-        if not values:
-            return identity
-        if len(values) == 1:
-            return next(iter(values))
-        inputs = tuple(sorted(values))
-        key = kind, inputs
-        if key in self.gates:
-            return self.gates[key]
-        out = self.next_variable
-        self.next_variable += 1
-        self.gates[key] = out
-        if kind == "AND":
-            self.clauses.extend((-out, v) for v in inputs)
-            self.clauses.append((out,) + tuple(-v for v in inputs))
-        else:
-            self.clauses.extend((out, -v) for v in inputs)
-            self.clauses.append((-out,) + inputs)
-        return out
+        # TODO(Phuc): Cài đặt cổng logic Tseitin cho `kind` ("AND" hoặc "OR") trên tập `operands`.
+        #
+        # Input:
+        #   - `kind`: chuỗi `"AND"` hoặc `"OR"`.
+        #   - `operands`: iterable chứa các literal (int != 0) hoặc hằng `bool` (`True`/`False`).
+        #
+        # Các bước cần thực hiện:
+        # 1. Rút gọn hằng số và literal trùng / đối ngẫu:
+        #    - Đặt `identity = (kind == "AND")` (phần tử trung hòa: True với AND, False với OR).
+        #    - Duyệt `value` trong `operands`:
+        #        + Nếu `type(value) is bool`:
+        #            * Nếu `value != identity` (gặp False trong AND, hoặc True trong OR) -> trả về ngay `value`.
+        #            * Nếu `value == identity` -> bỏ qua.
+        #        + Nếu `value` là literal (int):
+        #            * Nếu `-value` đã nằm trong tập `values` (có cả x và ~x) -> trả về `not identity`
+        #              (False cho AND, True cho OR).
+        #            * Thêm `value` vào tập `values`.
+        # 2. Trường hợp suy biến:
+        #    - Nếu `values` rỗng -> trả về `identity`.
+        #    - Nếu `len(values) == 1` -> trả về phần tử duy nhất trong `values` (không tạo biến phụ).
+        # 3. Memoization & tạo biến phụ Tseitin:
+        #    - Chuẩn hóa `inputs = tuple(sorted(values))`, `key = (kind, inputs)`.
+        #    - Nếu `key` đã có trong `self.gates` -> trả về `self.gates[key]`.
+        #    - Cấp phát biến phụ mới: `out = self.next_variable`, tăng `self.next_variable += 1`,
+        #      lưu `self.gates[key] = out`.
+        # 4. Sinh các mệnh đề tương đương Tseitin (out <-> AND(inputs) hoặc out <-> OR(inputs)):
+        #    - Nếu `kind == "AND"`:
+        #        + Với mỗi `v` trong `inputs`: thêm clause `(-out, v)`
+        #        + Thêm clause `(out,) + tuple(-v for v in inputs)`
+        #    - Nếu `kind == "OR"`:
+        #        + Với mỗi `v` trong `inputs`: thêm clause `(out, -v)`
+        #        + Thêm clause `(-out,) + inputs`
+        #    - Trả về biến phụ `out`.
+        raise NotImplementedError("TODO(Phuc): Cài đặt Encoder.gate() trong cnf.py")
 
     def thresholds(self, cells):
-        values = tuple(self.variables[cell] for cell in self.board.ordered(cells))
-        if values not in self.counts:
-            previous = [True]
-            for value in values:
-                previous = [True] + [
-                    self.gate("OR", (previous[j] if j < len(previous) else False,
-                        self.gate("AND", (value, previous[j-1]))))
-                    for j in range(1, len(previous) + 1)]
-            self.counts[values] = previous
-        return self.counts[values]
+        # TODO(Phuc): Cài đặt bộ đếm ngưỡng quy hoạch động (unary threshold counter) cho tập ô `cells`.
+        #
+        # Mục tiêu:
+        #   Trả về danh sách `counts` độ dài `len(cells) + 1`, trong đó `counts[k]` là literal (hoặc bool)
+        #   biểu diễn mệnh đề: "Có ít nhất k ô trong `cells` là CRIMINAL (True)".
+        #
+        # Gợi ý quy hoạch động:
+        #   - Lấy `values = tuple(self.variables[cell] for cell in self.board.ordered(cells))`.
+        #   - Dùng `self.counts` để cache theo key `values`.
+        #   - Khởi tạo `previous = [True]` (ít nhất 0 ô True luôn đúng).
+        #   - Duyệt từng biến `value` trong `values`:
+        #       Cập nhật danh sách ngưỡng mới có độ dài `len(previous) + 1`:
+        #       + Phần tử 0 luôn là `True`.
+        #       + Với mỗi `j` từ `1` đến `len(previous)`:
+        #         "Ít nhất j ô đúng sau khi xét thêm `value`"
+        #         = OR(đã có ít nhất j ô đúng trước đó, AND(`value` đúng, đã có ít nhất j-1 ô đúng trước đó))
+        #         (Lưu ý: nếu `j == len(previous)` thì nhánh "đã có ít nhất j ô đúng trước đó" là `False`).
+        #   - Lưu vào `self.counts[values]` và trả về.
+        raise NotImplementedError("TODO(Phuc): Cài đặt Encoder.thresholds() trong cnf.py")
 
     @staticmethod
     def at_least(thresholds, k):
@@ -89,11 +104,15 @@ class Encoder:
 
 
 def build_knowledge_base(state, registry):
-    encoder = Encoder(state.board)
-    for cell in state.board.cells:
-        if cell in state.clues:
-            encoder.add(state.clues[cell], registry)
-        if cell in state.statuses:
-            variable = encoder.variables[cell]
-            encoder.clauses.append((variable if state.statuses[cell] == "CRIMINAL" else -variable,))
-    return encoder.finish()
+    # TODO(Phuc): Xây dựng KnowledgeBase (CNF) từ trạng thái công khai `state` (PublicState).
+    #
+    # Các bước cần thực hiện:
+    # 1. Khởi tạo `encoder = Encoder(state.board)`.
+    # 2. Duyệt từng `cell` theo thứ tự `state.board.cells`:
+    #    - Nếu `cell` có trong `state.clues` (manh mối đã mở): gọi `encoder.add(state.clues[cell], registry)`.
+    #    - Nếu `cell` có trong `state.statuses` (ô đã biết trạng thái):
+    #        + Lấy `variable = encoder.variables[cell]`.
+    #        + Thêm unit clause `(variable,)` nếu `state.statuses[cell] == "CRIMINAL"`,
+    #          ngược lại thêm `(-variable,)`.
+    # 3. Trả về `encoder.finish()`.
+    raise NotImplementedError("TODO(Phuc): Cài đặt build_knowledge_base() trong cnf.py")

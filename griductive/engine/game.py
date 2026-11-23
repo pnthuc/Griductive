@@ -23,31 +23,36 @@ class LogicAgent:
         return result
 
     def verify(self, state, cell, verdict):
-        kb = build_knowledge_base(state, self.registry)
-        if self.query(kb).status == 'UNSAT':
-            return 'INCONSISTENT', kb
-        variable = kb.primary[cell]
-        proposed = variable if verdict == 'CRIMINAL' else -variable
-        if self.query(kb, (-proposed,)).status == 'UNSAT':
-            return 'ACCEPTED', kb
-        if self.query(kb, (proposed,)).status == 'UNSAT':
-            return 'CONTRADICTED', kb
-        return 'NOT_PROVABLE', kb
+        # TODO(Nam): Kiểm tra phán đoán `verdict` ('CRIMINAL' hoặc 'INNOCENT') cho ô `cell` bằng suy luận phản chứng.
+        #
+        # Các bước cần thực hiện:
+        # 1. Tạo `kb = build_knowledge_base(state, self.registry)`.
+        # 2. Nếu bản thân `self.query(kb).status == 'UNSAT'` -> trả về `'INCONSISTENT', kb`.
+        # 3. Lấy biến chính `variable = kb.primary[cell]`.
+        #    Đặt `proposed = variable if verdict == 'CRIMINAL' else -variable`.
+        # 4. Kiểm tra phản chứng:
+        #    - Nếu thêm giả định ngược `(-proposed,)` mà `self.query(kb, (-proposed,)).status == 'UNSAT'`,
+        #      nghĩa là `proposed` bắt buộc đúng -> trả về `'ACCEPTED', kb`.
+        #    - Ngược lại, nếu thêm giả định `(proposed,)` mà `self.query(kb, (proposed,)).status == 'UNSAT'`,
+        #      nghĩa là `proposed` mâu thuẫn với KB -> trả về `'CONTRADICTED', kb`.
+        #    - Nếu cả 2 đều SAT (chưa đủ thông tin kết luận) -> trả về `'NOT_PROVABLE', kb`.
+        raise NotImplementedError("TODO(Nam): Cài đặt LogicAgent.verify() trong game.py")
 
     def classify(self, state):
-        kb = build_knowledge_base(state, self.registry)
-        if self.query(kb).status == "UNSAT":
-            return {cell: "INCONSISTENT" for cell in state.board.cells if cell not in state.statuses}
-        verdicts = {}
-        for cell in state.board.cells:
-            if cell in state.statuses:
-                continue
-            variable = kb.primary[cell]
-            negative = self.query(kb, (-variable,))
-            positive = self.query(kb, (variable,))
-            verdicts[cell] = "CRIMINAL" if negative.status == "UNSAT" else (
-                "INNOCENT" if positive.status == "UNSAT" else "UNKNOWN")
-        return verdicts
+        # TODO(Nam): Phân loại toàn bộ các ô chưa mở trên bàn cờ (`cell not in state.statuses`).
+        #
+        # Các bước cần thực hiện:
+        # 1. Tạo `kb = build_knowledge_base(state, self.registry)`.
+        # 2. Nếu `self.query(kb).status == "UNSAT"`:
+        #    Trả về dict `{cell: "INCONSISTENT"}` cho mọi `cell` trong `state.board.cells` chưa có trong `state.statuses`.
+        # 3. Với mỗi `cell` chưa mở:
+        #    - Lấy `variable = kb.primary[cell]`.
+        #    - Gọi `negative = self.query(kb, (-variable,))` và `positive = self.query(kb, (variable,))`.
+        #    - Nếu `negative.status == "UNSAT"` -> `"CRIMINAL"`
+        #      Ngược lại nếu `positive.status == "UNSAT"` -> `"INNOCENT"`
+        #      Ngược lại -> `"UNKNOWN"`.
+        # 4. Trả về dict `verdicts`.
+        raise NotImplementedError("TODO(Nam): Cài đặt LogicAgent.classify() trong game.py")
 
     def next_verdict(self, state):
         results = self.classify(state)
@@ -113,14 +118,16 @@ class GameEngine:
         return {'result': 'ACCEPTED', **entry}
 
     def hint(self, heuristic='ordered', cancelled=lambda: False):
-        agent = LogicAgent(self.registry, heuristic=heuristic, cancelled=cancelled)
-        return agent.next_verdict(self.public_state())
+        # TODO(Thien): Tạo `LogicAgent(self.registry, heuristic=heuristic, cancelled=cancelled)`
+        # và trả về `agent.next_verdict(self.public_state())`.
+        raise NotImplementedError("TODO(Thien): Cài đặt GameEngine.hint() trong game.py")
 
     def step(self, heuristic='ordered', cancelled=lambda: False):
-        cell, verdict = self.hint(heuristic, cancelled)
-        if cell is None:
-            return {'result': verdict}
-        return self.submit(cell, verdict, heuristic, cancelled)
+        # TODO(Thien): Thực hiện tự động 1 bước suy luận:
+        # - Gọi `cell, verdict = self.hint(heuristic, cancelled)`.
+        # - Nếu `cell is None`: trả về `{'result': verdict}`.
+        # - Ngược lại: gọi và trả về `self.submit(cell, verdict, heuristic, cancelled)`.
+        raise NotImplementedError("TODO(Thien): Cài đặt GameEngine.step() trong game.py")
 
     @property
     def solved(self):
@@ -129,13 +136,15 @@ class GameEngine:
 
 def check_uniqueness(puzzle, registry, heuristic="ordered", timeout=10.):
     """Offline validation only. Block primary variables, regardless of auxiliaries."""
-    encoder = Encoder(puzzle.board)
-    for cell in puzzle.board.cells:
-        encoder.add(puzzle.clues[cell], registry)
-    kb = encoder.finish()
-    first = solve(kb.clauses, kb.variable_count, heuristic=heuristic, timeout=timeout)
-    if first.status == "UNSAT":
-        return "INCONSISTENT"
-    block = tuple(-v if first.model[v] else v for v in kb.primary.values())
-    second = solve(kb.clauses + (block,), kb.variable_count, heuristic=heuristic, timeout=timeout)
-    return "UNIQUE" if second.status == "UNSAT" else "MULTIPLE"
+    # TODO(Thien): Kiểm tra xem `puzzle` (khi mở toàn bộ clues) có nghiệm duy nhất trên các biến chính hay không.
+    #
+    # Các bước cần thực hiện:
+    # 1. Tạo `encoder = Encoder(puzzle.board)`, duyệt mọi `cell` trong `puzzle.board.cells` và gọi
+    #    `encoder.add(puzzle.clues[cell], registry)`, sau đó `kb = encoder.finish()`.
+    # 2. Giải lần 1: `first = solve(kb.clauses, kb.variable_count, heuristic=heuristic, timeout=timeout)`.
+    #    Nếu `first.status == "UNSAT"` -> trả về `"INCONSISTENT"`.
+    # 3. Tạo mệnh đề chặn (blocking clause) trên các biến chính (`kb.primary.values()`):
+    #    `block = tuple(-v if first.model[v] else v for v in kb.primary.values())`
+    # 4. Giải lần 2 với `kb.clauses + (block,)`:
+    #    Nếu kết quả là `"UNSAT"` -> trả về `"UNIQUE"`, ngược lại trả về `"MULTIPLE"`.
+    raise NotImplementedError("TODO(Thien): Cài đặt check_uniqueness() trong game.py")
