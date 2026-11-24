@@ -120,14 +120,18 @@ class GameEngine:
     def hint(self, heuristic='ordered', cancelled=lambda: False):
         # TODO(Thien): Tạo `LogicAgent(self.registry, heuristic=heuristic, cancelled=cancelled)`
         # và trả về `agent.next_verdict(self.public_state())`.
-        raise NotImplementedError("TODO(Thien): Cài đặt GameEngine.hint() trong game.py")
+        return LogicAgent(self.registry, heuristic = heuristic, cancelled = cancelled).next_verdict(self.public_state())
 
     def step(self, heuristic='ordered', cancelled=lambda: False):
         # TODO(Thien): Thực hiện tự động 1 bước suy luận:
         # - Gọi `cell, verdict = self.hint(heuristic, cancelled)`.
         # - Nếu `cell is None`: trả về `{'result': verdict}`.
         # - Ngược lại: gọi và trả về `self.submit(cell, verdict, heuristic, cancelled)`.
-        raise NotImplementedError("TODO(Thien): Cài đặt GameEngine.step() trong game.py")
+        cell, verdict = self.hint(heuristic, cancelled)
+        if cell is None:
+            return {'result': verdict}
+        
+        return self.submit(cell, verdict, heuristic, cancelled)
 
     @property
     def solved(self):
@@ -147,4 +151,17 @@ def check_uniqueness(puzzle, registry, heuristic="ordered", timeout=10.):
     #    `block = tuple(-v if first.model[v] else v for v in kb.primary.values())`
     # 4. Giải lần 2 với `kb.clauses + (block,)`:
     #    Nếu kết quả là `"UNSAT"` -> trả về `"UNIQUE"`, ngược lại trả về `"MULTIPLE"`.
-    raise NotImplementedError("TODO(Thien): Cài đặt check_uniqueness() trong game.py")
+    encoder = Encoder(puzzle.board)
+    for cell in puzzle.board.cells:
+        encoder.add(puzzle.clues[cell], registry)
+
+    kb = encoder.finish()
+    first = solve(kb.clauses, kb.variable_count, heuristic=heuristic, timeout=timeout)
+
+    if first.status == "UNSAT":
+        return "INCONSISTENT"
+    
+    block = tuple(-v if first.model[v] else v for v in kb.primary.values())
+    second = solve(kb.clauses + (block,), kb.variable_count, heuristic=heuristic, timeout=timeout)
+    
+    return "UNIQUE" if second.status == "UNSAT" else "MULTIPLE"
