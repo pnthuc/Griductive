@@ -23,43 +23,70 @@ class LogicAgent:
         return result
 
     def verify(self, state, cell, verdict):
-        # TODO(Nam): Kiểm tra phán đoán `verdict` ('CRIMINAL' hoặc 'INNOCENT') cho ô `cell` bằng suy luận phản chứng.
-        #
-        # Các bước cần thực hiện:
-        # 1. Tạo `kb = build_knowledge_base(state, self.registry)`.
-        # 2. Nếu bản thân `self.query(kb).status == 'UNSAT'` -> trả về `'INCONSISTENT', kb`.
-        # 3. Lấy biến chính `variable = kb.primary[cell]`.
-        #    Đặt `proposed = variable if verdict == 'CRIMINAL' else -variable`.
-        # 4. Kiểm tra phản chứng:
-        #    - Nếu thêm giả định ngược `(-proposed,)` mà `self.query(kb, (-proposed,)).status == 'UNSAT'`,
-        #      nghĩa là `proposed` bắt buộc đúng -> trả về `'ACCEPTED', kb`.
-        #    - Ngược lại, nếu thêm giả định `(proposed,)` mà `self.query(kb, (proposed,)).status == 'UNSAT'`,
-        #      nghĩa là `proposed` mâu thuẫn với KB -> trả về `'CONTRADICTED', kb`.
-        #    - Nếu cả 2 đều SAT (chưa đủ thông tin kết luận) -> trả về `'NOT_PROVABLE', kb`.
-        raise NotImplementedError("TODO(Nam): Cài đặt LogicAgent.verify() trong game.py")
+        """Kiểm chứng một phán quyết bằng phản chứng: KB ∧ ¬α UNSAT  ⟺  KB ⊨ α."""
+        if verdict not in ('CRIMINAL', 'INNOCENT'):
+            raise PuzzleError('Verdict phải là CRIMINAL hoặc INNOCENT.')
+        kb = build_knowledge_base(state, self.registry)
+        # KB mâu thuẫn thì suy ra được mọi thứ, nên phải loại trường hợp này trước.
+        if self.query(kb).status == 'UNSAT':
+            return 'INCONSISTENT', kb
+        variable = kb.primary[cell]
+        proposed = variable if verdict == 'CRIMINAL' else -variable
+        if self.query(kb, (-proposed,)).status == 'UNSAT':
+            return 'ACCEPTED', kb       # không thể sai  -> bắt buộc đúng
+        if self.query(kb, (proposed,)).status == 'UNSAT':
+            return 'CONTRADICTED', kb   # không thể đúng -> phán quyết ngược lại mới đúng
+        return 'NOT_PROVABLE', kb       # cả hai khả năng đều còn mở
+
+    def _verdicts(self, state):
+        """Sinh (ô, kết luận) cho từng ô chưa mở, theo thứ tự trên bàn cờ.
+
+        Mỗi kết quả SAT trả về một mô hình (nhân chứng). Nếu một mô hình nào đó
+        đã cho biến v = False thì KB ∧ ¬v chắc chắn SAT, không cần hỏi lại; tương
+        tự cho v = True. Nhờ vậy mỗi ô cần tối đa 1 truy vấn thay vì 2.
+        """
+        kb = build_knowledge_base(state, self.registry)
+        pending = [cell for cell in state.board.cells if cell not in state.statuses]
+        base = self.query(kb)
+        if base.status == "UNSAT":
+            for cell in pending:
+                yield cell, "INCONSISTENT"
+            return
+        can_be_true, can_be_false = set(), set()
+
+        def record(model):
+            for v in kb.primary.values():
+                (can_be_true if model[v] else can_be_false).add(v)
+
+        record(base.model)
+        for cell in pending:
+            variable = kb.primary[cell]
+            if variable not in can_be_false:
+                result = self.query(kb, (-variable,))
+                if result.status == "UNSAT":
+                    yield cell, "CRIMINAL"
+                    continue
+                record(result.model)
+            if variable not in can_be_true:
+                result = self.query(kb, (variable,))
+                if result.status == "UNSAT":
+                    yield cell, "INNOCENT"
+                    continue
+                record(result.model)
+            yield cell, "UNKNOWN"
 
     def classify(self, state):
-        # TODO(Nam): Phân loại toàn bộ các ô chưa mở trên bàn cờ (`cell not in state.statuses`).
-        #
-        # Các bước cần thực hiện:
-        # 1. Tạo `kb = build_knowledge_base(state, self.registry)`.
-        # 2. Nếu `self.query(kb).status == "UNSAT"`:
-        #    Trả về dict `{cell: "INCONSISTENT"}` cho mọi `cell` trong `state.board.cells` chưa có trong `state.statuses`.
-        # 3. Với mỗi `cell` chưa mở:
-        #    - Lấy `variable = kb.primary[cell]`.
-        #    - Gọi `negative = self.query(kb, (-variable,))` và `positive = self.query(kb, (variable,))`.
-        #    - Nếu `negative.status == "UNSAT"` -> `"CRIMINAL"`
-        #      Ngược lại nếu `positive.status == "UNSAT"` -> `"INNOCENT"`
-        #      Ngược lại -> `"UNKNOWN"`.
-        # 4. Trả về dict `verdicts`.
-        raise NotImplementedError("TODO(Nam): Cài đặt LogicAgent.classify() trong game.py")
+        """Phân loại mọi ô chưa mở: CRIMINAL / INNOCENT / UNKNOWN / INCONSISTENT."""
+        return dict(self._verdicts(state))
 
     def next_verdict(self, state):
-        results = self.classify(state)
-        for cell, verdict in results.items():
+        """Ô đầu tiên (theo thứ tự bàn cờ) suy ra được; dừng ngay khi tìm thấy."""
+        for cell, verdict in self._verdicts(state):
             if verdict in ("CRIMINAL", "INNOCENT"):
                 return cell, verdict
-        return None, "INCONSISTENT" if "INCONSISTENT" in results.values() else "UNKNOWN"
+            if verdict == "INCONSISTENT":
+                return None, "INCONSISTENT"
+        return None, "UNKNOWN"
 
 
 class GameEngine:
