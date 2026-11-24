@@ -141,9 +141,8 @@ class Fact(Clue):
         raise NotImplementedError("TODO(Thien): Cài đặt Fact.evaluate() trong clues.py")
 
     def expression(self, spec, encoder, clues):
-        # TODO(Phuc): Trả về literal biểu diễn Fact:
-        # `encoder.variables[spec['person']]` nếu `spec['status'] == 'CRIMINAL'`, ngược lại trả về số âm của nó.
-        raise NotImplementedError("TODO(Phuc): Cài đặt Fact.expression() trong clues.py")
+        variable = encoder.variables[spec['person']]
+        return variable if spec['status'] == 'CRIMINAL' else -variable
 
     def describe(self, spec, board, clues):
         return f'{spec["person"]} là {spec["status"].title()}.'
@@ -160,11 +159,10 @@ class Same(Clue):
         raise NotImplementedError("TODO(Thien): Cài đặt Same.evaluate() trong clues.py")
 
     def expression(self, spec, encoder, clues):
-        # TODO(Phuc): Mã hóa mệnh đề tương đương (a <-> b) hoặc (a xor b) qua cổng Tseitin `encoder.gate`:
-        # - Lấy `a, b = encoder.variables[spec['a']], encoder.variables[spec['b']]`.
-        # - `equal = AND(OR(-a, b), OR(a, -b))`
-        # - Nếu `self.same` là True trả về `equal`, ngược lại trả về `encoder.negate(equal)`.
-        raise NotImplementedError("TODO(Phuc): Cài đặt Same.expression() trong clues.py")
+        a = encoder.variables[spec['a']]
+        b = encoder.variables[spec['b']]
+        equal = encoder.gate('AND', (encoder.gate('OR', (-a, b)), encoder.gate('OR', (a, -b))))
+        return equal if self.same else encoder.negate(equal)
 
     def describe(self, spec, board, clues):
         relation = 'cùng' if self.same else 'khác'
@@ -190,12 +188,11 @@ class Count(Clue):
         raise NotImplementedError("TODO(Thien): Cài đặt Count.evaluate() trong clues.py")
 
     def expression(self, spec, encoder, clues):
-        # TODO(Phuc): Mã hóa ràng buộc đếm số lượng Criminal trong vùng `spec['region']`:
-        # - Gọi `counts = encoder.thresholds(clues.regions.resolve(spec['region'], encoder.board))`.
-        # - `lower = encoder.at_least(counts, spec['k'])` (ít nhất k Criminal).
-        # - `upper = encoder.negate(encoder.at_least(counts, spec['k'] + 1))` (nhiều nhất k Criminal, tức không có >= k+1).
-        # - Trả về `self.bound(encoder, lower, upper)`.
-        raise NotImplementedError("TODO(Phuc): Cài đặt Count.expression() trong clues.py")
+        cells = clues.regions.resolve(spec['region'], encoder.board)
+        counts = encoder.thresholds(cells)
+        lower = encoder.at_least(counts, spec['k'])
+        upper = encoder.negate(encoder.at_least(counts, spec['k'] + 1))
+        return self.bound(encoder, lower, upper)
 
     def describe(self, spec, board, clues):
         region = clues.regions.describe(spec['region'], board)
@@ -219,8 +216,7 @@ class Exactly(Count):
         raise NotImplementedError("TODO(Thien): Cài đặt Exactly.compare() trong clues.py")
 
     def bound(self, encoder, lower, upper):
-        # TODO(Phuc): Có đúng k <=> vừa >= k (`lower`) vừa <= k (`upper`). Dùng `encoder.gate('AND', ...)`.
-        raise NotImplementedError("TODO(Phuc): Cài đặt Exactly.bound() trong clues.py")
+        return encoder.gate('AND', (lower, upper))
 
 
 @register_clue('AT_LEAST')
@@ -232,8 +228,7 @@ class AtLeast(Count):
         raise NotImplementedError("TODO(Thien): Cài đặt AtLeast.compare() trong clues.py")
 
     def bound(self, encoder, lower, upper):
-        # TODO(Phuc): Có ít nhất k <=> trả về `lower`.
-        raise NotImplementedError("TODO(Phuc): Cài đặt AtLeast.bound() trong clues.py")
+        return lower
 
 
 @register_clue('AT_MOST')
@@ -245,8 +240,7 @@ class AtMost(Count):
         raise NotImplementedError("TODO(Thien): Cài đặt AtMost.compare() trong clues.py")
 
     def bound(self, encoder, lower, upper):
-        # TODO(Phuc): Có nhiều nhất k <=> trả về `upper`.
-        raise NotImplementedError("TODO(Phuc): Cài đặt AtMost.bound() trong clues.py")
+        return upper
 
 
 @register_clue('COMPARISON')
@@ -264,14 +258,27 @@ class Comparison(Clue):
         raise NotImplementedError("TODO(Thien): Cài đặt Comparison.evaluate() trong clues.py")
 
     def expression(self, spec, encoder, clues):
-        # TODO(Phuc): Mã hóa phép so sánh số lượng Criminal giữa 2 vùng `left` và `right`:
-        # - Lấy `a = encoder.thresholds(...)` cho `left` và `b = encoder.thresholds(...)` cho `right`.
-        # - Viết hàm phụ `greater_equal(x, y)` biểu diễn count(x) >= count(y):
-        #   count(x) >= count(y) <=> với mọi j từ 1..len(y)-1: (count(y) >= j) -> (count(x) >= j)
-        #   tức là `AND` trên mọi j của `OR(negate(y[j]), at_least(x, j))`.
-        # - Tính `ab = greater_equal(a, b)` (a >= b) và `ba = greater_equal(b, a)` (b >= a).
-        # - Từ `ab` và `ba`, trả về biểu thức tương ứng với `op` trong ('>=', '<=', '>', '<', '=', '!=').
-        raise NotImplementedError("TODO(Phuc): Cài đặt Comparison.expression() trong clues.py")
+        left = encoder.thresholds(clues.regions.resolve(spec['left'], encoder.board))
+        right = encoder.thresholds(clues.regions.resolve(spec['right'], encoder.board))
+
+        def greater_equal(first, second):
+            # Every threshold reached by the second region must hold in the first.
+            return encoder.gate('AND', (
+                encoder.gate('OR', (encoder.negate(second[k]), encoder.at_least(first, k)))
+                for k in range(1, len(second))
+            ))
+
+        op = spec['op']
+        if op == '>=':
+            return greater_equal(left, right)
+        if op == '<=':
+            return greater_equal(right, left)
+        if op == '<':
+            return encoder.negate(greater_equal(left, right))
+        if op == '>':
+            return encoder.negate(greater_equal(right, left))
+        equal = encoder.gate('AND', (greater_equal(left, right), greater_equal(right, left)))
+        return equal if op == '=' else encoder.negate(equal)
 
     def describe(self, spec, board, clues):
         left = clues.regions.describe(spec['left'], board)
@@ -293,8 +300,9 @@ class Conditional(Clue):
         raise NotImplementedError("TODO(Thien): Cài đặt Conditional.evaluate() trong clues.py")
 
     def expression(self, spec, encoder, clues):
-        # TODO(Phuc): Mã hóa mệnh đề kéo theo (if -> then) <=> OR(negate(first), second).
-        raise NotImplementedError("TODO(Phuc): Cài đặt Conditional.expression() trong clues.py")
+        premise = encoder.expression(spec['if'], clues)
+        consequence = encoder.expression(spec['then'], clues)
+        return encoder.gate('OR', (encoder.negate(premise), consequence))
 
     def describe(self, spec, board, clues):
         return f"Nếu {clues.describe(spec['if'], board)} thì {clues.describe(spec['then'], board)}"
