@@ -6,19 +6,19 @@ Tài liệu này hướng dẫn chi tiết phần việc của từng thành vi�
 
 ## 1. Bảng Phân Công Tổng Quan
 
-| Thành viên | MSSV | Phụ trách chính | Tag tìm kiếm trong code |
-| --- | --- | --- | --- |
-| **Bùi Phương Nam** | `24120502` | SAT Solver (DPLL) & Suy luận phản chứng (`LogicAgent`) | `TODO(Nam)` |
-| **Phan Gia Phúc** | `24120503` | Mã hóa CNF (Tseitin, Unary Threshold Counter) & Biểu diễn Clue sang CNF | `TODO(Phuc)` |
-| **Tống Phúc Thiện** | `24120141` | Vùng bàn cờ (`Regions`), Ngữ nghĩa/Đánh giá Clue (`evaluate`) & Luồng `GameEngine` | `TODO(Thien)` |
-| **Phan Ngọc Thức** | `24120228` | Thực nghiệm (`experiments.py`), Báo cáo (`REPORT.md` / `Report.pdf`), Video Demo | — |
-| **Nguyễn Lê Minh Quân** | `24120219` | Thực nghiệm, Phân tích kết quả 2 heuristic, Báo cáo & Video Demo | — |
+| Thành viên | MSSV | Phụ trách chính | Tag tìm kiếm trong code | Trạng thái |
+| --- | --- | --- | --- | --- |
+| **Bùi Phương Nam** | `24120502` | SAT Solver (DPLL) & Suy luận phản chứng (`LogicAgent`) | `TODO(Nam)` | ✅ Đã hoàn thành (`edcd1c8`) |
+| **Phan Gia Phúc** | `24120503` | Mã hóa CNF (Tseitin, Unary Threshold Counter) & Biểu diễn Clue sang CNF | `TODO(Phuc)` | ⏳ Đang thực hiện |
+| **Tống Phúc Thiện** | `24120141` | Vùng bàn cờ (`Regions`), Ngữ nghĩa/Đánh giá Clue (`evaluate`) & Luồng `GameEngine` | `TODO(Thien)` | ⏳ Đang thực hiện |
+| **Phan Ngọc Thức** | `24120228` | Thực nghiệm (`experiments.py`), Báo cáo (`REPORT.md` / `Report.pdf`), Video Demo | — | ⏳ Chờ hoàn tất Engine |
+| **Nguyễn Lê Minh Quân** | `24120219` | Thực nghiệm, Phân tích kết quả 2 heuristic, Báo cáo & Video Demo | — | ⏳ Chờ hoàn tất Engine |
 
 ---
 
 ## 2. Chi Tiết Nhiệm Vụ Từng Thành Viên
 
-### 🔹 Phần 1: Bùi Phương Nam (`TODO(Nam)`) — SAT Solver & Suy Luận Phản Chứng
+### 🔹 Phần 1: Bùi Phương Nam (`TODO(Nam)`) — SAT Solver & Suy Luận Phản Chứng ✅ (Đã hoàn thành)
 
 Nam phụ trách bộ giải DPLL và cơ chế chứng minh một ô là `CRIMINAL` / `INNOCENT` bằng phản chứng ($\text{KB} \land \neg \alpha \models \perp$).
 
