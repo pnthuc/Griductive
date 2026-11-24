@@ -138,7 +138,7 @@ class Fact(Clue):
     def evaluate(self, spec, assignment, board, clues):
         # TODO(Thien): Kiểm tra trực tiếp xem `assignment[spec['person']]` có khớp với `spec['status']` không.
         # (`assignment` là dict {cell: bool} trong đó True ứng với 'CRIMINAL', False ứng với 'INNOCENT').
-        raise NotImplementedError("TODO(Thien): Cài đặt Fact.evaluate() trong clues.py")
+        return assignment[spec['person']] == (spec['status'] == 'CRIMINAL')
 
     def expression(self, spec, encoder, clues):
         variable = encoder.variables[spec['person']]
@@ -156,7 +156,10 @@ class Same(Clue):
     def evaluate(self, spec, assignment, board, clues):
         # TODO(Thien): Kiểm tra 2 ô `spec['a']` và `spec['b']` có cùng trạng thái (`self.same == True`)
         # hoặc khác trạng thái (`self.same == False`, dùng chung cho lớp `Different`) trong `assignment` không.
-        raise NotImplementedError("TODO(Thien): Cài đặt Same.evaluate() trong clues.py")
+        if self.same:
+            return assignment[spec['a']] == assignment[spec['b']]
+        else:
+            return assignment[spec['a']] != assignment[spec['b']]
 
     def expression(self, spec, encoder, clues):
         a = encoder.variables[spec['a']]
@@ -185,7 +188,11 @@ class Count(Clue):
     def evaluate(self, spec, assignment, board, clues):
         # TODO(Thien): Đếm số ô có `assignment[cell] == True` trong vùng `clues.regions.resolve(spec['region'], board)`,
         # sau đó gọi `self.compare(count, spec['k'])`.
-        raise NotImplementedError("TODO(Thien): Cài đặt Count.evaluate() trong clues.py")
+        cnt = 0
+        for cell in clues.regions.resolve(spec['region'], board):
+            cnt += (assignment[cell] == True)
+
+        return self.compare(cnt, spec['k'])
 
     def expression(self, spec, encoder, clues):
         cells = clues.regions.resolve(spec['region'], encoder.board)
@@ -213,7 +220,7 @@ class Exactly(Count):
 
     def compare(self, count, k):
         # TODO(Thien): Trả về True nếu `count == k`.
-        raise NotImplementedError("TODO(Thien): Cài đặt Exactly.compare() trong clues.py")
+        return count == k
 
     def bound(self, encoder, lower, upper):
         return encoder.gate('AND', (lower, upper))
@@ -225,7 +232,7 @@ class AtLeast(Count):
 
     def compare(self, count, k):
         # TODO(Thien): Trả về True nếu `count >= k`.
-        raise NotImplementedError("TODO(Thien): Cài đặt AtLeast.compare() trong clues.py")
+        return count >= k
 
     def bound(self, encoder, lower, upper):
         return lower
@@ -237,7 +244,7 @@ class AtMost(Count):
 
     def compare(self, count, k):
         # TODO(Thien): Trả về True nếu `count <= k`.
-        raise NotImplementedError("TODO(Thien): Cài đặt AtMost.compare() trong clues.py")
+        return count <= k
 
     def bound(self, encoder, lower, upper):
         return upper
@@ -255,8 +262,17 @@ class Comparison(Clue):
 
     def evaluate(self, spec, assignment, board, clues):
         # TODO(Thien): Đếm số Criminal ở vùng `left` và vùng `right`, rồi so sánh bằng `self.operators[spec['op']]`.
-        raise NotImplementedError("TODO(Thien): Cài đặt Comparison.evaluate() trong clues.py")
 
+        left = 0
+        for cell in clues.regions.resolve(spec['left'], board):
+            left += (assignment[cell] == True)
+
+        right = 0
+        for cell in clues.regions.resolve(spec['right'], board):
+            right += (assignment[cell] == True)
+
+        return self.operators[spec['op']](left, right)
+    
     def expression(self, spec, encoder, clues):
         left = encoder.thresholds(clues.regions.resolve(spec['left'], encoder.board))
         right = encoder.thresholds(clues.regions.resolve(spec['right'], encoder.board))
@@ -297,7 +313,10 @@ class Conditional(Clue):
 
     def evaluate(self, spec, assignment, board, clues):
         # TODO(Thien): Đánh giá mệnh đề kéo theo (P -> Q) <=> (not P or Q) bằng `clues.evaluate(...)`.
-        raise NotImplementedError("TODO(Thien): Cài đặt Conditional.evaluate() trong clues.py")
+        p = clues.evaluate(spec['if'], assignment, board)
+        q = clues.evaluate(spec['then'], assignment, board)
+
+        return not p or q
 
     def expression(self, spec, encoder, clues):
         premise = encoder.expression(spec['if'], clues)

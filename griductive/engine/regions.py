@@ -91,7 +91,15 @@ class Row(Region):
         # - Nếu `number` không phải kiểu `int` (`type(number) is not int`) hoặc nằm ngoài `[1, board.size]`,
         #   ném lỗi `PuzzleError('row phải là số nguyên trong phạm vi bàn.')`.
         # - Trả về iterable các `cell` trong `board.cells` có `board.position(cell)[0] == number - 1`.
-        raise NotImplementedError("TODO(Thien): Cài đặt Row.resolve() trong regions.py")
+        number = spec.get('row')
+        if type(number) is not int or not 1 <= number <= board.size:
+            raise PuzzleError('row phải là số nguyên trong phạm vi bàn.')
+
+        rows = []
+        for i in range(board.size):
+            rows.append(f'{chr(i + 65)}{number}')
+
+        return rows
 
     def describe(self, spec, board, regions):
         return f'hàng {spec["row"]}'
@@ -104,7 +112,16 @@ class Column(Region):
         # - Hợp lệ khi `letter` là `str` và nằm trong danh sách chữ cái cột của bàn (`chr(65 + i)` với `0 <= i < board.size`).
         # - Nếu không hợp lệ, ném lỗi `PuzzleError('column phải là chữ cột hợp lệ, ví dụ A.')`.
         # - Trả về iterable các `cell` trong `board.cells` có `cell[0] == letter`.
-        raise NotImplementedError("TODO(Thien): Cài đặt Column.resolve() trong regions.py")
+        letter = spec.get('column')
+        columns = tuple(chr(65 + index) for index in range(board.size))
+        if not isinstance(letter, str) or letter not in columns:
+            raise PuzzleError('column phải là chữ cột hợp lệ, ví dụ A.')
+
+        cols = []
+        for i in range(board.size):
+            cols.append(f'{letter}{i + 1}')
+
+        return cols
 
     def describe(self, spec, board, regions):
         return f'cột {spec["column"]}'
@@ -118,7 +135,14 @@ class Neighbors(Region):
         # TODO(Thien): Trả về các ô lân cận 8 hướng (Chebyshev distance <= 1, không tính chính nó) của `spec['cell']`.
         # - Dùng `row, column = board.position(spec['cell'])` để lấy tọa độ (0-indexed).
         # - Một ô `cell != spec['cell']` là hàng xóm nếu `max(|r - row|, |c - column|) <= 1`.
-        raise NotImplementedError("TODO(Thien): Cài đặt Neighbors.resolve() trong regions.py")
+        row, column = board.position(spec['cell'])
+        neighbors = []
+        for i in range(row - 1, row + 2):
+            for j in range(column - 1, column + 2):
+                if 0 <= i < board.size and 0 <= j < board.size and (i, j) != (row, column):
+                    neighbors.append(f'{chr(65 + j)}{i + 1}')
+
+        return neighbors
 
     def describe(self, spec, board, regions):
         return f'hàng xóm của {spec["cell"]}'
@@ -134,7 +158,15 @@ class Explicit(Region):
         # - Kiểm tra từng `cell` bằng `board.position(cell)`.
         # - Nếu có ô trùng nhau (`len(set(cells)) != len(cells)`), ném `PuzzleError('EXPLICIT không được chứa ô trùng.')`.
         # - Trả về `cells`.
-        raise NotImplementedError("TODO(Thien): Cài đặt Explicit.resolve() trong regions.py")
+        cells = spec.get('cells')
+        if not isinstance(cells, (list, tuple)):
+            raise PuzzleError('cells phải là danh sách ô.')
+        for cell in cells:
+            board.position(cell)
+        if len(set(cells)) != len(cells):
+            raise PuzzleError('EXPLICIT không được chứa ô trùng.')
+        
+        return cells
 
     def describe(self, spec, board, regions):
         return 'nhóm [' + ', '.join(spec['cells']) + ']'
@@ -144,7 +176,15 @@ class Explicit(Region):
 class Corners(Region):
     def resolve(self, spec, board, regions, depth):
         # TODO(Thien): Trả về tập hợp 4 ô ở 4 góc của bàn cờ (`board.cells`).
-        raise NotImplementedError("TODO(Thien): Cài đặt Corners.resolve() trong regions.py")
+        last_col = chr(65 + board.size - 1)
+        last_row = board.size
+        
+        return [
+            'A1',
+            f'{last_col}1',
+            f'A{last_row}',
+            f'{last_col}{last_row}',
+        ]
 
     def describe(self, spec, board, regions):
         return 'bốn ô góc'
@@ -174,7 +214,7 @@ class Union(SetOperation):
 
     def combine(self, left, right):
         # TODO(Thien): Trả về hợp (union) của 2 tập ô `left` và `right`.
-        raise NotImplementedError("TODO(Thien): Cài đặt Union.combine() trong regions.py")
+        return left | right
 
 
 @register_region('INTERSECTION')
@@ -183,7 +223,7 @@ class Intersection(SetOperation):
 
     def combine(self, left, right):
         # TODO(Thien): Trả về giao (intersection) của 2 tập ô `left` và `right`.
-        raise NotImplementedError("TODO(Thien): Cài đặt Intersection.combine() trong regions.py")
+        return left & right
 
 
 @register_region('DIFFERENCE')
@@ -192,4 +232,4 @@ class Difference(SetOperation):
 
     def combine(self, left, right):
         # TODO(Thien): Trả về hiệu (difference: thuộc left nhưng không thuộc right) của `left` và `right`.
-        raise NotImplementedError("TODO(Thien): Cài đặt Difference.combine() trong regions.py")
+        return left - right
