@@ -45,47 +45,60 @@ def solve(clauses, variable_count=None, assumptions=(), heuristic="ordered", tim
         if perf_counter() - start > timeout:
             raise SolverTimeout("SAT query exceeded its time limit")
 
+    def simplify(clauses, assignment):
+        """Bỏ mệnh đề đã đúng; xóa literal của biến đã gán khỏi mệnh đề còn lại."""
+        remaining = []
+        for clause in clauses:
+            if any(assignment.get(abs(v)) == (v > 0) for v in clause):
+                continue
+            remaining.append(tuple(v for v in clause if abs(v) not in assignment))
+        return remaining
+
     def search(current, assignment):
-        check_control()
-        # TODO(Nam): Cài đặt thuật toán DPLL đệ quy tìm phép gán thỏa mãn tập mệnh đề `current`.
-        #
-        # Input:
-        #   - `current`: list các clause, mỗi clause là 1 tuple các số nguyên (literal).
-        #     Ví dụ: [(1, -2), (2,)] tương ứng với (x1 v ~x2) ^ (x2).
-        #   - `assignment`: dict {variable_id (int > 0): bool} lưu các biến đã gán giá trị.
-        #
-        # Các bước cần thực hiện:
-        # 1. Vòng lặp Unit Propagation:
-        #    - Gọi `check_control()` mỗi đầu vòng lặp để kiểm tra timeout / cancel.
-        #    - Nếu trong `current` có mệnh đề rỗng `()` -> mâu thuẫn, trả về `None`.
-        #    - Tìm tất cả unit clauses (các mệnh đề có `len(clause) == 1`).
-        #    - Nếu không còn unit clause nào -> thoát vòng lặp Unit Propagation.
-        #    - Duyệt từng `unit` (literal duy nhất trong unit clause):
-        #        + `variable, value = abs(unit), unit > 0`
-        #        + Nếu `variable` đã có trong `assignment`:
-        #            * Nếu `assignment[variable] != value` -> mâu thuẫn, trả về `None`.
-        #        + Nếu chưa có: gán `assignment[variable] = value` và tăng `stats.propagations += 1`.
-        #    - Rút gọn `current` thành danh sách mệnh đề mới `simplified`:
-        #        + Bỏ qua (xóa) các clause đã thỏa mãn (có chứa literal `v` mà `assignment[abs(v)] == (v > 0)`).
-        #        + Với các clause còn lại, loại bỏ những literal mà biến `abs(v)` đã có trong `assignment`.
-        #
-        # 2. Kiểm tra điều kiện dừng sau Unit Propagation:
-        #    - Nếu `current` rỗng (tất cả mệnh đề đã thỏa mãn) -> trả về `assignment`.
-        #
-        # 3. Chọn biến phân nhánh (Branching Heuristic):
-        #    - Đếm tần suất xuất hiện `frequencies[abs(literal)]` của từng biến trong `current`.
-        #    - Nếu `heuristic == "ordered"`: chọn biến có chỉ số nhỏ nhất (`min(frequencies)`).
-        #    - Nếu `heuristic == "frequency"`: chọn biến xuất hiện nhiều nhất, nếu bằng nhau ưu tiên chỉ số nhỏ hơn
-        #      (`min(frequencies, key=lambda v: (-frequencies[v], v))`).
-        #    - Tăng `stats.decisions += 1`.
-        #
-        # 4. Đệ quy thử gán True rồi False (Backtracking):
-        #    - Thử lần lượt `literal` trong `(variable, -variable)`:
-        #        + Gọi đệ quy `search(current + [(literal,)], assignment.copy())`.
-        #        + Nếu kết quả khác `None` -> trả về kết quả đó.
-        #        + Nếu thất bại (`None`) -> tăng `stats.backtracks += 1` rồi thử nhánh tiếp theo.
-        #    - Nếu cả 2 nhánh đều thất bại -> trả về `None`.
-        raise NotImplementedError("TODO(Nam): Cài đặt hàm search() của thuật toán DPLL trong sat.py")
+        """DPLL đệ quy. Trả về phép gán thỏa mãn `current`, hoặc None nếu UNSAT."""
+        # 1. Unit propagation: mệnh đề chỉ còn 1 literal thì literal đó bắt buộc đúng.
+        while True:
+            check_control()
+            if any(not clause for clause in current):
+                return None                     # mệnh đề rỗng: mọi literal đều sai
+            units = [clause[0] for clause in current if len(clause) == 1]
+            if not units:
+                break
+            for unit in units:
+                variable, value = abs(unit), unit > 0
+                if variable in assignment:
+                    if assignment[variable] != value:
+                        return None             # hai unit đối nhau: x và -x
+                else:
+                    assignment[variable] = value
+                    stats.propagations += 1
+            current = simplify(current, assignment)
+
+        # 2. Không còn mệnh đề nào: mọi mệnh đề đã được thỏa mãn.
+        if not current:
+            return assignment
+
+        # 3. Chọn biến phân nhánh trong các mệnh đề còn lại.
+        frequencies = {}
+        for clause in current:
+            for literal in clause:
+                frequencies[abs(literal)] = frequencies.get(abs(literal), 0) + 1
+        if heuristic == "ordered":
+            variable = min(frequencies)
+        else:  # "frequency": xuất hiện nhiều nhất, hòa thì lấy chỉ số nhỏ hơn
+            variable = min(frequencies, key=lambda v: (-frequencies[v], v))
+        stats.decisions += 1
+
+        # 4. Thử True rồi False. Gán quyết định trực tiếp (không đi qua unit
+        #    propagation) để `propagations` chỉ đếm phép gán bị ép buộc.
+        for value in (True, False):
+            branch = dict(assignment)
+            branch[variable] = value
+            result = search(simplify(current, branch), branch)
+            if result is not None:
+                return result
+            stats.backtracks += 1
+        return None
 
     try:
         result = search(formula, {})
