@@ -1,0 +1,62 @@
+\documentclass[12pt]{article}
+\usepackage{hcmus-report-template}
+\usepackage{booktabs,array,tabularx,amssymb}
+\input{glyphtounicode}
+\pdfgentounicode=1
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt plus 1pt}
+\renewcommand{\baselinestretch}{1.5}
+\setlength{\headsep}{12pt}
+\setlength{\intextsep}{9pt plus 1pt minus 1pt}
+\setlength{\emergencystretch}{1.2em}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcommand{\coursename}{CSC14003 -- Nhập môn Trí tuệ Nhân tạo}
+\newcommand{\reporttitle}{BÁO CÁO ĐỒ ÁN THỰC HÀNH 2}
+\newcommand{\reportname}{Griductive Solver: Suy luận Không Đoán Mò bằng Mã hóa CNF và Bộ giải DPLL}
+\newcommand{\leftfooter}{Nhóm thực hiện -- Lớp 24TN (CSC14003)}
+\lhead{\small\reporttitle}
+\rhead{\small Trường Đại học Khoa học Tự nhiên -- ĐHQG HCM\\\coursename}
+\lfoot{\small\leftfooter}
+\renewcommand{\refname}{Tài liệu tham khảo}
+\floatname{algorithm}{Thuật toán}
+\hypersetup{urlcolor=blue,pdftitle={Griductive Solver},pdfauthor={Nhóm thực hiện -- Lớp 24TN},bookmarksnumbered=true}
+\algrenewcommand\algorithmicrequire{\textbf{Đầu vào:}}
+\algrenewcommand\algorithmicif{\textbf{nếu}}
+\algrenewcommand\algorithmicthen{\textbf{thì}}
+\algrenewcommand\algorithmicelse{\textbf{ngược lại}}
+\algrenewcommand\algorithmicend{\textbf{kết thúc}}
+\algrenewcommand\algorithmicfor{\textbf{với}}
+\algrenewcommand\algorithmicloop{\textbf{lặp}}
+\algrenewcommand\algorithmicwhile{\textbf{trong khi}}
+\algrenewcommand\algorithmicdo{\textbf{làm}}
+\begin{document}
+\pagenumbering{roman}
+\hypersetup{pageanchor=false}
+\input{content/title.tex}
+\setcounter{page}{2}
+\hypersetup{pageanchor=true}
+\setcounter{tocdepth}{2}
+{\setstretch{1.05}\tableofcontents}
+\clearpage
+\listoftables
+\clearpage
+\listoffigures
+\clearpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+\input{content/01_kehoach.tex}
+\clearpage
+\input{content/02_mohinh.tex}
+\clearpage
+\input{content/03_cnf.tex}
+\clearpage
+\input{content/04_dpll.tex}
+\clearpage
+\input{content/05_thucnghiem.tex}
+\clearpage
+\input{content/06_giaodien.tex}
+\input{ref/ref.tex}
+\clearpage
+\appendix
+\input{appendix/appendix.tex}
+\end{document}

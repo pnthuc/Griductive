@@ -124,8 +124,8 @@ source; đây là các công cụ cần chạy nhiều lần.
 
 ## Tài liệu bài nộp
 
-`AI - Project 2.pdf` là đề bài. `Report.pdf` và `docs/REPORT.md` là bản cũ, chưa
-cập nhật đầy đủ theo source hiện tại. Báo cáo và video đang được để sau theo
-yêu cầu của nhóm. Cần cập nhật lớp, phân công thực tế, tỷ lệ hoàn thành, số
-liệu và link video trước khi nộp.
-Nguồn tham khảo ở `docs/REFERENCES.md`; prompt AI ở `docs/AI-PROMPTS.md`.
+`AI - Project 2.pdf` là đề bài. `Report.pdf` (biên dịch từ nguồn LaTeX HCMUS tại
+`docs/latex/`) và bản đối chiếu `docs/REPORT.md` trình bày đầy đủ mô hình hóa,
+mã hóa CNF, thuật toán DPLL, kết quả thực nghiệm và giao diện. Thông tin thành
+viên, tỷ lệ hoàn thành và liên kết video trình diễn được lưu tại `docs/team.json`;
+nguồn tham khảo ở `docs/REFERENCES.md`; nhật ký prompt AI ở `docs/AI-PROMPTS.md`.

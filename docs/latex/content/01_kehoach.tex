@@ -1,0 +1,59 @@
+\section{Kế hoạch dự án, phân công và kiến trúc hệ thống}
+
+Một lượt chơi chỉ thành công khi nhóm chứng minh được trạng thái của một nhân vật từ những lá bài đã mở. Nhóm triển khai cùng một quy tắc cho người chơi, chức năng gợi ý và chế độ tự giải, theo yêu cầu của đồ án CSC14003 \cite{csc14003_spec}. Cách lật thẻ và chọn lời khai tham khảo Griductive và Clues by Sam \cite{griductive_game,cluesbysam}.
+
+\subsection{Kế hoạch và mức hoàn thành}
+
+Nhóm thống nhất giao diện dữ liệu giữa bàn chơi và tác tử trước khi phát triển song song ba mô-đun lõi. Sau khi tích hợp bộ mã hóa, bộ giải SAT và cơ chế mở thẻ, nhóm nối hai giao diện, chạy kiểm thử, đo sáu màn chơi rồi đối chiếu nhật ký để lập báo cáo và dựng video.
+
+\begin{table}[H]
+\centering\small\singlespacing
+\caption{Phân công theo mô-đun và tỷ lệ hoàn thành}
+\smallskip
+\renewcommand{\arraystretch}{1.23}
+\begin{tabularx}{\linewidth}{@{}l l >{\raggedright\arraybackslash}X r@{}}
+\toprule
+\textbf{Thành viên} & \textbf{MSSV} & \textbf{Phần việc phụ trách} & \textbf{Hoàn thành} \\
+\midrule
+Phan Ngọc Thức & 24120228 & Kiến trúc chung, Desktop Cozy Harbor, Web Dash, thực nghiệm, báo cáo và video. & 100\% \\
+Nguyễn Lê Minh Quân & 24120219 & Tổ chức thực nghiệm, so sánh hai chiến lược chọn biến, phân tích số liệu, báo cáo và video. & 100\% \\
+Tống Phúc Thiện & 24120141 & Phân giải vùng và phép tập hợp, đánh giá ngữ nghĩa, điều phối GameEngine và kiểm tra nghiệm duy nhất. & 100\% \\
+Bùi Phương Nam & 24120502 & Bộ giải DPLL với hai chiến lược chọn biến và suy luận phản chứng của LogicAgent. & 100\% \\
+Phan Gia Phúc & 24120503 & Cổng Tseitin, bộ đếm ngưỡng bằng quy hoạch động và mã hóa tất cả dạng manh mối sang CNF. & 100\% \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Tỷ lệ trong bảng lấy từ hồ sơ nhóm \texttt{docs/team.json}. Điểm cá nhân bằng điểm nhóm nhân với tỷ lệ hoàn thành của thành viên. Theo ví dụ trong đề, điểm nhóm 9,0 và tỷ lệ 90\% cho điểm cá nhân 8,1. Với tỷ lệ 100\%, mỗi thành viên nhận điểm nhóm.
+
+\begin{center}\fbox{\begin{minipage}{.91\linewidth}
+\textbf{Video trình diễn trên Google Drive}\\
+Liên kết xem: Chờ nhóm cung cấp.
+\end{minipage}}\end{center}
+
+\clearpage
+
+\subsection{Quyền truy cập dữ liệu và luồng xử lý}
+
+\begin{table}[H]
+\centering\small\singlespacing
+\caption{Trách nhiệm và dữ liệu qua từng thành phần}
+\smallskip
+\renewcommand{\arraystretch}{1.23}
+\begin{tabularx}{\linewidth}{@{}l >{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Thành phần} & \textbf{Dữ liệu và trách nhiệm} \\
+\midrule
+\texttt{GameEngine} & Giữ \texttt{PrivatePuzzle}, nghiệm đầy đủ, lời khai chưa mở và nhật ký các bước đã chấp nhận. Tạo ảnh chụp công khai để kiểm tra từng yêu cầu. \\
+\texttt{PublicState} & Đối tượng bất biến chứa thông tin bàn, nhân vật, các trạng thái đã biết và lời khai đã mở. Các cấu trúc lồng cũng được đóng băng. \\
+\texttt{LogicAgent} & Chỉ nhận ảnh chụp công khai và bộ xử lý luật. Dựng KB, hỏi SAT, chứng minh hoặc từ chối phán quyết. \\
+Desktop và Web & PySide6 và Plotly Dash gọi cùng lõi Python. Mỗi phiên quản lý tiến độ riêng. Giao diện vẽ lại bàn từ dữ liệu công khai. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Khi người chơi gửi một phán quyết, engine chuyển trạng thái công khai hiện tại cho một tác tử kiểm chứng độc lập. Chỉ sau khi có chứng minh, engine mới đối chiếu nghiệm riêng để phát hiện dữ liệu bất nhất, ghi trạng thái, mở lời khai và thêm một bước vào nhật ký. Một đề nghị bị bác không làm lộ nội dung thẻ.
+
+Trên Desktop, \texttt{EngineWorker} chạy hàng đợi tuần tự trong \texttt{QThread} và gửi kết quả về cửa sổ qua signal của Qt \cite{qtforpython6}. Mỗi tác vụ chạy trên \texttt{GameEngine.fork()}. Bản sao dùng chung câu đố bất biến nhưng có trạng thái, lời khai đã mở và danh sách nhật ký riêng. Khi đổi màn hoặc hủy yêu cầu, cờ hủy được kiểm tra cả trong DPLL lẫn trước khi ghi phán quyết. \texttt{SolverCancelled} kết thúc phép tìm kiếm cũ. Mã phiên và mã yêu cầu giúp cửa sổ bỏ qua kết quả đến muộn.
+
+Web tái dựng phiên theo lịch sử phán quyết và dùng cùng phép kiểm chứng. Vì vậy, lời giải có thể đối chiếu giữa giao diện, bộ thực nghiệm dòng lệnh và bộ kiểm thử từ cùng một tập đầu vào.

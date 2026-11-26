@@ -1,0 +1,92 @@
+\section{Thực nghiệm và đánh giá Ordered, Frequency}
+
+Hai cấu hình tự giải cùng sáu tệp câu đố theo thứ tự cố định, mỗi cấu hình chạy một lượt cho mỗi màn. Môi trường đo là Windows 11, Python 3.14.6 và CPU Intel Core i5-12450HX. Cột N là số hàng, cũng là số cột. Hai bảng ghép theo mã màn và chiến lược chọn biến.
+
+\begin{table}[H]
+\centering\footnotesize\singlespacing
+\caption{Trạng thái kết thúc, kích thước KB cuối và số bước mở thẻ}
+\smallskip
+\renewcommand{\arraystretch}{1.13}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}llrllrrrr@{}}
+\toprule
+\textbf{Màn} & \textbf{Chiến lược} & \textbf{N} & \textbf{Trạng thái} & \textbf{Nghiệm} & \textbf{Biến chính} & \textbf{Biến phụ} & \textbf{Mệnh đề} & \textbf{Bước} \\
+\midrule
+case-3x3-01 & ordered & 3 & SOLVED & UNIQUE & 9 & 156 & 491 & 7 \\
+case-3x3-01 & frequency & 3 & SOLVED & UNIQUE & 9 & 156 & 491 & 7 \\
+case-3x3-02 & ordered & 3 & SOLVED & UNIQUE & 9 & 144 & 455 & 7 \\
+case-3x3-02 & frequency & 3 & SOLVED & UNIQUE & 9 & 144 & 455 & 7 \\
+case-4x4-01 & ordered & 4 & SOLVED & UNIQUE & 16 & 364 & 1138 & 13 \\
+case-4x4-01 & frequency & 4 & SOLVED & UNIQUE & 16 & 364 & 1138 & 13 \\
+case-4x4-02 & ordered & 4 & SOLVED & UNIQUE & 16 & 273 & 862 & 13 \\
+case-4x4-02 & frequency & 4 & SOLVED & UNIQUE & 16 & 273 & 862 & 13 \\
+case-5x5-01 & ordered & 5 & SOLVED & UNIQUE & 25 & 668 & 2068 & 22 \\
+case-5x5-01 & frequency & 5 & SOLVED & UNIQUE & 25 & 668 & 2068 & 22 \\
+case-5x5-02 & ordered & 5 & SOLVED & UNIQUE & 25 & 654 & 2045 & 22 \\
+case-5x5-02 & frequency & 5 & SOLVED & UNIQUE & 25 & 654 & 2045 & 22 \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+\begin{table}[H]
+\centering\footnotesize\singlespacing
+\caption{Chi phí của vòng suy luận và kiểm chứng theo từng lượt chạy}
+\smallskip
+\renewcommand{\arraystretch}{1.13}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}llrrrrr@{}}
+\toprule
+\textbf{Màn} & \textbf{Chiến lược} & \textbf{Gọi SAT} & \textbf{Quyết định} & \textbf{Lan truyền} & \textbf{Quay lui} & \textbf{Thời gian (s)} \\
+\midrule
+case-3x3-01 & ordered & 34 & 48 & 2944 & 4 & 0.046906800009310246 \\
+case-3x3-01 & frequency & 33 & 40 & 2942 & 4 & 0.0597596000880003 \\
+case-3x3-02 & ordered & 30 & 34 & 2802 & 15 & 0.07075270009227097 \\
+case-3x3-02 & frequency & 30 & 27 & 2693 & 9 & 0.051106599974446 \\
+case-4x4-01 & ordered & 84 & 518 & 29666 & 444 & 1.0145338999573141 \\
+case-4x4-01 & frequency & 85 & 287 & 18887 & 8 & 0.5042751999571919 \\
+case-4x4-02 & ordered & 93 & 168 & 12568 & 7 & 1.1509451000019908 \\
+case-4x4-02 & frequency & 91 & 158 & 12567 & 16 & 1.0898051999974996 \\
+case-5x5-01 & ordered & 162 & 193 & 43608 & 18 & 3.482975700055249 \\
+case-5x5-01 & frequency & 164 & 247 & 44288 & 45 & 3.591464600060135 \\
+case-5x5-02 & ordered & 182 & 752 & 55976 & 113 & 6.432317500002682 \\
+case-5x5-02 & frequency & 182 & 647 & 53655 & 37 & 5.540036999969743 \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+Tổng truy vấn gồm cả tác tử đề xuất và engine kiểm chứng. Thời gian bao gồm dựng KB và thực hiện vòng mở thẻ. Các phép giải ngoại tuyến để kiểm tra nghiệm duy nhất diễn ra sau khi dừng đồng hồ và được loại khỏi cả bốn bộ đếm.
+
+\clearpage
+
+\subsection{Chi phí tìm kiếm trên cùng một câu đố}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\linewidth]{img/chart_decisions_backtracks.png}
+\caption{Quyết định và quay lui của DPLL. Hai trục ngang có thang đo riêng.}
+\end{figure}
+
+Trên màn $4\times4$-01, đổi sang frequency giảm từ 518 xuống 287 quyết định và từ 444 xuống 8 lần quay lui, dù số lần gọi SAT tăng từ 84 lên 85. Trong lần giải KB ban đầu, ordered chọn biến số 1, xuất hiện 4 lần trong công thức đã rút gọn. Frequency chọn biến số 11, xuất hiện 24 lần. Đây là biến ô trên bàn $4\times4$. Gán biến liên quan đến nhiều mệnh đề có thể buộc thêm các ngưỡng đếm và làm lộ xung đột sớm.
+
+Các biến phụ Tseitin cũng tham gia chọn nhánh. Một đầu ra ngưỡng dùng chung ở nhiều cổng có thể có tần suất cao và ảnh hưởng nhiều ràng buộc cùng lúc. Tuy nhiên, số liệu tổng không xác định cổng nào gây ra từng lần cắt nhánh. Trên màn $5\times5$-02, với cùng 182 truy vấn, frequency giảm từ 752 xuống 647 quyết định và từ 113 xuống 37 lần quay lui, kéo thời gian chạy từ khoảng 6,432 giây xuống 5,540 giây.
+
+Màn $5\times5$-01 cho kết quả ngược lại. Ordered cần 193 quyết định và 18 lần quay lui, frequency cần 247 và 45. Ngay ở KB đầu tiên, ordered chọn biến số 4 và tìm được mô hình sau hai quyết định. Frequency ưu tiên biến số 18, cần ba quyết định và một lần quay lui. Vì cả hai cùng thử True trước, chọn biến xuất hiện nhiều vẫn có thể đưa bộ giải vào một nhánh thất bại.
+
+\clearpage
+\begingroup\setstretch{1.25}
+
+\subsection{Thời gian chạy, quy mô CNF và giới hạn}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\linewidth]{img/chart_runtime_clauses.png}
+\caption{Thời gian toàn phiên và số mệnh đề trong KB cuối. Hai cấu hình sinh cùng một CNF cuối cho từng màn.}
+\end{figure}
+
+Cỡ bàn không quyết định toàn bộ chi phí. Hai màn $5\times5$ cùng cần 22 bước và có số mệnh đề cuối gần nhau (2 068 và 2 045), nhưng màn thứ hai cần nhiều quyết định hơn ở cả hai chiến lược. Thời gian phản ánh chuỗi KB từ lúc mở màn đến khi hoàn tất: ở $4\times4$-01 giảm từ 1,015 xuống 0,504 giây, còn ở $5\times5$-01 tăng nhẹ từ 3,483 lên 3,591 giây với frequency. Mỗi lượt chịu ảnh hưởng của tải hệ thống, chi phí xử lý mệnh đề và thứ tự tìm mô hình.
+
+Khi mô hình trả về khác nhau, các dấu mà tác tử đã có nhân chứng cũng có thể khác. Điều này giải thích vì sao số lần gọi SAT đôi khi thay đổi dù hai cấu hình mở cùng số thẻ. Ở màn $4\times4$-02, frequency dùng ít quyết định hơn (158 so với 168) nhưng quay lui nhiều hơn (16 so với 7). Một chỉ số đơn lẻ không mô tả đủ chi phí của một phiên.
+
+Cả 12 lượt đều trả SOLVED, và phép kiểm tra ngoại tuyến cho UNIQUE trên cả sáu màn. UNKNOWN có thể xuất hiện khi tri thức công khai cho phép hai giá trị ở mọi ô còn lại. INCONSISTENT xuất hiện khi chính KB vô nghiệm. Bộ đo giữ các trạng thái dừng và TIMEOUT trong kết quả. Hạn mặc định cho một màn là 30 giây, được kiểm tra giữa các bước, kèm hạn riêng cho từng truy vấn SAT.
+
+DPLL hiện quét lại danh sách mệnh đề khi lan truyền và khi rút gọn nhánh. Kỹ thuật theo dõi hai literal trong mỗi mệnh đề (two-watched literals) có thể giảm số mệnh đề cần xét. Bộ giải cũng chưa học mệnh đề từ xung đột hay quay lui không tuần tự như CDCL. Trên sáu màn với một lần đo mỗi cấu hình, có thể so sánh hành vi tìm kiếm cụ thể, nhưng chưa thể ước lượng phân bố thời gian hay chọn một chiến lược tối ưu cho mọi màn.
+
+\par\endgroup

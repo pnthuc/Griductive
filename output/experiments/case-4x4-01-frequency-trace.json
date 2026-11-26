@@ -13,9 +13,9 @@
         "assumptions": [],
         "result": "SAT",
         "decisions": 9,
-        "propagations": 168,
+        "propagations": 154,
         "backtracks": 0,
-        "runtime": 0.008979399979580194
+        "runtime": 0.009588899905793369
       },
       {
         "assumptions": [
@@ -23,9 +23,9 @@
         ],
         "result": "UNSAT",
         "decisions": 0,
-        "propagations": 107,
+        "propagations": 103,
         "backtracks": 0,
-        "runtime": 0.004415400035213679
+        "runtime": 0.004988300031982362
       }
     ],
     "new_clue": "C3",
@@ -46,8 +46,8 @@
       "id": "C3"
     },
     "primary_variables": 16,
-    "auxiliary_variables": 154,
-    "clauses": 472
+    "auxiliary_variables": 149,
+    "clauses": 455
   },
   {
     "step": 2,
@@ -64,9 +64,9 @@
         "assumptions": [],
         "result": "SAT",
         "decisions": 8,
-        "propagations": 174,
+        "propagations": 161,
         "backtracks": 0,
-        "runtime": 0.006373499985784292
+        "runtime": 0.007630600011907518
       },
       {
         "assumptions": [
@@ -74,9 +74,9 @@
         ],
         "result": "UNSAT",
         "decisions": 0,
-        "propagations": 90,
+        "propagations": 87,
         "backtracks": 0,
-        "runtime": 0.0024727999698370695
+        "runtime": 0.002568800002336502
       }
     ],
     "new_clue": "A3",
@@ -106,8 +106,8 @@
       "id": "A3"
     },
     "primary_variables": 16,
-    "auxiliary_variables": 160,
-    "clauses": 492
+    "auxiliary_variables": 155,
+    "clauses": 475
   },
   {
     "step": 3,
@@ -125,9 +125,9 @@
         "assumptions": [],
         "result": "SAT",
         "decisions": 8,
-        "propagations": 211,
+        "propagations": 198,
         "backtracks": 0,
-        "runtime": 0.00705400004517287
+        "runtime": 0.00787319999653846
       },
       {
         "assumptions": [
@@ -135,9 +135,9 @@
         ],
         "result": "UNSAT",
         "decisions": 1,
-        "propagations": 144,
+        "propagations": 139,
         "backtracks": 2,
-        "runtime": 0.004049999988637865
+        "runtime": 0.0044565999414771795
       }
     ],
     "new_clue": "A4",
@@ -162,8 +162,8 @@
       "id": "A4"
     },
     "primary_variables": 16,
-    "auxiliary_variables": 195,
-    "clauses": 599
+    "auxiliary_variables": 190,
+    "clauses": 582
   },
   {
     "step": 4,
@@ -182,9 +182,9 @@
         "assumptions": [],
         "result": "SAT",
         "decisions": 8,
-        "propagations": 235,
+        "propagations": 218,
         "backtracks": 0,
-        "runtime": 0.006308000010903925
+        "runtime": 0.006433799979276955
       },
       {
         "assumptions": [
@@ -192,9 +192,9 @@
         ],
         "result": "UNSAT",
         "decisions": 1,
-        "propagations": 223,
+        "propagations": 210,
         "backtracks": 2,
-        "runtime": 0.00508339999942109
+        "runtime": 0.005164199974387884
       }
     ],
     "new_clue": "C1",
@@ -212,8 +212,8 @@
       "id": "C1"
     },
     "primary_variables": 16,
-    "auxiliary_variables": 219,
-    "clauses": 676
+    "auxiliary_variables": 210,
+    "clauses": 646
   },
   {
     "step": 5,
@@ -233,9 +233,9 @@
         "assumptions": [],
         "result": "SAT",
         "decisions": 5,
-        "propagations": 259,
+        "propagations": 241,
         "backtracks": 0,
-        "runtime": 0.005585900042206049
+        "runtime": 0.005546499975025654
       },
       {
         "assumptions": [
@@ -243,9 +243,9 @@
         ],
         "result": "UNSAT",
         "decisions": 0,
-        "propagations": 183,
+        "propagations": 170,
         "backtracks": 0,
-        "runtime": 0.002126300008967519
+        "runtime": 0.0019916000310331583
       }
     ],
     "new_clue": "C2",
@@ -268,8 +268,8 @@
       "id": "C2"
     },
     "primary_variables": 16,
-    "auxiliary_variables": 243,
-    "clauses": 753
+    "auxiliary_variables": 230,
+    "clauses": 710
   },
   {
     "step": 6,
@@ -290,9 +290,9 @@
         "assumptions": [],
         "result": "SAT",
         "decisions": 4,
-        "propagations": 294,
+        "propagations": 277,
         "backtracks": 0,
-        "runtime": 0.005864800012204796
+        "runtime": 0.006185099948197603
       },
       {
         "assumptions": [
@@ -300,9 +300,9 @@
         ],
         "result": "UNSAT",
         "decisions": 0,
-        "propagations": 263,
+        "propagations": 250,
         "backtracks": 0,
-        "runtime": 0.0030069000204093754
+        "runtime": 0.0027455000672489405
       }
     ],
     "new_clue": "B2",
@@ -320,8 +320,8 @@
       "id": "B2"
     },
     "primary_variables": 16,
-    "auxiliary_variables": 278,
-    "clauses": 864
+    "auxiliary_variables": 265,
+    "clauses": 821
   },
   {
     "step": 7,
@@ -343,9 +343,9 @@
         "assumptions": [],
         "result": "SAT",
         "decisions": 4,
-        "propagations": 307,
+        "propagations": 290,
         "backtracks": 0,
-        "runtime": 0.005334299989044666
+        "runtime": 0.005282400059513748
       },
       {
         "assumptions": [
@@ -353,9 +353,9 @@
         ],
         "result": "UNSAT",
         "decisions": 0,
-        "propagations": 238,
+        "propagations": 225,
         "backtracks": 0,
-        "runtime": 0.0024785000132396817
+        "runtime": 0.002531800069846213
       }
     ],
     "new_clue": "B1",
@@ -376,8 +376,8 @@
       "id": "B1"
     },
     "primary_variables": 16,
-    "auxiliary_variables": 291,
-    "clauses": 909
+    "auxiliary_variables": 278,
+    "clauses": 866
   },
   {
     "step": 8,
@@ -400,9 +400,9 @@
         "assumptions": [],
         "result": "SAT",
         "decisions": 3,
-        "propagations": 337,
+        "propagations": 321,
         "backtracks": 0,
-        "runtime": 0.004940100014209747
+        "runtime": 0.00422260002233088
       },
       {
         "assumptions": [
@@ -410,9 +410,9 @@
         ],
         "result": "UNSAT",
         "decisions": 0,
-        "propagations": 297,
+        "propagations": 284,
         "backtracks": 0,
-        "runtime": 0.0023973999777808785
+        "runtime": 0.002530100056901574
       }
     ],
     "new_clue": "B4",
@@ -433,8 +433,8 @@
       "id": "B4"
     },
     "primary_variables": 16,
-    "auxiliary_variables": 321,
-    "clauses": 1001
+    "auxiliary_variables": 308,
+    "clauses": 958
   },
   {
     "step": 9,
@@ -458,9 +458,9 @@
         "assumptions": [],
         "result": "SAT",
         "decisions": 2,
-        "propagations": 343,
+        "propagations": 328,
         "backtracks": 0,
-        "runtime": 0.0034772000508382916
+        "runtime": 0.003523700055666268
       },
       {
         "assumptions": [
@@ -470,7 +470,7 @@
         "decisions": 0,
         "propagations": 104,
         "backtracks": 0,
-        "runtime": 0.0012063000467605889
+        "runtime": 0.0011976000387221575
       }
     ],
     "new_clue": "A2",
@@ -491,8 +491,8 @@
       "id": "A2"
     },
     "primary_variables": 16,
-    "auxiliary_variables": 327,
-    "clauses": 1021
+    "auxiliary_variables": 314,
+    "clauses": 978
   },
   {
     "step": 10,
@@ -517,9 +517,9 @@
         "assumptions": [],
         "result": "SAT",
         "decisions": 1,
-        "propagations": 347,
+        "propagations": 333,
         "backtracks": 0,
-        "runtime": 0.0033106000046245754
+        "runtime": 0.0032034000614658
       },
       {
         "assumptions": [
@@ -529,7 +529,7 @@
         "decisions": 0,
         "propagations": 58,
         "backtracks": 0,
-        "runtime": 0.0014729000395163894
+        "runtime": 0.0007595999632030725
       }
     ],
     "new_clue": "A1",
@@ -559,8 +559,8 @@
       "id": "A1"
     },
     "primary_variables": 16,
-    "auxiliary_variables": 331,
-    "clauses": 1035
+    "auxiliary_variables": 318,
+    "clauses": 992
   },
   {
     "step": 11,
@@ -586,9 +586,9 @@
         "assumptions": [],
         "result": "SAT",
         "decisions": 0,
-        "propagations": 362,
+        "propagations": 349,
         "backtracks": 0,
-        "runtime": 0.002740300027653575
+        "runtime": 0.002763299969956279
       },
       {
         "assumptions": [
@@ -596,9 +596,9 @@
         ],
         "result": "UNSAT",
         "decisions": 0,
-        "propagations": 323,
+        "propagations": 310,
         "backtracks": 0,
-        "runtime": 0.002049400005489588
+        "runtime": 0.0021093999966979027
       }
     ],
     "new_clue": "D3",
@@ -611,8 +611,8 @@
       "id": "D3"
     },
     "primary_variables": 16,
-    "auxiliary_variables": 346,
-    "clauses": 1082
+    "auxiliary_variables": 333,
+    "clauses": 1039
   },
   {
     "step": 12,
@@ -639,9 +639,9 @@
         "assumptions": [],
         "result": "SAT",
         "decisions": 0,
-        "propagations": 373,
+        "propagations": 360,
         "backtracks": 0,
-        "runtime": 0.0021554999984800816
+        "runtime": 0.0022602000972256064
       },
       {
         "assumptions": [
@@ -649,9 +649,9 @@
         ],
         "result": "UNSAT",
         "decisions": 0,
-        "propagations": 244,
+        "propagations": 240,
         "backtracks": 0,
-        "runtime": 0.0015694000176154077
+        "runtime": 0.001603499986231327
       }
     ],
     "new_clue": "C4",
@@ -665,8 +665,8 @@
       "id": "C4"
     },
     "primary_variables": 16,
-    "auxiliary_variables": 357,
-    "clauses": 1117
+    "auxiliary_variables": 344,
+    "clauses": 1074
   },
   {
     "step": 13,
@@ -694,9 +694,9 @@
         "assumptions": [],
         "result": "SAT",
         "decisions": 0,
-        "propagations": 380,
+        "propagations": 367,
         "backtracks": 0,
-        "runtime": 0.00214969995431602
+        "runtime": 0.0021183000644668937
       },
       {
         "assumptions": [
@@ -706,7 +706,7 @@
         "decisions": 0,
         "propagations": 143,
         "backtracks": 0,
-        "runtime": 0.0016349999932572246
+        "runtime": 0.0012725000269711018
       }
     ],
     "new_clue": "D4",
@@ -720,7 +720,7 @@
       "id": "D4"
     },
     "primary_variables": 16,
-    "auxiliary_variables": 364,
-    "clauses": 1140
+    "auxiliary_variables": 351,
+    "clauses": 1097
   }
 ]

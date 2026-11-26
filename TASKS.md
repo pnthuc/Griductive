@@ -11,8 +11,8 @@ Tài liệu này hướng dẫn chi tiết phần việc của từng thành vi�
 | **Bùi Phương Nam** | `24120502` | Bộ giải DPLL SAT Solver (ordered & frequency) & Suy luận phản chứng LogicAgent | `TODO(Nam)` | ✅ Đã hoàn thành (`edcd1c8`) |
 | **Phan Gia Phúc** | `24120503` | Mã hóa CNF (cổng Tseitin, quy hoạch động đếm ngưỡng unary) & Biểu diễn toàn bộ Clue sang CNF | `TODO(Phuc)` | ✅ Đã hoàn thành (`79718c2`) |
 | **Tống Phúc Thiện** | `24120141` | Hệ thống vùng (Regions & phép toán tập hợp), Đánh giá ngữ nghĩa trực tiếp (evaluate) & Luồng GameEngine / check_uniqueness | `TODO(Thien)` | ✅ Đã hoàn thành (`a56b700`) |
-| **Phan Ngọc Thức** | `24120228` | Kiến trúc dự án, Giao diện Desktop Cozy Harbor & Web Dash, Thực nghiệm, Báo cáo & Video Demo | — | 🔄 Hoàn thiện Thực nghiệm, Báo cáo & Video |
-| **Nguyễn Lê Minh Quân** | `24120219` | Thực nghiệm hệ thống, Phân tích so sánh 2 heuristic (ordered vs frequency), Báo cáo kỹ thuật & Video Demo | — | 🔄 Hoàn thiện Thực nghiệm, Báo cáo & Video |
+| **Phan Ngọc Thức** | `24120228` | Kiến trúc dự án, Giao diện Desktop Cozy Harbor & Web Dash, Thực nghiệm, Báo cáo & Video Demo | — | ✅ Đã hoàn thành |
+| **Nguyễn Lê Minh Quân** | `24120219` | Thực nghiệm hệ thống, Phân tích so sánh 2 heuristic (ordered vs frequency), Báo cáo kỹ thuật & Video Demo | — | ✅ Đã hoàn thành |
 
 ---
 
