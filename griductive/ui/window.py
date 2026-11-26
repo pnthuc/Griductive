@@ -1,16 +1,17 @@
-"""Desktop window — Full-Screen Alto's Odyssey x Reigns Minimalist Vector UI."""
+"""Desktop window — Cozy Harbor Game UI with cute pixel characters & polished HUD."""
 import sys
 import json
 from dataclasses import replace
 from pathlib import Path
 from PySide6.QtCore import Qt, QTimer, QElapsedTimer, QSize, QEvent, QPoint
-from PySide6.QtGui import QIcon, QColor, QShortcut, QKeySequence, QPalette
+from PySide6.QtGui import QIcon, QColor, QShortcut, QKeySequence, QPalette, QPixmap
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QToolButton, QVBoxLayout, QHBoxLayout,
-    QGridLayout, QFrame, QFileDialog, QMenu, QSizePolicy,
+    QGridLayout, QFileDialog, QMenu, QSizePolicy,
 )
 from ..engine.regions import region_registry, PuzzleError
 from ..engine.clues import clue_registry, clue_parts
+from ..engine.cnf import build_knowledge_base
 from ..engine.models import load_puzzle
 from ..engine.game import GameEngine
 from ..engine.sat import SolverTimeout
@@ -20,21 +21,37 @@ from .themes import THEMES, stylesheet
 from .icons import icon
 from .portraits import load_expression_frames, load_silhouette_frames
 from .assets import ROOT, scenery_catalog, scenery_image
-from .widgets import label, configure_app, DeskSurface, PixelLabel, HudButton
+from .widgets import (
+    label, configure_app, DeskSurface, PixelLabel, HudButton,
+    HeaderBar, BrandMark, CaseSelectorButton, ProgressPill, CozyMenu,
+)
 from .cards import PortraitCard
 from .dialogs import GameNotice, ModalScrim
 from .journal import SolverJournal
 from .game_controller import GameController
 
 
-class CaseMenu(QMenu):
+class CaseMenu(CozyMenu):
     def showEvent(self, event):
         super().showEvent(event)
         button = self.parentWidget()
-        center = button.mapToGlobal(button.rect().center())
+        if not button:
+            return
+        left = button.mapToGlobal(QPoint(0, 0)).x()
         screen = button.screen().availableGeometry()
-        left = center.x() - self.rect().center().x()
-        self.move(max(screen.left(), min(left, screen.right()-self.width()+1)), self.y())
+        self.move(max(screen.left(), min(left, screen.right() - self.width() + 1)), self.y() + 3)
+
+
+class ToolsMenu(CozyMenu):
+    def showEvent(self, event):
+        super().showEvent(event)
+        button = self.parentWidget()
+        if not button:
+            return
+        right = button.mapToGlobal(QPoint(button.width(), 0)).x()
+        screen = button.screen().availableGeometry()
+        x = max(screen.left(), min(right - self.width(), screen.right() - self.width() + 1))
+        self.move(x, self.y() + 3)
 
 
 class Window(QMainWindow):
@@ -63,6 +80,7 @@ class Window(QMainWindow):
         self.pinned_key = None
         self._col_labels = []
         self._row_labels = []
+        self._case_actions = {}
         self.load_visual_assets()
         self.build()
         self.apply_theme('pixel')
@@ -101,80 +119,99 @@ class Window(QMainWindow):
         self.setCentralWidget(root)
         root.installEventFilter(self)
 
-        # Scenic outer margins matching the approved final mockup (with safe corner-zoom clearance)
+        # Safe margins so 1.10x enlarged corner cards always stay strictly inside `self.desk`
         layout = QVBoxLayout(root)
-        layout.setContentsMargins(30, 10, 34, 28)
+        layout.setContentsMargins(28, 10, 30, 26)
         layout.setSpacing(8)
 
-        # Ultra-minimal single Top HUD row (NO bottom bar!)
-        self.header = QFrame()
+        # Cozy Harbor Floating Capsule Header HUD
+        self.header = HeaderBar()
         self.header.setObjectName('header')
-        self.header.setFixedHeight(44)
+        self.header.setFixedHeight(50)
+        self.header.installEventFilter(self)
         hl = QHBoxLayout(self.header)
-        hl.setContentsMargins(4, 0, 0, 0)
+        hl.setContentsMargins(12, 6, 10, 6)
         hl.setSpacing(10)
+        self._header_layout = hl
 
+        hl.addWidget(BrandMark())
         brand = label('Griductive', 'brand')
         brand.setWordWrap(False)
+        brand.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
+        self._brand_label = brand
         hl.addWidget(brand)
+        hl.addSpacing(2)
 
-        dot = label('•', 'headerDot')
-        dot.setWordWrap(False)
-        hl.addWidget(dot)
-
-        # Clickable Case Selector directly in the title spot
-        self._case_btn = QToolButton()
+        # Interactive Case Selector Pill with grouped 3x3 / 4x4 / 5x5 menu + Load JSON
+        self._case_btn = CaseSelectorButton()
         self._case_btn.setObjectName('caseSelector')
-        self._case_btn.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        self._case_btn.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
         self._case_btn.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
         self._case_menu = CaseMenu(self._case_btn)
-        for path in sorted((ROOT / 'puzzles').glob('case-*.json')):
-            data = json.loads(path.read_text(encoding='utf-8'))
-            size = data['size']
-            self._case_menu.addAction(
-                f"{size}×{size} — {data['title']}",
-                lambda checked=False, p=path: self.load(p),
-            )
+        self._populate_case_menu()
         self._case_btn.setMenu(self._case_menu)
         hl.addWidget(self._case_btn)
 
+        self.progress_pill = ProgressPill()
+        hl.addWidget(self.progress_pill)
+
         hl.addStretch(1)
 
-
-        self.hint_button = HudButton()
+        # Tactile Cozy Harbor Action Keycaps
+        self.hint_button = HudButton(variant='amber')
         self.hint_button.setText('Gợi ý')
         self.hint_button.setObjectName('hint')
-        self.hint_button.setFixedSize(78, 36)
+        self.hint_button.setFixedSize(96, 36)
         self.hint_button.clicked.connect(self.show_hint)
         self.hint_button.setToolTip('Tìm một nhân vật suy ra được từ thông tin đã mở.')
         hl.addWidget(self.hint_button)
 
-        # Single compact ☰ menu button housing all secondary tools
-        self.tools_button = HudButton()
+        self.restart_button = HudButton(variant='cream')
+        self.restart_button.setText('Làm lại')
+        self.restart_button.setObjectName('restartHud')
+        self.restart_button.setFixedSize(102, 36)
+        self.restart_button.clicked.connect(self.restart)
+        self.restart_button.setToolTip('Chơi lại màn hiện tại từ đầu.')
+        hl.addWidget(self.restart_button)
+
+        self.solver_button = HudButton(variant='mint')
+        self.solver_button.setText('Sổ giải')
+        self.solver_button.setObjectName('solverHud')
+        self.solver_button.setFixedSize(98, 36)
+        self.solver_button.clicked.connect(self.toggle_solver)
+        self.solver_button.setToolTip('Mở hoặc đóng Sổ tay suy luận DPLL.')
+        hl.addWidget(self.solver_button)
+
+        # Secondary Tools Menu button
+        self.tools_button = HudButton(variant='cream')
         self.tools_button.setObjectName('menuButton')
-        self.tools_button.setFixedSize(78, 36)
-        self.tools_button.setToolTip('Menu chính')
+        self.tools_button.setFixedSize(42, 36)
+        self.tools_button.setToolTip('Menu công cụ & mở tệp')
         self.tools_button.setAccessibleName('Menu chính')
         self.tools_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
-        self.tools_menu = QMenu(self.tools_button)
-        self.solve_action = self.tools_menu.addAction(icon('play', '#714D36'), 'Tự động giải', self.open_solver)
-        self.tools_menu.addAction(icon('restart', '#714D36'), 'Làm lại màn này', self.restart)
+        self.tools_menu = ToolsMenu(self.tools_button)
+        self.solve_action = self.tools_menu.addAction(icon('play', '#1E5B88'), 'Tự động giải', self.open_solver)
+        self.open_action = self.tools_menu.addAction(icon('export', '#1E5B88'), 'Mở màn chơi JSON…', self.open_case_file)
+        self.tools_menu.addAction(icon('restart', '#5C4338'), 'Làm lại màn này', self.restart)
+        self.tools_menu.addSeparator()
+        self.motion_action = self.tools_menu.addAction('Hiệu ứng chuyển động')
+        self.motion_action.setCheckable(True)
+        self.motion_action.setChecked(True)
+        self.motion_action.toggled.connect(self.toggle_motion)
+        self._sync_motion_action_icon(True)
         self.tools_button.setMenu(self.tools_menu)
         hl.addWidget(self.tools_button)
 
         self.motion_enabled = True
-
         layout.addWidget(self.header)
 
-        # Full-screen coordinate grid directly on the vector sky (no background slab!)
+        # Coordinate Grid + Board Canvas
         self._grid_area = QWidget()
         self._grid_area.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self._grid_area.installEventFilter(self)
         cgrid = QGridLayout(self._grid_area)
         cgrid.setContentsMargins(0, 2, 0, 0)
-        cgrid.setHorizontalSpacing(10)
-        cgrid.setVerticalSpacing(8)
+        cgrid.setHorizontalSpacing(8)
+        cgrid.setVerticalSpacing(6)
 
         self._col_bar = QWidget()
         self._col_layout = QHBoxLayout(self._col_bar)
@@ -187,7 +224,7 @@ class Window(QMainWindow):
         self._row_layout = QVBoxLayout(self._row_bar)
         self._row_layout.setContentsMargins(0, 0, 0, 0)
         self._row_layout.setSpacing(10)
-        self._row_bar.setFixedWidth(28)
+        self._row_bar.setFixedWidth(30)
         cgrid.addWidget(self._row_bar, 1, 0)
 
         self.board_holder = QWidget()
@@ -208,13 +245,117 @@ class Window(QMainWindow):
         self.solver.pause_requested.connect(self.pause_auto)
         self.solver.step_requested.connect(self.solve_step)
         self.solver.export_requested.connect(self.export_trace)
-        self.solver.visibilityChanged.connect(lambda _v: QTimer.singleShot(0, self.position_cards))
+        self.solver.visibilityChanged.connect(self._on_solver_visibility_changed)
         self.auto_clock = QTimer(self)
         self.auto_clock.setInterval(650)
         self.auto_clock.timeout.connect(self.solve_step)
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.solver)
         self.solver.hide()
         self.statusBar().hide()
+
+    def _populate_case_menu(self):
+        self._case_menu.clear()
+        self._case_actions.clear()
+        last_size = None
+        for path in sorted((ROOT / 'puzzles').glob('case-*.json')):
+            data = json.loads(path.read_text(encoding='utf-8'))
+            size = data['size']
+            if size != last_size:
+                if last_size is not None:
+                    self._case_menu.addSeparator()
+                hdr = self._case_menu.addAction(f'BÀN CỜ {size}×{size}')
+                hdr.setEnabled(False)
+                last_size = size
+            act = self._case_menu.addAction(
+                f"   {data['title']}",
+                lambda checked=False, p=path: self.load(p),
+            )
+            self._case_actions[path.resolve()] = (act, data['title'])
+        self._case_menu.addSeparator()
+        self._case_menu.addAction(icon('export', '#1E5B88'), 'Mở màn chơi JSON…', self.open_case_file)
+
+    def _sync_case_menu_check(self):
+        resolved = self.path.resolve() if self.path else None
+        for p, (act, title) in self._case_actions.items():
+            prefix = '● ' if p == resolved else '   '
+            act.setText(f'{prefix}{title}')
+
+    def _update_progress_pill(self):
+        if self.state:
+            self.progress_pill.set_progress(len(self.state.statuses), len(self.state.board.cells))
+            self.progress_pill.show()
+        else:
+            self.progress_pill.set_progress(0, 0)
+            self.progress_pill.hide()
+
+    def _sync_motion_action_icon(self, enabled: bool):
+        if not hasattr(self, 'motion_action'):
+            return
+        if enabled:
+            self.motion_action.setIcon(icon('check', '#1E8A52'))
+        else:
+            blank = QPixmap(16, 16)
+            blank.fill(Qt.GlobalColor.transparent)
+            self.motion_action.setIcon(QIcon(blank))
+
+    def _sync_header_density(self):
+        if not hasattr(self, 'header') or not hasattr(self, '_header_layout'):
+            return
+        w = self.header.width() if self.header.width() > 200 else max(400, self.desk.width() - 58)
+        if w < 740:
+            self._header_layout.setContentsMargins(10, 6, 8, 6)
+            self._header_layout.setSpacing(6)
+            self.progress_pill.set_compact(True)
+            self.hint_button.setText('Gợi ý')
+            self.hint_button.setFixedSize(84, 36)
+            self.restart_button.setText('')
+            self.restart_button.setFixedSize(38, 36)
+            self.solver_button.setText('')
+            self.solver_button.setFixedSize(38, 36)
+            self.tools_button.setFixedSize(38, 36)
+        elif w < 880:
+            self._header_layout.setContentsMargins(11, 6, 9, 6)
+            self._header_layout.setSpacing(7)
+            self.progress_pill.set_compact(True)
+            self.hint_button.setText('Gợi ý')
+            self.hint_button.setFixedSize(88, 36)
+            self.restart_button.setText('Làm lại')
+            self.restart_button.setFixedSize(92, 36)
+            self.solver_button.setText('Sổ giải')
+            self.solver_button.setFixedSize(90, 36)
+            self.tools_button.setFixedSize(40, 36)
+        else:
+            self._header_layout.setContentsMargins(12, 6, 10, 6)
+            self._header_layout.setSpacing(10)
+            self.progress_pill.set_compact(False)
+            self.hint_button.setText('Gợi ý')
+            self.hint_button.setFixedSize(96, 36)
+            self.restart_button.setText('Làm lại')
+            self.restart_button.setFixedSize(102, 36)
+            self.solver_button.setText('Sổ giải')
+            self.solver_button.setFixedSize(98, 36)
+            self.tools_button.setFixedSize(42, 36)
+
+    def _on_solver_visibility_changed(self, visible: bool):
+        self.solver_button.active_badge = visible
+        self.solver_button.setIcon(icon('play', '#FFFFFF' if visible else '#143B2A'))
+        self.solver_button.update()
+        QTimer.singleShot(0, self._sync_header_density)
+        QTimer.singleShot(0, self.position_cards)
+
+    def toggle_solver(self):
+        if self.solver.isVisible():
+            self.solver.close()
+        else:
+            self.open_solver()
+
+    def open_case_file(self):
+        self.pause_auto()
+        chosen, _ = QFileDialog.getOpenFileName(
+            self, 'Mở tệp màn chơi JSON', str(ROOT / 'puzzles'), 'JSON (*.json)',
+        )
+        if chosen:
+            self.load(Path(chosen))
 
     def _rebuild_coordinates(self, size):
         h_gap = 10 if size >= 5 else 14
@@ -223,8 +364,8 @@ class Window(QMainWindow):
         self._row_layout.setSpacing(v_gap)
         self.board_layout.setHorizontalSpacing(h_gap)
         self.board_layout.setVerticalSpacing(v_gap)
-        self._col_bar.setFixedHeight(28)
-        self._row_bar.setFixedWidth(32)
+        self._col_bar.setFixedHeight(26)
+        self._row_bar.setFixedWidth(30)
         for item_list, bar_layout in ((self._col_labels, self._col_layout), (self._row_labels, self._row_layout)):
             for w in item_list:
                 bar_layout.removeWidget(w)
@@ -232,11 +373,11 @@ class Window(QMainWindow):
                 w.deleteLater()
             item_list.clear()
         for col in range(size):
-            pill = PixelLabel(chr(65 + col), 'coordHeader', bg=(250, 231, 192, 230), fg='#0D2744', radius=9, font_px=15)
+            pill = PixelLabel(chr(65 + col), 'coordHeader', font_px=13, is_row=False)
             self._col_layout.addWidget(pill, 1)
             self._col_labels.append(pill)
         for row in range(size):
-            pill = PixelLabel(str(row + 1), 'coordHeader', bg=(250, 231, 192, 230), fg='#0D2744', radius=9, font_px=15)
+            pill = PixelLabel(str(row + 1), 'coordHeader', font_px=13, is_row=True)
             self._row_layout.addWidget(pill, 1)
             self._row_labels.append(pill)
 
@@ -266,12 +407,14 @@ class Window(QMainWindow):
         ):
             palette.setColor(role, QColor(value))
         self.setPalette(palette)
-        self._case_btn.setIcon(icon('chevron', '#FFFFFF'))
-        self._case_btn.setIconSize(QSize(15, 15))
-        self.hint_button.setIcon(icon('hint', '#0F2942'))
-        self.hint_button.setIconSize(QSize(18, 18))
+        self.hint_button.setIcon(icon('hint', '#2A1D11'))
+        self.hint_button.setIconSize(QSize(16, 16))
+        self.restart_button.setIcon(icon('restart', '#172A3C'))
+        self.restart_button.setIconSize(QSize(15, 15))
+        self.solver_button.setIcon(icon('play', '#143B2A'))
+        self.solver_button.setIconSize(QSize(15, 15))
         self.tools_button.setIcon(QIcon(str(ROOT / 'public/pixel/gear.png')))
-        self.tools_button.setIconSize(QSize(24, 24))
+        self.tools_button.setIconSize(QSize(20, 20))
         self.solver.set_theme(self.theme)
         for card in self.cards.values():
             card.theme = self.theme
@@ -281,7 +424,9 @@ class Window(QMainWindow):
     def open_solver(self):
         self.solver.show()
         self.solver.raise_()
-        self.resizeDocks([self.solver], [385], Qt.Orientation.Horizontal)
+        dock_w = 365 if self.width() < 1200 else 395
+        self.resizeDocks([self.solver], [dock_w], Qt.Orientation.Horizontal)
+        QTimer.singleShot(0, self._sync_header_density)
 
     def start_auto(self):
         if self.engine and not self.engine.solved:
@@ -304,14 +449,14 @@ class Window(QMainWindow):
         if cell:
             self.select_person(cell)
             self.show_notice(
-                'Gợi ý',
-                'Các lời khai đã mở đủ để xác định trạng thái của nhân vật này.',
+                'Gợi ý suy luận',
+                'Các lời khai đã mở đủ để xác định chắc chắn trạng thái của nhân vật này.',
                 person=cell,
                 action='Xem nhân vật',
             )
         else:
             self.show_notice(
-                'Gợi ý',
+                'Gợi ý suy luận',
                 'INCONSISTENT — Các lời khai mâu thuẫn.'
                 if verdict == 'INCONSISTENT'
                 else 'UNKNOWN — Chưa có phán quyết nào suy ra được.',
@@ -320,6 +465,8 @@ class Window(QMainWindow):
     def set_busy(self, busy):
         ready = self.state is not None
         self.hint_button.setEnabled(ready and not busy)
+        self.restart_button.setEnabled(ready)
+        self.solver_button.setEnabled(ready)
         self.solver.play_button.setEnabled(ready and not self.solver.complete)
         self.solver.step_button.setEnabled(
             ready and not busy and not self.auto_clock.isActive() and not self.solver.complete
@@ -355,7 +502,12 @@ class Window(QMainWindow):
             }
             self.solver.set_message(messages[result['result']], 'warning')
             if kind == 'submit':
-                self.show_notice('Phán quyết', messages[result['result']], tone='warning')
+                self.show_notice(
+                    'Phán quyết chưa hợp lệ',
+                    messages[result['result']],
+                    tone='warning',
+                    person=result.get('cell'),
+                )
 
     def closeEvent(self, event):
         self.auto_clock.stop()
@@ -371,9 +523,14 @@ class Window(QMainWindow):
         self.notice_overlay.show()
         self.notice_overlay.raise_()
         subject = None
-        if person:
+        if person and person in self.cards:
             card = self.cards[person]
-            subject = (card.character.name, card.expression_frames[0])
+            portrait = (
+                card.expression_frames[0]
+                if (card.status or card.is_selected)
+                else card.silhouette_frames[0]
+            )
+            subject = (card.character, portrait)
         dialog = GameNotice(self, self.theme, title, message, tone=tone, subject=subject, action=action)
         self.notice = dialog
         dialog.finished.connect(lambda result, d=dialog, c=person: self.close_notice(d, c))
@@ -402,6 +559,7 @@ class Window(QMainWindow):
     def apply_verdict(self, result, metrics):
         cell, verdict = result['cell'], result['verdict']
         self.state = self.engine.public_state()
+        self._update_progress_pill()
         card = self.cards[cell]
         card.status = verdict
         card.clue = clue_text(self.state.clues[cell], self.state.board, self.clues, self.names)
@@ -422,7 +580,7 @@ class Window(QMainWindow):
         if self.engine.solved:
             self.pause_auto()
             self.solver.set_complete()
-            self.show_notice('Hoàn thành', 'Đã chứng minh được trạng thái của tất cả nhân vật.', tone='success')
+            self.show_notice('Hoàn thành vụ án!', 'Đã chứng minh được trạng thái của tất cả nhân vật.', tone='success')
         return True
 
     def solve_step(self):
@@ -457,6 +615,15 @@ class Window(QMainWindow):
         self.pause_auto()
         self.engine = self.controller.replace(engine)
         self.solver.reset(public.title)
+        try:
+            initial_kb = build_knowledge_base(public, self.clues)
+        except NotImplementedError:
+            initial_kb = None
+        if initial_kb is not None:
+            self.solver.stats.setText(
+                f'{len(initial_kb.primary)} biến chính, {initial_kb.auxiliary_count} biến phụ, {len(initial_kb.clauses)} mệnh đề.'
+            )
+            self.solver.stats_button.setEnabled(True)
         self.path = Path(path)
         self.state = public
         self.selected_cell = None
@@ -483,7 +650,9 @@ class Window(QMainWindow):
         board = public.board
         self._rebuild_coordinates(board.size)
         self.names = {c.cell: c.name for c in public.characters}
-        self._case_btn.setText(public.title)
+        self._case_btn.set_case_info(public.title, board.size)
+        self._sync_case_menu_check()
+        self._update_progress_pill()
         for char in public.characters:
             spec = public.clues.get(char.cell)
             desc = clue_text(spec, board, self.clues, self.names) if spec else None
@@ -593,7 +762,7 @@ class Window(QMainWindow):
         for cell, card in self.cards.items():
             slot = self.card_slots[cell]
             origin = slot.mapTo(self.desk, QPoint())
-            factor = card.feedback.scale * (1 + .04 * card.feedback.pop)
+            factor = card.feedback.scale * (1 + 0.04 * card.feedback.pop)
             width = round(slot.width() * factor)
             height = round(slot.height() * factor)
             x = origin.x() - (width - slot.width()) // 2
@@ -603,7 +772,10 @@ class Window(QMainWindow):
             card.show()
 
     def eventFilter(self, watched, event):
+        if watched is getattr(self, 'header', None) and event.type() == QEvent.Type.Resize:
+            self._sync_header_density()
         if watched is self.desk and event.type() == QEvent.Type.Resize:
+            self._sync_header_density()
             if self.notice_overlay:
                 self.notice_overlay.setGeometry(self.desk.rect())
             if self.notice:
@@ -618,12 +790,16 @@ class Window(QMainWindow):
         return super().eventFilter(watched, event)
 
     def refresh_cards(self):
-        markup = ""
+        markup = ''
         if self.active_clue:
-            markup = clue_html(self.state.clues[self.active_clue], self.state.board,
-                               self.clues, self.paper_theme, self.names)
-        markup, focus = inspect_references(markup, self.parts, self.paper_theme,
-                                           self.active_clue, self.pinned_key, self.preview_key)
+            markup = clue_html(
+                self.state.clues[self.active_clue], self.state.board,
+                self.clues, self.paper_theme, self.names,
+            )
+        markup, focus = inspect_references(
+            markup, self.parts, self.paper_theme,
+            self.active_clue, self.pinned_key, self.preview_key,
+        )
         for cell, card in self.cards.items():
             card.is_selected = cell == self.selected_cell
             card.source = cell == self.active_clue
@@ -637,10 +813,32 @@ class Window(QMainWindow):
             card.feedback.emphasize(card.is_selected, card.dimmed, self.motion_enabled)
             card.place_actions()
             card.update()
+
+        # Light up compact row/column badges when an entire row/column is in active focus!
+        if self.state:
+            n = self.state.board.size
+            for c_idx, pill in enumerate(self._col_labels):
+                col_cells = {f'{chr(65 + c_idx)}{r + 1}' for r in range(n)}
+                hl = bool(self.active_clue and col_cells.issubset(focus.counted))
+                if pill.highlighted != hl:
+                    pill.highlighted = hl
+                    pill.update()
+            for r_idx, pill in enumerate(self._row_labels):
+                row_cells = {f'{chr(65 + c)}{r_idx + 1}' for c in range(n)}
+                hl = bool(self.active_clue and row_cells.issubset(focus.counted))
+                if pill.highlighted != hl:
+                    pill.highlighted = hl
+                    pill.update()
+
         self.sync_zoom()
 
     def toggle_motion(self, enabled):
         self.motion_enabled = enabled
+        if hasattr(self, 'motion_action') and self.motion_action.isChecked() != enabled:
+            self.motion_action.blockSignals(True)
+            self.motion_action.setChecked(enabled)
+            self.motion_action.blockSignals(False)
+        self._sync_motion_action_icon(enabled)
         for card in self.cards.values():
             card.motion = enabled
             if not enabled:
@@ -655,7 +853,7 @@ class Window(QMainWindow):
                 self.clock.stop()
 
     def tick(self):
-        delta = min(.1, self.elapsed_clock.restart() / 1000.)
+        delta = min(0.1, self.elapsed_clock.restart() / 1000.0)
         if not self.isVisible() or self.isMinimized():
             return
         for card in self.cards.values():
