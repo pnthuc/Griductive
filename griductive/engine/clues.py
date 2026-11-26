@@ -136,8 +136,6 @@ class Fact(Clue):
             raise PuzzleError('status phải là CRIMINAL hoặc INNOCENT.')
 
     def evaluate(self, spec, assignment, board, clues):
-        # TODO(Thien): Kiểm tra trực tiếp xem `assignment[spec['person']]` có khớp với `spec['status']` không.
-        # (`assignment` là dict {cell: bool} trong đó True ứng với 'CRIMINAL', False ứng với 'INNOCENT').
         return assignment[spec['person']] == (spec['status'] == 'CRIMINAL')
 
     def expression(self, spec, encoder, clues):
@@ -154,8 +152,6 @@ class Same(Clue):
     same = True
 
     def evaluate(self, spec, assignment, board, clues):
-        # TODO(Thien): Kiểm tra 2 ô `spec['a']` và `spec['b']` có cùng trạng thái (`self.same == True`)
-        # hoặc khác trạng thái (`self.same == False`, dùng chung cho lớp `Different`) trong `assignment` không.
         if self.same:
             return assignment[spec['a']] == assignment[spec['b']]
         else:
@@ -186,8 +182,6 @@ class Count(Clue):
             raise PuzzleError(f'k phải là số nguyên từ 0 đến {size}.')
 
     def evaluate(self, spec, assignment, board, clues):
-        # TODO(Thien): Đếm số ô có `assignment[cell] == True` trong vùng `clues.regions.resolve(spec['region'], board)`,
-        # sau đó gọi `self.compare(count, spec['k'])`.
         cnt = 0
         for cell in clues.regions.resolve(spec['region'], board):
             cnt += (assignment[cell] == True)
@@ -219,7 +213,6 @@ class Exactly(Count):
     word = 'Có đúng'
 
     def compare(self, count, k):
-        # TODO(Thien): Trả về True nếu `count == k`.
         return count == k
 
     def bound(self, encoder, lower, upper):
@@ -231,7 +224,6 @@ class AtLeast(Count):
     word = 'Có ít nhất'
 
     def compare(self, count, k):
-        # TODO(Thien): Trả về True nếu `count >= k`.
         return count >= k
 
     def bound(self, encoder, lower, upper):
@@ -243,7 +235,6 @@ class AtMost(Count):
     word = 'Có nhiều nhất'
 
     def compare(self, count, k):
-        # TODO(Thien): Trả về True nếu `count <= k`.
         return count <= k
 
     def bound(self, encoder, lower, upper):
@@ -261,7 +252,6 @@ class Comparison(Clue):
             raise PuzzleError('op phải là =, !=, <, <=, > hoặc >=.')
 
     def evaluate(self, spec, assignment, board, clues):
-        # TODO(Thien): Đếm số Criminal ở vùng `left` và vùng `right`, rồi so sánh bằng `self.operators[spec['op']]`.
 
         left = 0
         for cell in clues.regions.resolve(spec['left'], board):
@@ -312,7 +302,6 @@ class Conditional(Clue):
     children = ('if', 'then')
 
     def evaluate(self, spec, assignment, board, clues):
-        # TODO(Thien): Đánh giá mệnh đề kéo theo (P -> Q) <=> (not P or Q) bằng `clues.evaluate(...)`.
         p = clues.evaluate(spec['if'], assignment, board)
         q = clues.evaluate(spec['then'], assignment, board)
 

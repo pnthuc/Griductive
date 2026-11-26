@@ -3,8 +3,8 @@ import sys
 import json
 from dataclasses import replace
 from pathlib import Path
-from PySide6.QtCore import Qt, QTimer, QElapsedTimer, QSize, QEvent, QPoint
-from PySide6.QtGui import QIcon, QColor, QShortcut, QKeySequence, QPalette, QPixmap
+from PySide6.QtCore import Qt, QTimer, QElapsedTimer, QSize, QEvent, QPoint, QRectF
+from PySide6.QtGui import QIcon, QColor, QShortcut, QKeySequence, QPalette, QPixmap, QPainter, QPen, QFont, QFontMetrics
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QToolButton, QVBoxLayout, QHBoxLayout,
     QGridLayout, QFileDialog, QMenu, QSizePolicy,
@@ -32,6 +32,17 @@ from .game_controller import GameController
 
 
 class CaseMenu(CozyMenu):
+    """Flush-left custom-painted case selector menu (zero Fusion left icon-gutter gap)."""
+
+    def sizeHint(self):
+        base = super().sizeHint()
+        f = QFont('Segoe UI')
+        f.setPixelSize(14)
+        f.setWeight(QFont.Weight.Bold)
+        fm = QFontMetrics(f)
+        max_tw = max((fm.horizontalAdvance(a.text()) for a in self.actions() if not a.isSeparator()), default=160)
+        return QSize(max(196, max_tw + 52), base.height())
+
     def showEvent(self, event):
         super().showEvent(event)
         button = self.parentWidget()
@@ -40,6 +51,78 @@ class CaseMenu(CozyMenu):
         left = button.mapToGlobal(QPoint(0, 0)).x()
         screen = button.screen().availableGeometry()
         self.move(max(screen.left(), min(left, screen.right() - self.width() + 1)), self.y() + 3)
+
+    def paintEvent(self, event):
+        p = QPainter(self)
+        p.setRenderHint(QPainter.RenderHint.Antialiasing, True)
+        box = QRectF(self.rect()).adjusted(1.5, 1.5, -1.5, -2.5)
+        p.setPen(Qt.PenStyle.NoPen)
+        p.setBrush(QColor(14, 28, 44, 65))
+        p.drawRoundedRect(box.translated(0, 2.0), 10.0, 10.0)
+        p.setBrush(QColor('#FFFBF2'))
+        p.setPen(QPen(QColor('#2C4359'), 2.0))
+        p.drawRoundedRect(box, 10.0, 10.0)
+
+        active = self.activeAction()
+        left_x = box.left() + 13.0
+        for act in self.actions():
+            ag = QRectF(self.actionGeometry(act))
+            if act.isSeparator():
+                p.setPen(QPen(QColor('#E4D7C1'), 1.0))
+                y = round(ag.center().y()) + 0.5
+                p.drawLine(QPoint(int(box.left() + 11), int(y)), QPoint(int(box.right() - 11), int(y)))
+                continue
+
+            row = QRectF(box.left() + 6.5, ag.top() + 0.5, box.width() - 13.0, ag.height() - 1.0)
+            if not act.isEnabled():
+                fh = QFont('Segoe UI')
+                fh.setPixelSize(11)
+                fh.setWeight(QFont.Weight.ExtraBold)
+                p.setFont(fh)
+                p.setPen(QColor('#7E8D9B'))
+                p.drawText(
+                    QRectF(left_x, row.top() + 1.0, row.width() - 16.0, row.height()),
+                    Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
+                    act.text(),
+                )
+                continue
+
+            hovered = (act is active)
+            is_cur = bool(act.property('is_current'))
+            is_open = bool(act.property('is_open_json'))
+
+            if hovered:
+                p.setBrush(QColor('#FFE8B6'))
+                p.setPen(QPen(QColor('#D79C46'), 1.5))
+                p.drawRoundedRect(row, 6.0, 6.0)
+            elif is_cur:
+                p.setBrush(QColor('#F7EBD2'))
+                p.setPen(QPen(QColor('#E4CFA8'), 1.0))
+                p.drawRoundedRect(row, 6.0, 6.0)
+
+            fi = QFont('Segoe UI')
+            fi.setPixelSize(13)
+            fi.setWeight(QFont.Weight.Bold if is_cur else QFont.Weight.DemiBold)
+            p.setFont(fi)
+            p.setPen(QColor('#122334' if (is_cur or hovered) else '#1D3144'))
+            p.drawText(
+                QRectF(left_x, row.top(), row.width() - 34.0, row.height()),
+                Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
+                act.text(),
+            )
+
+            if is_cur:
+                p.setPen(Qt.PenStyle.NoPen)
+                p.setBrush(QColor('#1E5B88'))
+                cy = row.center().y()
+                cx = row.right() - 11.0
+                p.drawEllipse(QRectF(cx - 3.5, cy - 3.5, 7.0, 7.0))
+            elif is_open:
+                ico = icon('export', '#1E5B88')
+                isz = 15
+                iy = int(round(row.center().y() - isz * 0.5))
+                ix = int(round(row.right() - isz - 7.0))
+                ico.paint(p, ix, iy, isz, isz)
 
 
 class ToolsMenu(CozyMenu):
@@ -267,18 +350,20 @@ class Window(QMainWindow):
                 hdr.setEnabled(False)
                 last_size = size
             act = self._case_menu.addAction(
-                f"   {data['title']}",
+                data['title'],
                 lambda checked=False, p=path: self.load(p),
             )
+            act.setProperty('is_current', False)
             self._case_actions[path.resolve()] = (act, data['title'])
         self._case_menu.addSeparator()
-        self._case_menu.addAction(icon('export', '#1E5B88'), 'Mở màn chơi JSON…', self.open_case_file)
+        open_act = self._case_menu.addAction('Mở màn chơi JSON…', self.open_case_file)
+        open_act.setProperty('is_open_json', True)
 
     def _sync_case_menu_check(self):
         resolved = self.path.resolve() if self.path else None
-        for p, (act, title) in self._case_actions.items():
-            prefix = '● ' if p == resolved else '   '
-            act.setText(f'{prefix}{title}')
+        for p, (act, _title) in self._case_actions.items():
+            act.setProperty('is_current', p == resolved)
+        self._case_menu.update()
 
     def _update_progress_pill(self):
         if self.state:

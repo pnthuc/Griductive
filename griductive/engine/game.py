@@ -145,15 +145,9 @@ class GameEngine:
         return {'result': 'ACCEPTED', **entry}
 
     def hint(self, heuristic='ordered', cancelled=lambda: False):
-        # TODO(Thien): Tạo `LogicAgent(self.registry, heuristic=heuristic, cancelled=cancelled)`
-        # và trả về `agent.next_verdict(self.public_state())`.
         return LogicAgent(self.registry, heuristic = heuristic, cancelled = cancelled).next_verdict(self.public_state())
 
     def step(self, heuristic='ordered', cancelled=lambda: False):
-        # TODO(Thien): Thực hiện tự động 1 bước suy luận:
-        # - Gọi `cell, verdict = self.hint(heuristic, cancelled)`.
-        # - Nếu `cell is None`: trả về `{'result': verdict}`.
-        # - Ngược lại: gọi và trả về `self.submit(cell, verdict, heuristic, cancelled)`.
         cell, verdict = self.hint(heuristic, cancelled)
         if cell is None:
             return {'result': verdict}
@@ -167,17 +161,6 @@ class GameEngine:
 
 def check_uniqueness(puzzle, registry, heuristic="ordered", timeout=10.):
     """Offline validation only. Block primary variables, regardless of auxiliaries."""
-    # TODO(Thien): Kiểm tra xem `puzzle` (khi mở toàn bộ clues) có nghiệm duy nhất trên các biến chính hay không.
-    #
-    # Các bước cần thực hiện:
-    # 1. Tạo `encoder = Encoder(puzzle.board)`, duyệt mọi `cell` trong `puzzle.board.cells` và gọi
-    #    `encoder.add(puzzle.clues[cell], registry)`, sau đó `kb = encoder.finish()`.
-    # 2. Giải lần 1: `first = solve(kb.clauses, kb.variable_count, heuristic=heuristic, timeout=timeout)`.
-    #    Nếu `first.status == "UNSAT"` -> trả về `"INCONSISTENT"`.
-    # 3. Tạo mệnh đề chặn (blocking clause) trên các biến chính (`kb.primary.values()`):
-    #    `block = tuple(-v if first.model[v] else v for v in kb.primary.values())`
-    # 4. Giải lần 2 với `kb.clauses + (block,)`:
-    #    Nếu kết quả là `"UNSAT"` -> trả về `"UNIQUE"`, ngược lại trả về `"MULTIPLE"`.
     encoder = Encoder(puzzle.board)
     for cell in puzzle.board.cells:
         encoder.add(puzzle.clues[cell], registry)

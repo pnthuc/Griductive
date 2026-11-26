@@ -3,10 +3,35 @@
   "class": "24TN",
   "demo_url": null,
   "members": [
-    {"name": "Phan Ngọc Thức", "student_id": "24120228", "responsibility": null, "completion_percent": null},
-    {"name": "Nguyễn Lê Minh Quân", "student_id": "24120219", "responsibility": null, "completion_percent": null},
-    {"name": "Tống Phúc Thiện", "student_id": "24120141", "responsibility": null, "completion_percent": null},
-    {"name": "Bùi Phương Nam", "student_id": "24120502", "responsibility": null, "completion_percent": null},
-    {"name": "Phan Gia Phúc", "student_id": "24120503", "responsibility": null, "completion_percent": null}
+    {
+      "name": "Phan Ngọc Thức",
+      "student_id": "24120228",
+      "responsibility": "Kiến trúc dự án, Giao diện Desktop Cozy Harbor & Web Dash, Thực nghiệm, Báo cáo & Video Demo",
+      "completion_percent": 100
+    },
+    {
+      "name": "Nguyễn Lê Minh Quân",
+      "student_id": "24120219",
+      "responsibility": "Thực nghiệm hệ thống, Phân tích so sánh 2 heuristic (ordered vs frequency), Báo cáo kỹ thuật & Video Demo",
+      "completion_percent": 100
+    },
+    {
+      "name": "Tống Phúc Thiện",
+      "student_id": "24120141",
+      "responsibility": "Hệ thống vùng (Regions & phép toán tập hợp), Đánh giá ngữ nghĩa trực tiếp (evaluate) & Luồng GameEngine / check_uniqueness",
+      "completion_percent": 100
+    },
+    {
+      "name": "Bùi Phương Nam",
+      "student_id": "24120502",
+      "responsibility": "Bộ giải DPLL SAT Solver (ordered & frequency) & Suy luận phản chứng LogicAgent",
+      "completion_percent": 100
+    },
+    {
+      "name": "Phan Gia Phúc",
+      "student_id": "24120503",
+      "responsibility": "Mã hóa CNF (cổng Tseitin, quy hoạch động đếm ngưỡng unary) & Biểu diễn toàn bộ Clue sang CNF",
+      "completion_percent": 100
+    }
   ]
 }

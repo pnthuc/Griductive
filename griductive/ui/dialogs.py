@@ -78,15 +78,11 @@ class PortraitVignette(QWidget):
         p.setPen(QPen(QColor('#BDD3DF'), 1.6))
         p.drawRoundedRect(box, 12.0, 12.0)
 
-        # Clip cute pixel sprite cleanly inside vignette
+        # Clip cute pixel sprite cleanly inside vignette (no stray background oval!)
         p.save()
         clip = QPainterPath()
         clip.addRoundedRect(box.adjusted(2, 2, -2, -2), 10.0, 10.0)
         p.setClipPath(clip)
-        # Soft ground shadow ellipse
-        p.setPen(Qt.PenStyle.NoPen)
-        p.setBrush(QColor(22, 48, 68, 28))
-        p.drawEllipse(QRectF(28, box.bottom() - 22, box.width() - 56, 14))
 
         p.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform, False)
         scaled = self.portrait.scaled(
@@ -138,7 +134,7 @@ class GameNotice(QDialog):
         self.setStyleSheet(f'''
 QFrame#gameNotice {{background:transparent;border:0;}}
 QFrame#gameNotice QLabel {{background:transparent;border:0;color:{theme.text};}}
-QLabel#noticeBadge {{
+QFrame#gameNotice QLabel#noticeBadge {{
     background:{badge_bg};
     border:1.5px solid {ribbon_hex};
     border-radius:10px;
