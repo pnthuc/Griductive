@@ -1,1 +1,1 @@
-"""Griductive: independent puzzle contracts and a desktop UI prototype."""
+"""Griductive deduction game: logic engine, presentation adapters, and PySide6 desktop UI."""

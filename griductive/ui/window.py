@@ -1,4 +1,4 @@
-"""Desktop window — Cozy Harbor Game UI with cute pixel characters & polished HUD."""
+"""Main PySide6 desktop window, HUD controls, and board layout."""
 import sys
 import json
 from dataclasses import replace
@@ -899,7 +899,7 @@ class Window(QMainWindow):
             card.place_actions()
             card.update()
 
-        # Light up compact row/column badges when an entire row/column is in active focus!
+        # Highlight row/column badges when an entire row or column is in active focus
         if self.state:
             n = self.state.board.size
             for c_idx, pill in enumerate(self._col_labels):

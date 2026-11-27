@@ -1,4 +1,4 @@
-"""Desktop cards — Cozy Harbor character cards with cute pixel sprites & tactile keycaps."""
+"""Desktop character cards with pixel portraits and verdict buttons."""
 import math
 from html import escape
 from PySide6.QtCore import Qt, QRectF, QPointF, Signal, QSize
@@ -406,7 +406,7 @@ class PortraitCard(QWidget):
             symbol.paint(p, badge.adjusted(2, 2, -2, -2).toRect())
             badge_reserved = bsz + round(6 * s)
 
-        # Character Name, Profession & warm hairline divider (HiDPI device-accurate + descender-safe!)
+        # Character name, profession, and hairline divider
         tx = content.x()
         tw = max(24.0, content.width() - badge_reserved)
         name_size = max(12 if compact_h else 14, round(22.0 * s))

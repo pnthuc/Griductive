@@ -1,52 +1,52 @@
 \begingroup\setstretch{1.22}
 \section{Giao diện người dùng Desktop Cozy Harbor}
 
-\subsection{Chọn màn và chơi thủ công}
+\subsection{Chọn hồ sơ vụ án và chơi thủ công}
 
-Cozy Harbor hiển thị tọa độ, tên, nghề nghiệp, trạng thái đã chứng minh và lời khai trên thẻ đang mở. Từ menu hồ sơ, người chơi chọn một trong sáu màn hoặc mở tệp JSON. Chọn một thẻ úp để gửi phán quyết tội phạm hoặc vô tội. Khi chứng minh thành công, thẻ lật để lộ lời khai tiếp theo.
+Giao diện Cozy Harbor hiển thị tọa độ cột/hàng, chân dung pixel, tên, nghề nghiệp, trạng thái đã mở và nội dung lời khai trên từng thẻ. Từ nút chọn hồ sơ trên thanh tiêu đề, người chơi chuyển giữa sáu màn chuẩn theo cỡ bàn hoặc mở tệp JSON ngoài; bấm vào một thẻ úp để gửi phán quyết và lật mở lời khai khi chứng minh thành công.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.78\linewidth]{img/ui_3x3_casemenu.png}
-\caption{Menu hồ sơ trên bàn $3\times3$. Các màn được nhóm theo kích thước bàn.}
+\caption{Menu chọn hồ sơ vụ án trên bàn $3\times3$, phân nhóm theo kích thước bàn cờ.}
 \end{figure}
 
-Gợi ý xác định nhân vật có thể chứng minh tiếp theo từ cùng ảnh chụp công khai. Nút “Xem nhân vật” dẫn người chơi đến thẻ cần xét. Thao tác xem gợi ý giữ nguyên số thẻ đã mở.
+Nút “Gợi ý” gọi \texttt{GameEngine.hint()} trên \texttt{PublicState} để chỉ ra nhân vật tiếp theo suy ra được mà không đọc đáp án ẩn. Nút “Xem nhân vật” dẫn tới thẻ cần xét và giữ nguyên số thẻ đã mở.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.34\linewidth]{img/ui_hint_modal.png}
-\caption{Hộp gợi ý chỉ đến Gwen, thủ thư ở A3, khi các lời khai đã đủ để xác định trạng thái của cô.}
+\caption{Hộp thoại gợi ý chỉ tới Gwen (thủ thư tại ô A3) khi các lời khai hiện có đã buộc được trạng thái của ô này.}
 \end{figure}
 
 \clearpage
 
-\subsection{Đọc lời khai và theo dõi quá trình giải}
+\subsection{Tô sáng vùng tham chiếu và theo dõi Sổ giải}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.75\linewidth]{img/ui_4x4_highlights.png}
-\caption{Bàn $4\times4$ khi chọn lời khai. Viền màu xác định các ô thuộc vùng tham chiếu, còn các ô ngoài vùng được làm mờ.}
+\caption{Bàn $4\times4$ khi chọn đọc một lời khai: viền màu làm nổi bật vùng tham chiếu, các thẻ ngoài vùng được làm mờ nhẹ.}
 \end{figure}
 
-Với lời khai nhiều vùng, màu của từng cụm từ khớp với đường viền trên bàn. Chọn hoặc ghim một vùng giúp đọc đúng toán hạng của phép so sánh. “Tự giải” lần lượt thực hiện các bước đã chứng minh. “Làm lại” khởi tạo lại màn từ những thẻ mở ban đầu.
+Với lời khai nhiều vùng hoặc có điều kiện lồng, màu của từng cụm từ khớp với viền khung trên bàn cờ; di chuột hoặc bấm ghim cụm từ giúp tách riêng từng toán hạng của phép so sánh. “Tự động giải” thực hiện lần lượt các bước đã chứng minh, còn “Làm lại” đưa bàn về trạng thái mở đầu.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.75\linewidth]{img/ui_5x5_solver.png}
-\caption{Bàn $5\times5$ bên cạnh sổ tay suy luận. Mỗi mục ghi ô vừa được xác định và có nút xem chi tiết.}
+\caption{Bàn $5\times5$ mở kèm bảng Sổ giải ở cạnh phải, ghi lại từng bước chứng minh và truy vấn DPLL.}
 \end{figure}
 
 \clearpage
 
 \subsection{Điều phối luồng nền, nạp tệp JSON và xuất nhật ký}
 
-Cửa sổ chính tổ chức bàn chơi trên \texttt{QMainWindow} và gắn sổ tay suy luận dưới dạng bảng neo \texttt{QDockWidget} ở cạnh phải \cite{qtforpython_widgets}. Sổ tay ẩn mặc định để ưu tiên diện tích bàn khi chơi thủ công, và chỉ mở khi người chơi chọn “Sổ giải” hoặc “Tự động giải”. Khi đóng sổ tay, đồng hồ tự giải lập tức tạm dừng để không tự mở thêm thẻ ngoài tầm quan sát.
+Cửa sổ chính đặt bàn chơi trên \texttt{QMainWindow} và gắn Sổ giải dạng bảng neo \texttt{QDockWidget} bên phải \cite{qtforpython_widgets}. Bảng này ẩn mặc định để ưu tiên diện tích bàn khi chơi tay và tự động tạm dừng đồng hồ giải nếu người dùng đóng bảng.
 
-Bộ điều phối \texttt{GameController} cấp một mã thế hệ (\texttt{generation}) cho mỗi lần nạp hoặc làm lại màn và một mã yêu cầu tăng dần cho từng thao tác gợi ý, phán quyết hoặc giải tiếp. Trên worker nền, mỗi yêu cầu thao tác trên bản sao \texttt{GameEngine.fork()} trước khi phát tín hiệu hoàn tất kèm thông số KB mới. Nếu người chơi đổi màn khi phép giải đang chạy, cả cờ hủy trong DPLL lẫn bước kiểm tra mã thế hệ đều ngăn kết quả cũ ghi đè lên phiên mới.
+Lớp \texttt{GameController} gắn mã phiên (\texttt{generation}) cho mỗi lần nạp màn và mã yêu cầu tăng dần cho từng thao tác. Trên \texttt{EngineWorker}, mọi phép gọi SAT chạy trên bản sao \texttt{GameEngine.fork()} trước khi gửi kết quả kèm thông số KB về cửa sổ. Nhờ kết hợp cờ hủy trong DPLL với kiểm tra mã phiên, việc đổi màn khi đang giải bàn lớn không gây ghi đè dữ liệu cũ.
 
-Khi mở tệp câu đố ngoài qua hộp thoại tệp, \texttt{load\_puzzle} kiểm tra phiên bản lược đồ, kích thước $N\in\{3,4,5\}$, thứ tự tên nhân vật theo bảng chữ cái từng hàng, tính hợp lệ của mọi vùng tham chiếu và tính đúng của từng lời khai dưới nghiệm ẩn trước khi thay thế phiên hiện tại. Một tệp hỏng hoặc mâu thuẫn sẽ hiển thị hộp cảnh báo và giữ nguyên màn đang chơi.
+Khi mở tệp JSON ngoài, \texttt{load\_puzzle} kiểm tra phiên bản cấu trúc, cỡ bàn $N\in\{3,4,5\}$, thứ tự tên nhân vật theo bảng chữ cái từng hàng, vùng tham chiếu và tính đúng của mọi lời khai dưới nghiệm chuẩn; nếu tệp lỗi thì hiện cảnh báo và giữ nguyên màn đang chơi.
 
-Ở chân sổ tay, nút “Thông số KB” bật tắt dòng tổng hợp số biến chính, biến phụ Tseitin và mệnh đề hiện hành, còn nút “Xuất JSON” ghi nguyên vẹn danh sách \texttt{engine.trace} ra đĩa. Dữ liệu xuất ra có cùng lược đồ với các tệp nhật ký trong \texttt{output/experiments/}, giúp đối chiếu trực tiếp từng truy vấn SAT giữa phiên tương tác trên giao diện và bộ thực nghiệm dòng lệnh.
+Ở chân Sổ giải, “Thông số KB” hiển thị số biến chính, biến phụ Tseitin và mệnh đề hiện thời, còn “Xuất JSON” lưu nguyên danh sách \texttt{engine.trace} theo cùng lược đồ với \texttt{output/experiments/} để đối chiếu từng giả định UNSAT.
 
 \par\endgroup

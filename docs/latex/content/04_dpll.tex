@@ -1,88 +1,87 @@
 \section{Thuật toán DPLL, suy luận phản chứng và kiểm tra nghiệm duy nhất}
 
-\subsection{Tìm mô hình bằng DPLL}
+\subsection{Thủ tục tìm mô hình DPLL}
 
-Bộ giải tự cài đặt theo DPLL \cite{davis1962machine}. Trước khi tìm kiếm, chương trình loại literal lặp trong mỗi mệnh đề, bỏ mệnh đề hằng đúng và thêm các giả định dưới dạng mệnh đề đơn. Mỗi lời gọi đệ quy chỉ kế thừa phép gán trên nhánh hiện tại.
+Bộ giải trong \texttt{sat.py} được nhóm tự cài đặt theo thuật toán DPLL \cite{davis1962machine}. Trước khi tìm kiếm, hàm \texttt{solve()} khử literal lặp trong từng mệnh đề, bỏ mệnh đề hằng đúng và ghép các giả định (\texttt{assumptions}) thành mệnh đề đơn. Mỗi nhánh đệ quy dùng bản sao phép gán riêng để cô lập khi quay lui.
 
 \begin{algorithm}[H]
 \small\singlespacing
 \caption{DPLL-Solve với hai chiến lược chọn biến}
 \begin{algorithmic}[1]
-\Require CNF $F$, tổng số biến $m$, phép gán $A$ (ban đầu rỗng), chiến lược $h$
+\Require Công thức CNF $F$, tổng số biến $m$, phép gán $A$ (khởi tạo rỗng), chiến lược $h$
 \Loop
-\State Kiểm tra cờ hủy và hạn thời gian. Nếu có mệnh đề rỗng, trả UNSAT.
-\State Lấy tập $U$ các literal trong mệnh đề đơn. Nếu $U=\varnothing$, thoát vòng lặp.
+\State Kiểm tra cờ hủy và hạn thời gian; nếu $F$ có mệnh đề rỗng thì trả UNSAT.
+\State Thu thập tập $U$ các literal trong mệnh đề đơn; nếu $U=\varnothing$ thì thoát vòng lặp.
 \For{mỗi $\ell\in U$}
-\State Nếu $\ell$ xung đột với $A$, trả UNSAT. Nếu mới, gán và tăng số lan truyền.
+\State Nếu $\ell$ ngược giá trị trong $A$ thì trả UNSAT; nếu biến chưa gán thì ghi vào $A$ và tăng số lan truyền.
 \EndFor
-\State Rút gọn $F$ theo $A$: bỏ mệnh đề đúng và xóa literal sai.
+\State Rút gọn $F$ theo $A$: bỏ mệnh đề đã thỏa và xóa literal sai khỏi mệnh đề còn lại.
 \EndLoop
 \If{$F$ rỗng}
-\State Điền False cho mọi biến chưa gán trong $1,\ldots,m$. Trả SAT và mô hình.
+\State Điền False cho mọi biến chưa gán trong $1,\ldots,m$; trả SAT kèm mô hình.
 \EndIf
-\State Đếm số lần xuất hiện của mỗi biến còn trong $F$, gộp cả hai dấu.
-\State Với \texttt{ordered}, lấy ID nhỏ nhất. Với \texttt{frequency}, lấy tần suất cao nhất, hòa chọn ID nhỏ nhất. Gọi biến được chọn là $v$.
-\State Tăng số quyết định một lần.
-\For{$b$ theo thứ tự True, False}
-\State Sao chép $A$, gán $v=b$, rút gọn $F$ và gọi DPLL-Solve đệ quy.
-\State Nếu nhánh trả SAT, trả mô hình. Nếu nhánh thất bại, tăng số quay lui.
+\State Đếm tần suất xuất hiện (gộp cả hai dấu) của từng biến còn lại trong $F$.
+\State Với \texttt{ordered}, chọn chỉ số nhỏ nhất; với \texttt{frequency}, chọn tần suất lớn nhất (hòa chọn chỉ số nhỏ nhất). Gọi biến được chọn là $v$.
+\State Tăng bộ đếm quyết định thêm 1.
+\For{$b$ lần lượt nhận True, False}
+\State Tạo $A' = A \cup \{v \mapsto b\}$, rút gọn $F$ theo $A'$ và gọi đệ quy DPLL-Solve.
+\State Nếu nhánh con trả SAT thì trả mô hình; nếu thất bại thì tăng bộ đếm quay lui.
 \EndFor
 \State Trả UNSAT.
 \end{algorithmic}
 \end{algorithm}
 
-Hai mệnh đề đơn đối nhau tạo xung đột ngay trong một đợt lan truyền. Khi tất cả mệnh đề đã đúng, điền False cho các biến tự do vẫn bảo toàn nghiệm. Bộ đếm quyết định ghi số nút phân nhánh, còn số quay lui ghi từng nhánh con thất bại. Thời gian được đo riêng cho từng truy vấn SAT.
+Hai mệnh đề đơn đối dấu gây xung đột ngay trong vòng lan truyền. Khi $F$ rỗng, điền \texttt{False} cho các biến tự do vẫn bảo toàn nghiệm. Phép gán phân nhánh được ghi thẳng vào $A'$ nên \texttt{propagations} chỉ đếm đúng các phép gán bị ép buộc, còn thời gian được đo riêng cho từng lời gọi SAT.
 
 \clearpage
 
-\subsection{Chứng minh một phán quyết bằng phản chứng}
+\subsection{Kiểm chứng phán quyết bằng phản chứng và lưu mô hình nhân chứng}
 
-Trước hết phải xác nhận $KB$ khả thỏa. Khi đó, $KB\land\neg C_i$ vô nghiệm chứng minh ô $i$ là tội phạm. Nếu $KB\land C_i$ vô nghiệm, ô đó vô tội. Nếu cả hai khả thỏa, mỗi mô hình làm nhân chứng cho một khả năng và ô còn \texttt{UNKNOWN}.
+Trước hết \texttt{LogicAgent} kiểm tra $KB_t$ khả thỏa để loại trường hợp cơ sở tri thức mâu thuẫn. Khi đó, $KB_t\land\neg C_i$ vô nghiệm chứng minh ô $i$ là tội phạm, còn $KB_t\land C_i$ vô nghiệm chứng minh ô $i$ vô tội. Nếu cả hai đều khả thỏa, hai mô hình tìm được chứng tỏ ô $i$ còn \texttt{UNKNOWN}.
 
 \begin{algorithm}[H]
 \small\singlespacing
-\caption{Phân loại có lưu nhân chứng và kiểm chứng đề nghị}
+\caption{Phân loại các ô chưa mở và kiểm chứng đề nghị}
 \begin{algorithmic}[1]
-\Require Ảnh chụp công khai, chế độ phân loại hoặc kiểm chứng literal đề nghị $p$
-\State Dựng $KB$, giải một lần. Nếu UNSAT, trả \texttt{INCONSISTENT}.
+\Require Trạng thái công khai \texttt{PublicState}; chế độ phân loại hoặc kiểm chứng literal đề nghị $p$
+\State Dựng $KB_t$ và giải một lần; nếu UNSAT thì trả \texttt{INCONSISTENT}.
 \If{chế độ \texttt{verify}}
-\State Nếu $KB\land\neg p$ là UNSAT, trả \texttt{ACCEPTED}.
-\State Nếu $KB\land p$ là UNSAT, trả \texttt{CONTRADICTED}.
-\State Trả \texttt{NOT\_PROVABLE}.
+\State Nếu $KB_t\land\neg p$ là UNSAT thì trả \texttt{ACCEPTED}.
+\State Nếu $KB_t\land p$ là UNSAT thì trả \texttt{CONTRADICTED}; ngược lại trả \texttt{NOT\_PROVABLE}.
 \EndIf
-\State Từ mô hình cơ sở, ghi nhận dấu đã thấy của từng biến chính.
+\State Từ mô hình cơ sở, đánh dấu giá trị (\texttt{True}/\texttt{False}) đã xuất hiện của từng biến chính.
 \For{mỗi ô chưa mở theo thứ tự hàng}
-\State Nếu đã thấy cả hai dấu của $C_i$, xuất \texttt{UNKNOWN} và xét ô tiếp theo.
-\State Gọi $\ell$ là dấu chưa thấy. Giải $KB\land\ell$.
+\State Nếu $C_i$ đã xuất hiện đủ cả hai giá trị \texttt{True} và \texttt{False}, xuất \texttt{UNKNOWN} và sang ô tiếp theo.
+\State Gọi $\ell$ là chiều giá trị chưa có mô hình nhân chứng; giải $KB_t\land\ell$.
 \If{kết quả là UNSAT}
 \State Xuất \texttt{CRIMINAL} nếu $\ell=\neg C_i$, ngược lại xuất \texttt{INNOCENT}.
 \Else
-\State Ghi dấu của mọi biến chính trong mô hình mới, xuất \texttt{UNKNOWN}.
+\State Cập nhật giá trị của mọi biến chính từ mô hình mới và xuất \texttt{UNKNOWN}.
 \EndIf
 \EndFor
 \end{algorithmic}
 \end{algorithm}
 
-Trong \texttt{LogicAgent.\_verdicts}, mô hình cơ sở cung cấp ít nhất một dấu cho mọi ô. Do đó sau truy vấn chung, mỗi ô cần tối đa một truy vấn bổ sung, đôi khi bằng không. Bộ nhớ nhân chứng chỉ sống trong lần duyệt KB hiện tại. Hàm \texttt{verify} kiểm tra độc lập đề nghị gửi lên nên có thể cần cả hai truy vấn giả định.
+Trong \texttt{LogicAgent.\_verdicts}, mô hình cơ sở ban đầu đã cho sẵn một giá trị thỏa mãn tại mọi biến chính, nên mỗi ô chưa mở chỉ cần tối đa một truy vấn SAT bổ sung (hoặc bằng 0 nếu các mô hình trước đã phủ đủ hai chiều). Các tập đánh dấu chỉ dùng nội bộ trong lượt duyệt $KB_t$ hiện tại, còn \texttt{verify()} vẫn kiểm tra độc lập từng đề nghị gửi lên.
 
-Ví dụ, với $KB=(A\lor B)\land(\neg A\lor B)$, giả sử $\neg B$ tạo hai mệnh đề đơn $A$ và $\neg A$. Do đó $B$ là tội phạm. Cả hai giá trị của $A$ đều đi cùng $B$ đúng, nên tác tử để thẻ $A$ úp. Nếu ngay từ đầu $KB$ chứa cả $A$ và $\neg A$, kết quả là \texttt{INCONSISTENT}.
+Với ví dụ $KB=(C_A\lor C_B)\land(\neg C_A\lor C_B)$, giả định $\neg C_B$ kéo theo cả $C_A$ lẫn $\neg C_A$ nên $B$ bắt buộc là tội phạm; trong khi $A$ nhận được cả \texttt{True} lẫn \texttt{False} khi $C_B=\mathrm{True}$, do đó trạng thái của $A$ là \texttt{UNKNOWN} và thẻ $A$ giữ nguyên úp.
 
 \clearpage
 
-\subsection{Vòng suy luận, nhật ký và tính duy nhất}
+\subsection{Vòng lặp mở thẻ, nhật ký suy luận và kiểm tra nghiệm duy nhất}
 
-\texttt{next\_verdict} dừng tại ô bắt buộc đầu tiên. \texttt{hint} trả lại gợi ý, còn \texttt{step} gửi phán quyết cho engine kiểm chứng. Khi chấp nhận, engine ghi số bước, ô, phán quyết, ID các lời khai đang hoạt động, truy vấn SAT và lời khai mới. Lần suy luận tiếp theo dùng ảnh chụp mới. Khi tất cả ô chưa mở đều còn hai khả năng, vòng tự giải dừng ở UNKNOWN và giữ nguyên bàn.
+Hàm \texttt{next\_verdict()} dừng tại ô bắt buộc đầu tiên: \texttt{hint()} trả về ô gợi ý, còn \texttt{step()} gọi \texttt{submit()} để kiểm chứng lại rồi lật thẻ và ghi nhật ký (gồm số bước, ô, phán quyết, danh sách ID lời khai đang mở, các truy vấn SAT và lời khai mới). Nếu mọi ô còn lại đều \texttt{UNKNOWN}, vòng tự giải dừng mà không đoán mò.
 
-Nhật ký \texttt{case-3x3-01} với \texttt{ordered} cho thấy tại bước 1 chỉ có lời khai B1 và C1. KB có 9 biến chính, 39 biến phụ và 123 mệnh đề. Truy vấn cơ sở SAT, còn giả định $-7$ cho UNSAT sau 46 phép lan truyền và không cần phân nhánh. Engine chấp nhận A3 là tội phạm rồi mới mở lời khai A3. Bước 2 đã có ba lời khai để xét A1.
+Nhật ký thực tế của \texttt{case-3x3-01} (\texttt{ordered}) minh họa rõ quy trình này: ở bước 1 với hai lời khai B1 và C1, $KB_1$ gồm 9 biến chính, 39 biến phụ và 123 mệnh đề. Truy vấn cơ sở trả SAT, còn giả định $-7$ trả UNSAT sau 46 phép lan truyền và 0 quyết định, qua đó chứng minh A3 là tội phạm và mở lời khai A3 cho bước 2.
 
-Để kiểm tra bộ dữ liệu ngoại tuyến, \texttt{check\_uniqueness} dựng $F$ từ toàn bộ lời khai. Nếu $F$ vô nghiệm, trả \texttt{INCONSISTENT}. Nếu có mô hình $M$, thêm mệnh đề chặn trên $P$, tập ID lấy từ \texttt{kb.primary.values()}: 
+Để kiểm định bộ dữ liệu ngoại tuyến, \texttt{check\_uniqueness()} mã hóa toàn bộ $N^2$ lời khai thành $F$. Nếu $F$ vô nghiệm thì trả \texttt{INCONSISTENT}; nếu có mô hình $M$, hàm thêm mệnh đề chặn chỉ trên tập biến chính $P=\texttt{kb.primary.values()}$:
 
 \[
 B_M=\bigvee_{v\in P}\begin{cases}\neg v,&M(v)=\mathrm{True},\\v,&M(v)=\mathrm{False}.\end{cases}
 \]
 
-Mọi nghiệm của $F\land B_M$ phải khác $M$ ở ít nhất một ô. Truy vấn thứ hai trả UNSAT xác nhận \texttt{UNIQUE}, còn SAT xác nhận \texttt{MULTIPLE}. Việc chỉ chặn biến chính bảo đảm khác biệt ở biến phụ không bị tính thành lời giải thứ hai. Tính duy nhất của toàn bộ lời khai và khả năng đi tiếp từ một trạng thái công khai là hai phép kiểm tra riêng.
+Mọi nghiệm của $F\land B_M$ buộc phải khác $M$ ở ít nhất một nhân vật: kết quả UNSAT xác nhận \texttt{UNIQUE}, còn SAT báo đa nghiệm (\texttt{MULTIPLE}). Chỉ chặn biến chính giúp tránh đếm nhầm khác biệt ở biến phụ Tseitin. Khả năng giải tuần tự từ tập mở đầu vẫn được kiểm tra riêng qua vòng suy luận công khai.
 
-\subsection{Kiểm thử tự động}
+\subsection{Bộ kiểm thử tự động}
 
-Lệnh \texttt{python -B -m unittest discover -s tests -v} chạy đạt 87/87 kiểm thử trong 13 mô-đun. Các kiểm thử lõi đối chiếu hàm đánh giá trực tiếp với CNF trên phép gán, kiểm tra giả định, quay lui, điều kiện lồng, vùng rỗng và đăng ký luật mới. Nhóm kiểm thử phiên chơi bao phủ tính duy nhất, từ chối phán quyết, hủy công việc nền và bộ đo thực nghiệm. Các mô-đun giao diện kiểm tra nhật ký, bản địa hóa, tương tác và sự ổn định của ảnh động.
+Lệnh \texttt{python -B -m unittest discover -s tests -v} chạy đạt toàn bộ 87/87 bài kiểm thử trên 13 mô-đun. Nhóm kiểm thử lõi đối chiếu vét cạn \texttt{evaluate()} với CNF, kiểm tra giả định, quay lui, điều kiện lồng, vùng rỗng và đăng ký luật mới; các mô-đun còn lại kiểm tra tính bất biến của \texttt{PublicState}, từ chối nước đoán mò, hủy worker nền, bộ thực nghiệm và giao diện.

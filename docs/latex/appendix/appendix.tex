@@ -1,19 +1,20 @@
-\section{Phụ lục về AI tạo sinh và cách kiểm chứng}
+\begingroup\setstretch{1.28}
+\section{Phụ lục về việc sử dụng công cụ AI tạo sinh}
 
-\subsection{Lập trình, tích hợp và soạn báo cáo}
+\subsection{Hỗ trợ tra cứu kỹ thuật, giao diện và kiểm thử biên}
 
-Nhóm dùng Codex hỗ trợ phân tích yêu cầu, triển khai mô-đun, viết kiểm thử và tái chạy thực nghiệm. Antigravity hỗ trợ chuẩn bị yêu cầu theo đầu việc và tổ chức các lượt rà soát giao diện, báo cáo và video. Khi giao việc cho công cụ, nhóm chỉ rõ đầu vào công khai, kiểu kết quả mong đợi và trường hợp phải từ chối. Các ví dụ dưới đây diễn giải nội dung yêu cầu, trừ chỗ ghi rõ là trích nguyên văn.
+Toàn bộ các mô-đun thuật toán lõi trong \texttt{griductive/engine/} (phân giải vùng, đánh giá ngữ nghĩa trực tiếp, mã hóa CNF bằng cổng Tseitin và đếm ngưỡng quy hoạch động, bộ giải DPLL cùng \texttt{LogicAgent}) đều do các thành viên tự thiết kế và cài đặt theo Bảng 1. Nhóm sử dụng mô hình ngôn ngữ lớn làm trợ lý tra cứu API PySide6 (bố cục co giãn, vẽ thẻ, giao tiếp \texttt{QThread} qua signal), gợi ý thêm ca kiểm thử biên và rà soát lỗi trình bày.
 
-Ví dụ yêu cầu về suy luận là “Chỉ truyền PublicState cho tác tử. Với mỗi phán quyết, thử giả định phủ định và giải thích khi nào trả UNKNOWN hoặc INCONSISTENT.” Yêu cầu về luật mở rộng xác định cả sáu toán tử so sánh và cho phép một điều kiện nhận hai cây manh mối bất kỳ. Nhóm kiểm chứng bằng phản ví dụ, phép gán hoàn chỉnh, kiểm thử hồi quy và nhật ký ngay trước khi mở lời khai. Kết quả thực nghiệm trong báo cáo lấy từ lần chạy chương trình.
+Mọi gợi ý từ công cụ đều được kiểm tra lại bằng mã kiểm thử độc lập. Ví dụ câu hỏi gợi ý kiểm thử biên là: \emph{“Đề xuất các trường hợp biên dễ sót khi kiểm thử vùng tập hợp (UNION, INTERSECTION, DIFFERENCE) và CONDITIONAL lồng nhau trên lưới $N\times N$ để đối chiếu chéo giữa evaluate() và CNF.”} Từ đó nhóm tự viết các kiểm thử vét cạn bảng chân trị trên bàn nhỏ, vùng hiệu rỗng, giới hạn độ sâu lồng 12 cấp và đối chiếu nhật ký thực nghiệm.
 
-\subsection{Đồ họa, sửa ảnh có mặt nạ và nghiệm thu}
+\subsection{Tạo tài sản đồ họa nhân vật và kiểm định khung hình}
 
-Nhật ký \texttt{docs/AI-PROMPTS.md} lưu yêu cầu tạo atlas, ảnh tham chiếu, lỗi cần sửa và thứ tự khung. Một trích đoạn cho Ada là “keep face center, eye line, head scale, hair silhouette and shoulders in exactly same position across all nine frames”. Việc khóa vị trí khuôn mặt và thứ tự biểu cảm giúp thẻ chuyển khung mà nhân vật không bị nhảy vị trí.
+Để tạo bộ minh họa cho 25 nhân vật và 25 nghề nghiệp mà không dùng tài sản thương mại, nhóm kết hợp công cụ sinh ảnh với chỉnh sửa vùng chọn và lưu câu lệnh tại \texttt{docs/AI-PROMPTS.md}. Một trích đoạn khóa tỉ lệ nhân vật Ada là: \emph{“keep face center, eye line, head scale, hair silhouette and shoulders in exactly same position across all frames, transparent RGBA background”}.
 
-Với ImageGen, nhóm chỉ định số hàng/cột, nền RGBA, phần trang phục thay đổi, giới hạn mỗi ô và vùng cần để trống. Khi có quầng nền hoặc áo sai, yêu cầu sửa tập trung vào đúng lỗi và giữ nguyên phần còn lại. Với chớp mắt, Stable Diffusion 1.5 Inpainting chỉ tái tạo vùng có mặt nạ quanh mắt, giữ pixel ngoài mặt nạ và kênh alpha gốc \cite{inpainting}. Khi thay bảy khung của Finn, nhóm đối chiếu 24 hàng nhân vật khác theo byte, kiểm tra mép alpha và chiều cao tư thế. Các ảnh giao diện trong mục 6 là ảnh chụp chương trình.
+Với khung chớp mắt, Stable Diffusion 1.5 Inpainting \cite{inpainting} chỉ tái tạo vùng mặt nạ quanh mí mắt và giữ nguyên điểm ảnh cùng kênh alpha bên ngoài. Sau khi đóng gói vào \texttt{sprites.png} ($25\times7$ ô $256\times256$), mô-đun \texttt{test\_sprite\_registration.py} kiểm tra tự động lề trong suốt 8 pixel ở bốn cạnh và độ đồng đều chiều cao giữa các tư thế. Các hình ở mục 6 đều chụp trực tiếp từ cửa sổ chương trình đang chạy.
 
-\subsection{Thuyết minh và nguồn đối chiếu}
+\subsection{Tổng hợp giọng đọc thuyết minh và đối chiếu nguồn tham khảo}
 
-ElevenLabs TTS chuyển kịch bản tiếng Việt thành từng đoạn thoại để khớp với thao tác trên bàn. Quy trình đo thời lượng từng tệp âm thanh, ghép đoạn vào trục hình 24 khung/giây và dùng các khoảng ngắt giọng để căn phụ đề. Các cảnh chọn màn, gợi ý, phán quyết bị từ chối và tự giải được kiểm tra theo trạng thái cửa sổ và thông báo của engine. Âm thanh và hình minh họa phục vụ trình bày, còn phán quyết trong phần mềm luôn xuất phát từ DPLL.
+Nhóm tự biên soạn kịch bản tiếng Việt sáu phần rồi dùng ElevenLabs TTS sinh 16 đoạn thoại khớp với hình quay màn hình 24 khung/giây và phụ đề tiếng Việt; mọi phán quyết và gợi ý trên video đều do bộ giải DPLL tính trực tiếp. Tài liệu \texttt{docs/REFERENCES.md} ghi nhận phạm vi khảo sát hướng dẫn thiết kế giao diện giải đố \cite{gamedev} và ba dự án mã mở \cite{safina,trantai,wadew} (nơi nhóm chỉ tham khảo cách tách trạng thái, không dùng Z3 hay bộ màn đa nghiệm bên ngoài).
 
-Tài liệu \texttt{docs/REFERENCES.md} ghi phạm vi đã khảo sát. Nhóm tham khảo hướng dẫn thiết kế giao diện trò chơi \cite{gamedev}, đọc phần mô hình và điều phối của clues-by-sam-solver \cite{safina}, đồng thời khảo sát README và cấu trúc hai dự án Griductive \cite{trantai,wadew}. Khi đối chiếu một ý tưởng từ nguồn ngoài, nhóm dùng luật của đề và kết quả thử trên chính mã Python của nhóm để quyết định cách áp dụng.
+\par\endgroup

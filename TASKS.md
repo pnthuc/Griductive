@@ -1,4 +1,4 @@
-# Phân Công Công Việc Nhóm — Project 2: Griductive Solver
+# Phân công công việc nhóm — Project 2: Griductive Solver
 
 Tài liệu này ghi nhận phân công nhiệm vụ, tỷ lệ hoàn thành của từng thành viên lớp **24TN** (khớp với [docs/team.json](docs/team.json) và mục 1.1 của báo cáo kỹ thuật `Report.pdf`), chi tiết các mô-đun đã bàn giao và lệnh kiểm chứng tương ứng theo mục **4.6** của đề bài `AI - Project 2.pdf`.
 
@@ -10,11 +10,11 @@ Công thức tính điểm cá nhân theo đề bài: $\text{Điểm cá nhân} 
 
 | Thành viên | MSSV | Phần việc phụ trách chính | Tỷ lệ hoàn thành | Trạng thái & Commit tiêu biểu |
 | --- | --- | --- | ---: | --- |
-| **Phan Ngọc Thức** | `24120228` | Kiến trúc dự án, giao diện Desktop Cozy Harbor, thực nghiệm, báo cáo & video demo | 100% | ✅ Đã hoàn thành (`8a64909`, `65a0f41`) |
-| **Nguyễn Lê Minh Quân** | `24120219` | Thực nghiệm hệ thống, phân tích so sánh 2 heuristic (`ordered` vs `frequency`), báo cáo kỹ thuật & video demo | 100% | ✅ Đã hoàn thành (`aada27b`) |
-| **Tống Phúc Thiện** | `24120141` | Hệ thống vùng (`Regions` & phép toán tập hợp), đánh giá ngữ nghĩa trực tiếp (`evaluate`) & luồng `GameEngine` / `check_uniqueness` | 100% | ✅ Đã hoàn thành (`a56b700`) |
-| **Bùi Phương Nam** | `24120502` | Bộ giải DPLL SAT Solver (`ordered` & `frequency`) & suy luận phản chứng `LogicAgent` | 100% | ✅ Đã hoàn thành (`edcd1c8`) |
-| **Phan Gia Phúc** | `24120503` | Mã hóa CNF (cổng Tseitin, quy hoạch động đếm ngưỡng unary) & biểu diễn toàn bộ `Clue` sang CNF | 100% | ✅ Đã hoàn thành (`79718c2`) |
+| **Phan Ngọc Thức** | `24120228` | Kiến trúc dự án, giao diện Desktop Cozy Harbor, thực nghiệm, báo cáo & video demo | 100% | Hoàn thành (`8a64909`, `65a0f41`) |
+| **Nguyễn Lê Minh Quân** | `24120219` | Thực nghiệm hệ thống, phân tích so sánh 2 heuristic (`ordered` vs `frequency`), báo cáo kỹ thuật & video demo | 100% | Hoàn thành (`aada27b`) |
+| **Tống Phúc Thiện** | `24120141` | Hệ thống vùng (`Regions` & phép toán tập hợp), đánh giá ngữ nghĩa trực tiếp (`evaluate`) & luồng `GameEngine` / `check_uniqueness` | 100% | Hoàn thành (`a56b700`) |
+| **Bùi Phương Nam** | `24120502` | Bộ giải DPLL SAT Solver (`ordered` & `frequency`) & suy luận phản chứng `LogicAgent` | 100% | Hoàn thành (`edcd1c8`) |
+| **Phan Gia Phúc** | `24120503` | Mã hóa CNF (cổng Tseitin, quy hoạch động đếm ngưỡng unary) & biểu diễn toàn bộ `Clue` sang CNF | 100% | Hoàn thành (`79718c2`) |
 
 > **Video trình diễn trên Google Drive (mục 4.7):** [https://drive.google.com/file/d/1Y-84FGh__BUx-dtXgX3oKmJwhWga77Ou/view?usp=sharing](https://drive.google.com/file/d/1Y-84FGh__BUx-dtXgX3oKmJwhWga77Ou/view?usp=sharing) (`05:33`, thuyết minh và phụ đề tiếng Việt, quyền xem công khai *Anyone with the link*).
 
@@ -22,7 +22,7 @@ Công thức tính điểm cá nhân theo đề bài: $\text{Điểm cá nhân} 
 
 ## 2. Chi tiết mô-đun bàn giao theo từng thành viên
 
-### 🔹 Phần 1: Bùi Phương Nam (`24120502`) — Bộ giải DPLL & Suy luận Phản chứng
+### 2.1. Bùi Phương Nam (`24120502`) — Bộ giải DPLL & Suy luận Phản chứng
 1. **Tệp [griductive/engine/sat.py](griductive/engine/sat.py):**
    - Cài đặt thủ tục đệ quy `search(current, assignment)` bên trong `solve()`:
      - Vòng lặp **Unit Propagation**: kiểm tra cờ hủy/timeout, phát hiện mệnh đề rỗng `()`, thu thập mệnh đề đơn, phát hiện xung đột hai đơn vị đối dấu ($x$ và $-x$), ghi nhận `stats.propagations` và rút gọn mệnh đề qua `simplify()`.
@@ -39,7 +39,7 @@ Công thức tính điểm cá nhân theo đề bài: $\text{Điểm cá nhân} 
 
 ---
 
-### 🔹 Phần 2: Phan Gia Phúc (`24120503`) — Mã hóa CNF & Biên dịch Manh mối
+### 2.2. Phan Gia Phúc (`24120503`) — Mã hóa CNF & Biên dịch Manh mối
 1. **Tệp [griductive/engine/cnf.py](griductive/engine/cnf.py):**
    - `Encoder.gate(kind, operands)`: rút gọn hằng `bool`, khử literal trùng, phát hiện cặp đối ngẫu, tra bảng băm `self.gates` để dùng chung biến phụ Tseitin và sinh các mệnh đề tương đương hai chiều cho cổng `"AND"` / `"OR"`.
    - `Encoder.thresholds(cells)`: quy hoạch động bậc đa thức $O(|R|^2)$ tính dãy literal ngưỡng `counts[k]` (*có ít nhất $k$ tội phạm trong vùng*), dùng chung không gian biến phụ của `Encoder`.
@@ -54,7 +54,7 @@ Công thức tính điểm cá nhân theo đề bài: $\text{Điểm cá nhân} 
 
 ---
 
-### 🔹 Phần 3: Tống Phúc Thiện (`24120141`) — Hệ thống Vùng, Đánh giá Ngữ nghĩa & Luồng GameEngine
+### 2.3. Tống Phúc Thiện (`24120141`) — Hệ thống Vùng, Đánh giá Ngữ nghĩa & Luồng GameEngine
 1. **Tệp [griductive/engine/regions.py](griductive/engine/regions.py):**
    - Cài đặt `resolve()` cho 4 vùng cơ sở (`Row`, `Column`, `Neighbors` theo khoảng cách Chebyshev $\le 1$ loại trừ ô mốc, `Explicit`) và 4 vùng mở rộng (`Corners`, cùng `SetOperation.combine` cho `Union`, `Intersection`, `Difference`).
 2. **Tệp [griductive/engine/clues.py](griductive/engine/clues.py):**
@@ -69,7 +69,7 @@ Công thức tính điểm cá nhân theo đề bài: $\text{Điểm cá nhân} 
 
 ---
 
-### 🔹 Phần 4: Phan Ngọc Thức (`24120228`) & Nguyễn Lê Minh Quân (`24120219`) — Kiến trúc, Giao diện Desktop, Thực nghiệm, Báo cáo & Video
+### 2.4. Phan Ngọc Thức (`24120228`) & Nguyễn Lê Minh Quân (`24120219`) — Kiến trúc, Giao diện Desktop, Thực nghiệm, Báo cáo & Video
 1. **Kiến trúc, Dữ liệu câu đố & Giao diện Desktop ([griductive/ui/](griductive/ui/), [griductive/presentation/](griductive/presentation/), [puzzles/](puzzles/)):**
    - Thiết kế mô hình dữ liệu bất biến `PublicState` / `PrivatePuzzle`, luồng nền `EngineWorker` có cơ chế `fork()` và hủy an toàn trên Desktop Cozy Harbor, bộ dựng câu tiếng Việt [wording_vi.py](griductive/presentation/wording_vi.py), 6 hồ sơ câu đố chuẩn (`3×3`, `4×4`, `5×5`) và bộ 87 bài kiểm thử tự động.
 2. **Thực nghiệm hệ thống, Báo cáo HCMUS & Video trình diễn ([griductive/experiments.py](griductive/experiments.py), [output/experiments/](output/experiments/)):**

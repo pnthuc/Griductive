@@ -1,63 +1,63 @@
 \section{Mô hình hóa bài toán và ngôn ngữ manh mối}
 
-\subsection{Biến chính và tri thức công khai}
+\subsection{Biến mệnh đề chính và cơ sở tri thức công khai}
 
-Trên bàn $N\times N$, với $N\in\{3,4,5\}$, cột A có chỉ số $c=1$ và hàng trên cùng có $r=1$. Biến $C_i$ mang giá trị True (Criminal, tội phạm) hoặc False (Innocent, vô tội). Chỉ số $i=(r-1)N+c$ chạy từ 1 đến $N^2$. Chẳng hạn A3 trên bàn $3\times3$ là biến số 7. Tên và nghề giúp nhận diện nhân vật. Lời khai đã mở luôn đúng, kể cả khi chủ thẻ là tội phạm.
+Trên bàn $N\times N$ với $N\in\{3,4,5\}$, cột đánh chữ từ A ($c=1$) sang phải và hàng đánh số từ 1 ($r=1$) xuống dưới. Nhân vật ở hàng $r$, cột $c$ ứng với biến chính $C_i$ có chỉ số tất định $i=(r-1)N+c\in\{1,\ldots,N^2\}$ (ô A3 trên bàn $3\times3$ là biến số 7), nhận \texttt{True} nếu là tội phạm (\texttt{CRIMINAL}) và \texttt{False} nếu vô tội (\texttt{INNOCENT}). Tên và nghề giúp nhận diện nhân vật; mọi lời khai đã mở đều đúng bất kể chủ thẻ là tội phạm hay vô tội.
 
-Gọi $L_t$ là tập lời khai đã mở và $S_t$ là tập ô đã biết ở bước $t$. Với mỗi ô trong $S_t$, đặt $\ell_i=C_i$ nếu ô là tội phạm và $\ell_i=\neg C_i$ nếu ô vô tội. Cơ sở tri thức (KB) có dạng
+Ở bước $t$, gọi $L_t$ là tập lời khai đã mở và $S_t$ là tập ô đã biết trạng thái. Đặt $\ell_i=C_i$ nếu ô $i\in S_t$ là tội phạm và $\ell_i=\neg C_i$ nếu vô tội; cơ sở tri thức công khai có dạng:
 
 \[
 KB_t=\bigwedge_{q\in L_t}\operatorname{CNF}(q)\ \land\ \bigwedge_{i\in S_t}(\ell_i).
 \]
 
-Tác tử duyệt các ô chưa mở theo thứ tự hàng, chọn ô đầu tiên có phán quyết bắt buộc. Khi engine chấp nhận, trạng thái và lời khai của ô cùng gia nhập KB ở bước kế tiếp. Vòng lặp dừng khi mở hết bàn, hết phán quyết chứng minh được hoặc gặp mâu thuẫn.
+Bộ suy luận duyệt các ô chưa mở theo thứ tự hàng, chọn ô đầu tiên bị ép buộc bởi $KB_t$. Khi \texttt{GameEngine} chấp nhận, trạng thái và lời khai mới cùng bổ sung vào $KB_{t+1}$. Vòng lặp dừng khi mở hết bàn, không còn ô nào chứng minh được hoặc gặp mâu thuẫn.
 
 \begin{table}[H]
 \centering\small\singlespacing
-\caption{Sáu kiểu manh mối cơ sở}
+\caption{Sáu mẫu manh mối cơ sở theo yêu cầu đề bài}
 \smallskip
 \renewcommand{\arraystretch}{1.23}
 \begin{tabularx}{\linewidth}{@{}l >{\raggedright\arraybackslash}X@{}}
 \toprule
-\textbf{Kiểu} & \textbf{Nội dung trên một phép gán} \\
+\textbf{Kiểu} & \textbf{Ý nghĩa logic trên một phép gán} \\
 \midrule
-\texttt{FACT} & Một người có trạng thái chỉ định, biểu diễn bằng $C_i$ hoặc $\neg C_i$. \\
-\texttt{SAME} & Hai người cùng trạng thái, $C_i\leftrightarrow C_j$. \\
-\texttt{DIFFERENT} & Hai người khác trạng thái, $C_i\oplus C_j$. \\
-\texttt{EXACTLY} & Số tội phạm trong vùng $R$ đúng bằng $k$. \\
-\texttt{AT\_LEAST} & Có ít nhất $k$ tội phạm trong $R$. \\
-\texttt{AT\_MOST} & Có nhiều nhất $k$ tội phạm trong $R$. \\
+\texttt{FACT} & Khẳng định trực tiếp trạng thái của một nhân vật bằng $C_i$ hoặc $\neg C_i$. \\
+\texttt{SAME} & Hai nhân vật có cùng trạng thái: $C_i\leftrightarrow C_j$. \\
+\texttt{DIFFERENT} & Hai nhân vật có trạng thái trái ngược nhau: $C_i\oplus C_j$. \\
+\texttt{EXACTLY} & Trong vùng $R$ có đúng $k$ tội phạm ($\sum_{i\in R} C_i = k$). \\
+\texttt{AT\_LEAST} & Trong vùng $R$ có ít nhất $k$ tội phạm ($\sum_{i\in R} C_i \ge k$). \\
+\texttt{AT\_MOST} & Trong vùng $R$ có nhiều nhất $k$ tội phạm ($\sum_{i\in R} C_i \le k$). \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-Các manh mối đếm yêu cầu $k$ nguyên và $0\le k\le |R|$. Câu “không có tội phạm” tương ứng với $\operatorname{EXACTLY}(0,R)$. Với vùng rỗng, số tội phạm bằng 0.
+Các mẫu đếm yêu cầu $k$ nguyên thỏa $0\le k\le |R|$. Câu “không có tội phạm” quy về $\operatorname{EXACTLY}(0,R)$; với vùng rỗng thì số tội phạm bằng 0.
 
 \clearpage
 
-\subsection{Vùng, so sánh và điều kiện lồng}
+\subsection{Hệ thống vùng và các phần mở rộng luật chơi}
 
 \begin{table}[H]
 \centering\small\singlespacing
-\caption{Vùng cơ sở và các phép hợp thành}
+\caption{Bốn vùng cơ sở và bốn phép mở rộng vùng}
 \smallskip
 \renewcommand{\arraystretch}{1.23}
 \begin{tabularx}{\linewidth}{@{}l >{\raggedright\arraybackslash}X@{}}
 \toprule
-\textbf{Kiểu vùng} & \textbf{Tập ô được chọn} \\
+\textbf{Kiểu vùng} & \textbf{Tập ô được phân giải trên bàn cờ} \\
 \midrule
-\texttt{ROW}, \texttt{COLUMN} & Toàn bộ một hàng hoặc một cột hợp lệ. \\
-\texttt{NEIGHBORS} & Các ô kề theo tám hướng, bỏ ô mốc. Một ô góc có ba láng giềng, ô biên còn lại có năm và ô ở trong có tám. \\
-\texttt{EXPLICIT} & Các ô phân biệt được liệt kê theo định danh. Danh sách có thể rỗng. \\
-\texttt{CORNERS} & Bốn ô góc của bàn. \\
-\texttt{UNION}, \texttt{INTERSECTION} & Hợp hoặc giao của hai vùng con. Mỗi ô chỉ xuất hiện một lần trong vùng kết quả. \\
-\texttt{DIFFERENCE} & Các ô thuộc vùng trái và không thuộc vùng phải. Thứ tự hai toán hạng quyết định kết quả. \\
+\texttt{ROW}, \texttt{COLUMN} & Toàn bộ các ô thuộc một hàng hoặc một cột hợp lệ. \\
+\texttt{NEIGHBORS} & Các ô kề ngang, dọc hoặc chéo với ô mốc (trừ chính ô mốc): ô góc có 3 láng giềng, ô biên khác có 5 và ô bên trong có 8. \\
+\texttt{EXPLICIT} & Tập các ô phân biệt chỉ định tường minh theo tọa độ (có thể rỗng). \\
+\texttt{CORNERS} & Bốn ô nằm ở bốn góc bàn cờ. \\
+\texttt{UNION}, \texttt{INTERSECTION} & Hợp hoặc giao của hai vùng con; mỗi ô chỉ tính một lần. \\
+\texttt{DIFFERENCE} & Các ô thuộc vùng trái nhưng không thuộc vùng phải. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\texttt{COMPARISON} so sánh số tội phạm trong hai vùng bằng một trong sáu quan hệ $=,\ne,<,\le,>,\ge$. Nếu hai vùng giao nhau, cùng một biến ô tham gia vào cả hai tổng. \texttt{CONDITIONAL} nhận hai manh mối bất kỳ làm tiền đề và kết luận. Hai vế có thể tiếp tục chứa điều kiện lồng. Mệnh đề kéo theo sai đúng trong trường hợp tiền đề đúng và kết luận sai.
+Ngoài các vùng ghép, nhóm cài đặt thêm hai kiểu manh mối mở rộng là \texttt{COMPARISON} và \texttt{CONDITIONAL}. \texttt{COMPARISON} so sánh số tội phạm giữa hai vùng theo sáu toán tử $=,\ne,<,\le,>,\ge$; nếu hai vùng giao nhau thì biến của ô chung vẫn đóng góp vào cả hai vế. \texttt{CONDITIONAL} biểu diễn phép kéo theo $P\to Q$ giữa hai manh mối con tùy ý (hỗ trợ lồng nhiều tầng) và chỉ nhận giá trị sai khi tiền đề $P$ đúng nhưng kết luận $Q$ sai.
 
-Trong màn \texttt{case-3x3-01}, lời khai công khai B1 đòi hỏi ít nhất ba tội phạm trong tập láng giềng của A2 sau khi trừ hàng 2. Trên bàn này, vùng còn lại là $\{\mathrm{A1},\mathrm{B1},\mathrm{A3},\mathrm{B3}\}$. Cách phân giải vùng xác định chính xác bốn biến đi vào bộ đếm và bốn ô giao diện cần tô sáng.
+Chẳng hạn ở màn \texttt{case-3x3-01}, lời khai B1 yêu cầu có ít nhất ba tội phạm trong tập láng giềng của A2 sau khi trừ hàng 2. Phép hiệu cho ra đúng bốn ô $\{\mathrm{A1},\mathrm{B1},\mathrm{A3},\mathrm{B3}\}$, vừa đưa vào bộ đếm CNF vừa làm tập ô tô sáng trên bàn cờ.
 
-Bộ đăng ký ánh xạ tên kiểu JSON sang lớp xử lý. \texttt{@register\_region} gắn kiểu vùng với hàm phân giải, còn \texttt{@register\_clue} gắn kiểu manh mối với kiểm tra tham số, biểu thức logic và hàm đánh giá. Gốc có độ sâu 0. Bộ kiểm tra từ chối cây vùng hoặc cây điều kiện khi độ sâu vượt 12. Nhờ giao diện chung, thêm luật mới chỉ cần đăng ký lớp xử lý và kiểm thử ngữ nghĩa của luật đó.
+Decorator \texttt{@register\_region} và \texttt{@register\_clue} ánh xạ tên kiểu JSON sang lớp xử lý tương ứng và giới hạn độ sâu cây lồng tối đa 12 cấp. Nhờ cấu trúc đóng gói theo từng lớp luật, việc mở rộng thêm vùng hay manh mối mới không cần sửa bộ mã hóa CNF hay bộ giải DPLL.

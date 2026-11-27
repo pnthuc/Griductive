@@ -39,7 +39,7 @@ def pixel_frame(box, step=3):
 
 
 class CozyMenu(QMenu):
-    """Translucent custom-painted QMenu so rounded corners NEVER show black triangles on Windows."""
+    """Translucent custom-painted QMenu for clean rounded corners on Windows."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -152,7 +152,7 @@ class HeaderBar(QFrame):
 
 
 class BrandMark(QWidget):
-    """Cute 2x2 puzzle-card harbor emblem next to 'Griductive'."""
+    """2x2 puzzle-card emblem next to the application title."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -174,7 +174,7 @@ class BrandMark(QWidget):
 
 
 class CaseSelectorButton(QToolButton):
-    """Responsive Cozy Harbor case switcher pill (shrinks gracefully with elided text on narrow windows!)."""
+    """Responsive case switcher pill that elides text on narrow windows."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
