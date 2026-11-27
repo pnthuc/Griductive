@@ -1,131 +1,218 @@
-# Griductive - Lab 2
+# Griductive Solver — Suy luận Không Đoán Mò với Mã hóa CNF và Bộ giải DPLL
 
-Game Python, dùng CNF và DPLL tự cài đặt, đồ họa pixel phố biển.
-Hai giao diện dùng chung engine: desktop PySide6 và web Dash. Bản web dùng Dash cho giao diện và callback; `public/board.css` và
-`public/board.js` điều khiển cách trình bày và tương tác trong trình duyệt.
+Đồ án thực hành 2 môn **CSC14003 – Introduction to Artificial Intelligence** (Lớp **24TN**, Khoa Công nghệ Thông tin, Trường Đại học Khoa học Tự nhiên – ĐHQG-HCM).
 
-## Chạy bản web
+Dự án cài đặt lại trò chơi suy luận lưới **Griductive** kết hợp tác tử suy diễn logic mệnh đề **không đoán mò (*no-guess*)**. Toàn bộ bộ biên dịch công thức chuẩn hội (**CNF** — cổng Tseitin dùng chung không gian biến phụ và quy hoạch động đếm ngưỡng unary) cùng bộ giải **DPLL SAT Solver** (`ordered` và `frequency`) đều được tự cài đặt bằng Python thuần, dùng chung cho cả giao diện **Desktop PySide6 (Cozy Harbor)** và **Web Plotly Dash**.
+
+---
+
+## 1. Thông tin nhóm và mức độ hoàn thành
+
+Thông tin thành viên được đồng bộ với hồ sơ [docs/team.json](docs/team.json) và Bảng 1 của báo cáo kỹ thuật HCMUS (`Report.pdf`):
+
+| Thành viên | MSSV | Phần việc phụ trách | Hoàn thành |
+| --- | --- | --- | ---: |
+| **Phan Ngọc Thức** | `24120228` | Kiến trúc chung, giao diện Desktop Cozy Harbor & Web Dash, thực nghiệm, báo cáo và video demo | 100% |
+| **Nguyễn Lê Minh Quân** | `24120219` | Tổ chức thực nghiệm hệ thống, so sánh hai chiến lược chọn biến (`ordered` vs `frequency`), phân tích số liệu, báo cáo và video demo | 100% |
+| **Tống Phúc Thiện** | `24120141` | Phân giải hệ thống vùng và phép toán tập hợp, đánh giá ngữ nghĩa trực tiếp (`evaluate`), điều phối `GameEngine` và `check_uniqueness` | 100% |
+| **Bùi Phương Nam** | `24120502` | Bộ giải DPLL SAT Solver (`ordered` & `frequency`) và suy luận phản chứng của `LogicAgent` | 100% |
+| **Phan Gia Phúc** | `24120503` | Mã hóa CNF (cổng Tseitin, quy hoạch động đếm ngưỡng unary) và chuyển đổi toàn bộ mẫu manh mối sang CNF | 100% |
+
+- **Video trình diễn trên Google Drive (mục 4.7):** [https://drive.google.com/file/d/1Y-84FGh__BUx-dtXgX3oKmJwhWga77Ou/view?usp=sharing](https://drive.google.com/file/d/1Y-84FGh__BUx-dtXgX3oKmJwhWga77Ou/view?usp=sharing) (`05:33`, thuyết minh và phụ đề tiếng Việt, quyền xem *Anyone with the link* — đã lưu trong [docs/team.json](docs/team.json) và `Report.pdf`).
+
+---
+
+## 2. Cài đặt và khởi chạy nhanh
+
+Các lệnh dưới đây chạy trực tiếp tại thư mục chứa [main.py](main.py) — áp dụng giống nhau dù bạn đứng ở thư mục gốc của kho mã hay bên trong thư mục `Source/` sau khi giải nén gói nộp bài `24120228_24120219_24120141_24120502_24120503.zip`.
+
+- **Yêu cầu môi trường:** Python `3.11+` (đã kiểm thử và đo thực nghiệm trên Python `3.12` và `3.14`).
+- **Tách tệp phụ thuộc:**
+  - [requirements-desktop.txt](requirements-desktop.txt) cài `PySide6==6.12.0` cho giao diện Desktop (`main.py`).
+  - [requirements.txt](requirements.txt) giữ gọn `dash==4.5.0` và `Flask==3.1.3` cho giao diện Web (`app.py`) để tương thích giới hạn dung lượng hàm serverless khi triển khai lên Vercel.
+  - Cài gộp cả hai tệp để chạy được **cả Desktop, Web và toàn bộ 87 bài kiểm thử tự động**.
+
+### Windows (PowerShell)
 
 ```powershell
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements-desktop.txt -r requirements.txt
+
+# 1. Chạy giao diện Desktop Cozy Harbor (mặc định mở màn 3x3 đầu tiên)
+.\.venv\Scripts\python.exe -B main.py
+
+# Hoặc mở trực tiếp một màn cụ thể từ dòng lệnh:
+.\.venv\Scripts\python.exe -B main.py puzzles/case-5x5-01.json
+
+# 2. Chạy giao diện Web Dash tại http://127.0.0.1:8050
 .\.venv\Scripts\python.exe -B app.py
 ```
 
-Mở http://127.0.0.1:8050. Có chọn màn, phán quyết thủ công, gợi ý,
-giải từng bước/tự động, chọn vùng highlight và tải nhật ký JSON. Tiến độ được
-giữ riêng cho mỗi tab bằng session storage. Mỗi yêu cầu dựng lại phiên và kiểm
-chứng lịch sử bằng engine; không tin trạng thái do trình duyệt tự khai báo,
-không đưa solution hoặc clue chưa mở của các màn có sẵn xuống trình duyệt.
+### macOS / Linux (Bash)
 
-`griductive/web.py` chứa các component và callback Dash;
-`griductive/web_game.py` điều phối phiên độc lập với UI. Thư viện Dash tự sinh
-mã để trình duyệt hiển thị; mọi luật chơi và suy luận chạy bằng Python trên server.
+```bash
+python3 -m venv .venv
+./.venv/bin/python -m pip install -r requirements-desktop.txt -r requirements.txt
 
-## Deploy Vercel
+# 1. Chạy giao diện Desktop Cozy Harbor
+./.venv/bin/python -B main.py
 
-Chọn framework Flask, dùng `app.py` làm entrypoint. `vercel.json` và
-`.python-version` đã cấu hình Python 3.12 và giới hạn request 60 giây.
-Atlas/background dùng chung cho web và desktop nằm trong `public/pixel` và `public/images`,
-Vercel phục vụ trực tiếp qua CDN. Không cần Node/React build hay cơ sở dữ liệu.
-Dependencies web ở `requirements.txt`; PySide6 không được cài vào bản deploy.
+# 2. Chạy giao diện Web Dash tại http://127.0.0.1:8050
+./.venv/bin/python -B app.py
+```
+
+> **Lưu ý nếu chỉ chấm riêng một giao diện:** Chỉ cần cài [requirements-desktop.txt](requirements-desktop.txt) nếu chỉ chạy `main.py`, hoặc chỉ cần cài [requirements.txt](requirements.txt) nếu chỉ chạy `app.py`. Lõi suy luận trong `griductive/engine/` và script thực nghiệm `griductive/experiments.py` chỉ dùng thư viện chuẩn của Python.
+
+---
+
+## 3. Hướng dẫn chơi thủ công, Hint, Auto Solve và Sổ giải
+
+Cả hai giao diện Desktop ([griductive/ui/](griductive/ui/)) và Web ([griductive/web.py](griductive/web.py)) đều hiển thị lưới $N \times N$ với tọa độ cột chữ (`A`–`E`) và hàng số (`1`–`5`), tên nhân vật theo thứ tự bảng chữ cái từng hàng, nghề nghiệp, trạng thái đã chứng minh và lời khai trên các thẻ đã lật.
+
+### 3.1. Chọn màn chơi và nạp tệp JSON (`Load` / `Restart`)
+- **Đổi màn có sẵn:** Bấm vào tên vụ án trên thanh tiêu đề để mở menu 6 hồ sơ được nhóm theo kích thước bàn (`3×3`, `4×4`, `5×5`):
+  - `3×3`: [puzzles/case-3x3-01.json](puzzles/case-3x3-01.json) (*Bức thư bên cửa sổ*), [puzzles/case-3x3-02.json](puzzles/case-3x3-02.json) (*Lời khai trên bến vắng*).
+  - `4×4`: [puzzles/case-4x4-01.json](puzzles/case-4x4-01.json) (*Chuyến tàu lúc hoàng hôn*), [puzzles/case-4x4-02.json](puzzles/case-4x4-02.json) (*Dấu vết trong phố nhỏ*).
+  - `5×5`: [puzzles/case-5x5-01.json](puzzles/case-5x5-01.json) (*Đêm hội bên hải đăng*), [puzzles/case-5x5-02.json](puzzles/case-5x5-02.json) (*Bí mật sau phiên chợ*).
+- **Nạp câu đố ngoài (`Load`):** Chọn **Mở màn chơi JSON…** ở cuối menu hồ sơ hoặc trong menu bánh răng (trên Web có thể tải lên tệp JSON tối đa `128 KB`). Bộ nạp [load_puzzle](griductive/engine/models.py) kiểm tra đầy đủ cấu trúc, vùng tham chiếu và tính đúng đắn của mọi lời khai dưới nghiệm ẩn.
+- **Làm lại màn (`Restart`):** Bấm nút **Làm lại** trên thanh công cụ (hoặc **Làm lại màn này** trong menu bánh răng) để hủy yêu cầu suy luận đang chạy, khôi phục các thẻ mở ban đầu và xóa lịch sử bước giải.
+
+### 3.2. Đọc lời khai và tô sáng vùng tham chiếu
+- Bấm vào một thẻ **đã mở** để tô sáng toàn bộ các ô thuộc vùng tham chiếu của lời khai đó trên bàn cờ; các ô ngoài vùng được làm mờ nhẹ để dễ đối chiếu.
+- Với lời khai nhiều vùng (`COMPARISON`, `CONDITIONAL` hoặc phép toán tập hợp), di chuột lên từng cụm chữ màu trong lời khai để xem trước vùng toán hạng tương ứng (`left`, `right`, ô mốc `anchor`), hoặc bấm vào cụm chữ để ghim cố định vùng đó.
+- Nhấn phím `Escape` hoặc bấm vùng trống để bỏ chọn thẻ/vùng đang ghim.
+
+### 3.3. Phán quyết thủ công không đoán mò (`CRIMINAL` / `INNOCENT`)
+- Bấm vào một thẻ **đang úp** để hiện hai nút phán quyết **Vô tội** (`INNOCENT`) và **Tội phạm** (`CRIMINAL`).
+- `GameEngine.submit` chuyển bản chụp công khai bất biến (`PublicState`) cho `LogicAgent.verify` kiểm tra bằng phản chứng trên DPLL và xử lý đúng ba trường hợp:
+  1. **`ACCEPTED` (Hợp lệ & đã chứng minh):** Giả thiết ngược lại làm `KB` vô nghiệm (`UNSAT`). Thẻ được đánh dấu trạng thái, lật mở lời khai mới và ghi thêm một mục vào nhật ký.
+  2. **`NOT_PROVABLE` (Chưa đủ cơ sở kết luận):** Cả hai giả thiết `CRIMINAL` và `INNOCENT` đều khả thỏa (`SAT`) với tri thức công khai hiện tại. Giao diện báo chưa đủ thông tin và **giữ nguyên thẻ úp**, không làm lộ lời khai ẩn.
+  3. **`CONTRADICTED` (Mâu thuẫn với tri thức hiện có):** Giả thiết người chơi chọn dẫn tới `UNSAT` (tức trạng thái ngược lại mới là hệ quả bắt buộc). Giao diện báo mâu thuẫn với dữ kiện đã mở và **giữ nguyên trạng thái bàn**.
+
+### 3.4. Gợi ý (`Hint`) và Sổ giải / Tự động giải (`Auto Solve`)
+- **Gợi ý (`Gợi ý`):** Gọi `GameEngine.hint()` trên `PublicState` hiện tại để chỉ ra nhân vật đầu tiên (theo thứ tự hàng) có trạng thái bắt buộc suy ra được mà **không đọc đáp án ẩn** và chưa tự ý lật thẻ.
+- **Sổ giải & Tự động giải:** Bấm nút **Sổ giải** trên thanh tiêu đề (hoặc **Tự động giải** trong menu bánh răng) để mở bảng Sổ tay suy luận bên phải:
+  - **Bước tiếp:** Thực hiện đúng một bước suy luận đã chứng minh (`GameEngine.step()`).
+  - **Chạy tự động / Tạm dừng:** Tự động giải lần lượt từng bước đến khi mở hết bàn (`SOLVED`) hoặc dừng ở trạng thái không còn bước ép buộc (`UNKNOWN` / `INCONSISTENT`). Đóng bảng Sổ giải sẽ tự động tạm dừng phát tự động.
+  - **Chi tiết & Thông số KB:** Mỗi bước giải có nút **Chi tiết** hiển thị lời khai vừa mở, danh sách ID lời khai đang hoạt động trước bước đó và danh sách từng truy vấn SAT (giả định, kết quả `SAT`/`UNSAT`, số quyết định, lan truyền, quay lui). Nút **Thông số KB** hiển thị số biến chính, biến phụ Tseitin và số mệnh đề CNF hiện thời.
+  - **Xuất JSON:** Tải toàn bộ danh sách `trace` của phiên chơi ra tệp JSON.
+
+---
+
+## 4. Kiểm thử tự động và tái lập thực nghiệm
+
+### 4.1. Chạy bộ kiểm thử tự động (87 kiểm thử / 13 mô-đun)
+
+```powershell
+# Chạy toàn bộ 87 unit test
+.\.venv\Scripts\python.exe -B -m unittest discover -s tests -v
+
+# Chạy riêng kiểm thử lõi CNF, vùng, luật mở rộng và bộ giải DPLL
+.\.venv\Scripts\python.exe -B -m unittest tests.test_core tests.test_solver tests.test_rule_extensions tests.test_rule_registration tests.test_puzzle_5x5 -v
+
+# Chạy riêng kiểm thử giao diện Desktop và phiên Web không trạng thái
+.\.venv\Scripts\python.exe -B -m unittest tests.test_ui tests.test_journal tests.test_web tests.test_presentation tests.test_localization -v
+```
+
+*(Trên macOS/Linux thay `.\.venv\Scripts\python.exe` bằng `./.venv/bin/python`.)*
+
+### 4.2. Chạy lại bộ thực nghiệm so sánh hai chiến lược DPLL
+
+Module [griductive/experiments.py](griductive/experiments.py) chạy tự động cả hai chiến lược chọn biến của DPLL (`ordered` và `frequency`) trên cùng 6 màn chơi chuẩn (`3×3`, `4×4`, `5×5` — tổng cộng 12 lượt chạy):
+
+```powershell
+# Ghi kết quả vào output/experiments/ (hạn thời gian mặc định 30 giây/màn)
+.\.venv\Scripts\python.exe -B -m griductive.experiments
+
+# Hoặc xuất ra thư mục tạm để đối chiếu mà không ghi đè số liệu gốc trong kho:
+.\.venv\Scripts\python.exe -B -m griductive.experiments --output output/experiments_recheck --timeout 30
+```
+
+Đầu ra gồm [output/experiments/results.json](output/experiments/results.json), [output/experiments/results.csv](output/experiments/results.csv) và 12 tệp nhật ký chi tiết `output/experiments/<puzzle>-<heuristic>-trace.json`.
+
+### 4.3. Tóm tắt số liệu thực nghiệm gốc
+
+Số liệu lưu tại [output/experiments/results.json](output/experiments/results.json) (đồng bộ với Bảng 5 và Bảng 6 trong báo cáo HCMUS, đo trên môi trường **Windows 11, Python 3.14.6, CPU 12th Gen Intel Core i5-12450HX**):
+
+| Màn | Chiến lược | N | Kết quả | Nghiệm | Biến chính | Biến phụ | Mệnh đề | Bước | Gọi SAT | Quyết định | Lan truyền | Quay lui | Thời gian (s) |
+| --- | --- | ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `case-3x3-01` | `ordered` | 3 | `SOLVED` | `UNIQUE` | 9 | 156 | 491 | 7 | 34 | 48 | 2944 | 4 | 0.046907 |
+| `case-3x3-01` | `frequency` | 3 | `SOLVED` | `UNIQUE` | 9 | 156 | 491 | 7 | 33 | 40 | 2942 | 4 | 0.059760 |
+| `case-3x3-02` | `ordered` | 3 | `SOLVED` | `UNIQUE` | 9 | 144 | 455 | 7 | 30 | 34 | 2802 | 15 | 0.070753 |
+| `case-3x3-02` | `frequency` | 3 | `SOLVED` | `UNIQUE` | 9 | 144 | 455 | 7 | 30 | 27 | 2693 | 9 | 0.051107 |
+| `case-4x4-01` | `ordered` | 4 | `SOLVED` | `UNIQUE` | 16 | 364 | 1138 | 13 | 84 | 518 | 29666 | 444 | 1.014534 |
+| `case-4x4-01` | `frequency` | 4 | `SOLVED` | `UNIQUE` | 16 | 364 | 1138 | 13 | 85 | 287 | 18887 | 8 | 0.504275 |
+| `case-4x4-02` | `ordered` | 4 | `SOLVED` | `UNIQUE` | 16 | 273 | 862 | 13 | 93 | 168 | 12568 | 7 | 1.150945 |
+| `case-4x4-02` | `frequency` | 4 | `SOLVED` | `UNIQUE` | 16 | 273 | 862 | 13 | 91 | 158 | 12567 | 16 | 1.089805 |
+| `case-5x5-01` | `ordered` | 5 | `SOLVED` | `UNIQUE` | 25 | 668 | 2068 | 22 | 162 | 193 | 43608 | 18 | 3.482976 |
+| `case-5x5-01` | `frequency` | 5 | `SOLVED` | `UNIQUE` | 25 | 668 | 2068 | 22 | 164 | 247 | 44288 | 45 | 3.591465 |
+| `case-5x5-02` | `ordered` | 5 | `SOLVED` | `UNIQUE` | 25 | 654 | 2045 | 22 | 182 | 752 | 55976 | 113 | 6.432318 |
+| `case-5x5-02` | `frequency` | 5 | `SOLVED` | `UNIQUE` | 25 | 654 | 2045 | 22 | 182 | 647 | 53655 | 37 | 5.540037 |
+
+*(Giá trị `runtime` đầy đủ độ chính xác dấu phẩy động nằm trong [output/experiments/results.json](output/experiments/results.json). Tất cả các cột đếm logic từ `Biến chính` đến `Quay lui` đều hoàn toàn tất định khi chạy lại trên mọi máy; chỉ `Thời gian (s)` phụ thuộc tốc độ phần cứng.)*
+
+---
+
+## 5. Bảng đối chiếu yêu cầu đề bài (`AI - Project 2.pdf`)
+
+| Mục đề bài | Nội dung yêu cầu cốt lõi | Tệp cài đặt chính | Kiểm thử & kết quả minh chứng |
+| --- | --- | --- | --- |
+| **4.1 Reimplement the Game (10 đ)** | GUI hiển thị lưới $N \times N$, tọa độ, tên, nghề, thẻ mở/úp; chọn `CRIMINAL`/`INNOCENT`; lật thẻ khi chứng minh đúng; từ chối không lộ lời khai ẩn (`NOT_PROVABLE` vs `CONTRADICTED`); tô sáng vùng lời khai; có `Load`, `Restart`, `Hint`, `Auto Solve`; tách biệt `GameEngine` và `LogicAgent` (`PublicState` bất biến). | [main.py](main.py), [app.py](app.py), [griductive/engine/models.py](griductive/engine/models.py), [griductive/engine/game.py](griductive/engine/game.py), [griductive/ui/window.py](griductive/ui/window.py), [griductive/ui/cards.py](griductive/ui/cards.py), [griductive/web.py](griductive/web.py), [griductive/web_game.py](griductive/web_game.py) | [tests/test_core.py](tests/test_core.py) (`test_public_state_does_not_publish_hidden_data`), [tests/test_solver.py](tests/test_solver.py) (`test_rejection_is_atomic_and_acceptance_is_repeatable`), [tests/test_ui.py](tests/test_ui.py), [tests/test_web.py](tests/test_web.py) |
+| **4.2 Automatic Logical Representation & CNF Encoding (10 đ)** | Ánh xạ biến mệnh đề tất định; kiểm tra tham số và vùng; biên dịch tự động 6 mẫu cơ sở (`FACT`, `SAME`, `DIFFERENT`, `EXACTLY`, `AT_LEAST`, `AT_MOST`) + **phần mở rộng** (`COMPARISON`, `CONDITIONAL` cùng 4 vùng mở rộng `CORNERS`, `UNION`, `INTERSECTION`, `DIFFERENCE`); dựng $KB_t$ chỉ từ lời khai đã mở và mệnh đề đơn đã chứng minh; báo cáo số biến chính/phụ và số mệnh đề; bộ đánh giá ngữ nghĩa trực tiếp (`evaluate`) độc lập với CNF. | [griductive/engine/regions.py](griductive/engine/regions.py), [griductive/engine/clues.py](griductive/engine/clues.py), [griductive/engine/cnf.py](griductive/engine/cnf.py) | [tests/test_core.py](tests/test_core.py) (`test_semantics_and_cnf_agree_exhaustively`), [tests/test_solver.py](tests/test_solver.py) (`test_reified_semantics_and_overlapping_comparisons`, `test_shared_auxiliary_namespace_and_polynomial_size`), [tests/test_rule_extensions.py](tests/test_rule_extensions.py), [tests/test_rule_registration.py](tests/test_rule_registration.py) |
+| **4.3 DPLL SAT Solver (10 đ)** | Tự cài đặt thủ tục DPLL: lan truyền mệnh đề đơn (*unit propagation*), phát hiện xung đột, chọn biến tất định (`ordered` & `frequency`), phân nhánh đệ quy và quay lui, trả về `SAT` kèm mô hình đầy đủ hoặc `UNSAT`, ghi nhận `decisions`, `propagations`, `backtracks`, `runtime` và hỗ trợ `assumptions`. | [griductive/engine/sat.py](griductive/engine/sat.py) | [tests/test_solver.py](tests/test_solver.py) (`test_dpll_complete_model_and_unsat`), [tests/test_rule_extensions.py](tests/test_rule_extensions.py) (`test_cancel_is_not_unknown_or_a_partial_model`) |
+| **4.4 Deductive Logic Agent (20 đ)** | Phân loại ô chưa mở (`CRIMINAL`, `INNOCENT`, `UNKNOWN`, `INCONSISTENT`); chỉ chọn phán quyết bắt buộc (*no-guess*); nhận lời khai mới từ `GameEngine` sau khi phán quyết được chấp nhận; sinh nhật ký `trace` đầy đủ (số bước, ID lời khai hiệu lực, truy vấn SAT, phán quyết, lời khai mới); hàm `check_uniqueness` kiểm tra nghiệm duy nhất bằng mệnh đề chặn trên biến chính; `Hint` không đọc đáp án ẩn. | [griductive/engine/game.py](griductive/engine/game.py), [griductive/ui/journal.py](griductive/ui/journal.py) | [tests/test_solver.py](tests/test_solver.py) (`test_model_is_not_entailment_and_inconsistency`, `test_six_cases_unique_and_progressively_solvable`), [tests/test_puzzle_5x5.py](tests/test_puzzle_5x5.py), [tests/test_journal.py](tests/test_journal.py) |
+| **4.5 Experiments (10 đ)** | Đánh giá trên cùng tập câu đố gồm các màn $3 \times 3$, $4 \times 4$ và ca kiểm tra tải $5 \times 5$; ghi nhận biến chính/phụ, mệnh đề CNF, số lần gọi SAT, quyết định, lan truyền, quay lui, số bước suy luận và thời gian chạy; bảo toàn trạng thái dừng/`TIMEOUT` thay vì xóa khỏi kết quả. | [griductive/experiments.py](griductive/experiments.py), [puzzles/](puzzles/) | [output/experiments/results.json](output/experiments/results.json), [output/experiments/results.csv](output/experiments/results.csv), 12 tệp `output/experiments/*-trace.json`, [output/puzzle-quality.json](output/puzzle-quality.json) |
+| **4.6 Report (30 đ)** | Báo cáo PDF trình bày kế hoạch & phân công kèm tỷ lệ hoàn thành, mô hình hóa bài toán, dẫn xuất mã hóa CNF cho manh mối nhị phân & manh mối đếm, thuật toán DPLL/phản chứng/nghiệm duy nhất, bảng biểu & phân tích thực nghiệm (kể cả giới hạn), tài liệu tham khảo và phụ lục AI tạo sinh. | `Report.pdf` (biên dịch từ nguồn LaTeX HCMUS `docs/latex/`), [docs/team.json](docs/team.json), [TASKS.md](TASKS.md) | [docs/REFERENCES.md](docs/REFERENCES.md), [docs/AI-PROMPTS.md](docs/AI-PROMPTS.md), `Report.pdf` (22 trang chuẩn mẫu HCMUS) |
+| **4.7 Demonstration Video (10 đ)** | Video 5–10 phút trình diễn GUI, chơi thủ công, chạy bộ giải, có thuyết minh/phụ đề tiếng Việt hoặc tiếng Anh, tải lên Google Drive ở chế độ *Anyone with the link* (không dùng YouTube). | [docs/team.json](docs/team.json) (`demo_url`) | `output/Demo.mp4` (`05:33`, thuyết minh & phụ đề tiếng Việt; đã tải lên [Google Drive](https://drive.google.com/file/d/1Y-84FGh__BUx-dtXgX3oKmJwhWga77Ou/view?usp=sharing), kiểm tra xem ẩn danh và nhúng vào `docs/team.json` + `Report.pdf`) |
+| **5. Submission** | Đóng gói `.zip` theo định dạng `StudentID1_StudentID2_...` gồm thư mục `Source/` (`main.py`, `README.md`, `requirements.txt`, ...) và tệp `Report.pdf` ở cấp ngoài cùng; nếu gói nén `> 20 MB` mới cần nộp qua link Drive. | Cấu trúc kho mã sạch, tương thích giải nén độc lập trong `Source/` | `output/24120228_24120219_24120141_24120502_24120503.zip` (`< 20 MB`, vượt qua toàn bộ 87/87 kiểm thử khi chạy trực tiếp từ `Source/`) |
+
+---
+
+## 6. Cấu trúc thư mục và tài liệu kỹ thuật
+
+```text
+.
+├── main.py                      # Điểm vào ứng dụng Desktop PySide6 (Cozy Harbor)
+├── app.py                       # Điểm vào ứng dụng Web Plotly Dash / Flask (WSGI)
+├── requirements-desktop.txt     # Phụ thuộc giao diện Desktop (PySide6)
+├── requirements.txt             # Phụ thuộc giao diện Web / Vercel (Dash, Flask)
+├── griductive/
+│   ├── engine/                  # Lõi logic mệnh đề độc lập giao diện
+│   │   ├── models.py            # Board, Character, PublicState, PrivatePuzzle, load_puzzle
+│   │   ├── regions.py           # 4 vùng cơ sở + 4 vùng mở rộng & RegionRegistry
+│   │   ├── clues.py             # 6 manh mối cơ sở + 2 mở rộng, evaluate(), expression(), CluePart
+│   │   ├── cnf.py               # Encoder cổng Tseitin, quy hoạch động ngưỡng unary, KnowledgeBase
+│   │   ├── sat.py               # DPLL tự cài đặt (ordered & frequency), giả định, thống kê
+│   │   └── game.py              # LogicAgent, GameEngine, fork(), check_uniqueness()
+│   ├── presentation/            # Sinh câu tiếng Việt và ánh xạ tham chiếu tô sáng (không phụ thuộc Qt)
+│   ├── ui/                      # Cửa sổ Desktop Cozy Harbor, thẻ nghi phạm, Sổ giải, EngineWorker
+│   ├── web.py                   # Giao diện và callback Plotly Dash
+│   ├── web_game.py              # Khôi phục phiên Web không trạng thái qua lịch sử phán quyết
+│   └── experiments.py           # Chạy thực nghiệm đối sánh ordered vs frequency trên 6 màn
+├── puzzles/                     # 6 hồ sơ vụ án chuẩn (2 màn 3x3, 2 màn 4x4, 2 màn 5x5)
+├── assets/                      # Manifest cắt khung biểu cảm nhân vật và đạo cụ nghề nghiệp
+├── public/                      # Atlas pixel/ảnh nền dùng chung và CSS/JS giao diện trình duyệt
+├── tests/                       # 13 mô-đun kiểm thử đơn vị và tích hợp (87 test cases)
+├── output/                      # Kết quả thực nghiệm (CSV, JSON, 12 trace) và kiểm định độ khó câu đố
+├── TASKS.md                     # Phân công công việc nhóm, mô-đun bàn giao và lệnh kiểm tra
+└── docs/                        # Tài liệu thiết kế, hướng dẫn mở rộng, nguồn tham khảo và phụ lục AI
+```
+
+### Đọc tiếp tài liệu chi tiết
+
+- [docs/DESIGN.md](docs/DESIGN.md) — Ranh giới bất biến `GameEngine`/`LogicAgent`, suy luận không đoán mò, chi tiết các mẫu manh mối/vùng và phần mở rộng, dẫn xuất mã hóa CNF, thuật toán DPLL, cấu trúc `trace`, kiểm tra nghiệm duy nhất và cách đọc bảng số liệu thực nghiệm.
+- [docs/EXTENDING.md](docs/EXTENDING.md) — Hướng dẫn đăng ký thêm loại vùng (`@register_region`) và manh mối mới (`@register_clue`) mà không cần sửa bộ biên dịch CNF, bộ giải DPLL hay giao diện.
+- [TASKS.md](TASKS.md) — Bảng phân công chi tiết từng thành viên, tỷ lệ hoàn thành và hướng dẫn kiểm tra theo từng phần việc.
+- [docs/REFERENCES.md](docs/REFERENCES.md) — Danh mục tài liệu học thuật, tài liệu kỹ thuật và các dự án đối chiếu (đồng bộ với mục Tài liệu tham khảo của báo cáo HCMUS).
+- [docs/AI-PROMPTS.md](docs/AI-PROMPTS.md) — Nhật ký prompt AI tạo sinh và quy trình kiểm chứng đồ họa nhân vật.
+
+---
+
+## 7. Triển khai bản Web lên Vercel (tùy chọn)
+
+Cấu hình triển khai đã có sẵn trong [vercel.json](vercel.json) và [.python-version](.python-version) (framework Flask, entrypoint `app.py`, giới hạn hàm 60 giây, phục vụ trực tiếp tài nguyên tĩnh trong `public/` qua CDN):
 
 ```powershell
 npx vercel login
 npx vercel deploy --prod
 ```
-
-Đăng nhập Vercel để sở hữu project và giữ deployment lâu dài. Có thể import
-repo GitHub `pnthuc/Griductive` trên Vercel để tự deploy khi push.
-
-## Chạy game
-
-Nếu đã có `.venv`:
-
-```powershell
-.\.venv\Scripts\python.exe -B main.py
-```
-
-Cài mới:
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements-desktop.txt
-.\.venv\Scripts\python.exe -B main.py
-```
-
-Mở màn cụ thể bằng cách thêm `puzzles/case-5x5-01.json` sau `main.py`.
-Bấm tên màn để đổi màn. Menu bánh răng chứa **Tự động giải** và **Làm lại màn này**.
-Chọn người rồi bấm **Vô tội** hoặc **Tội phạm**. Game chỉ mở thẻ khi chứng minh
-được phán quyết từ dữ kiện công khai. Gợi ý chỉ ra một người suy ra được tiếp.
-Chọn clue để xem highlight; bấm đoạn chữ màu để tập trung vào vùng/người đó.
-Escape bỏ chọn. Tạm dừng, Restart và đổi màn hủy yêu cầu suy luận cũ.
-
-## Đọc mã theo thứ tự này
-
-| File trong `griductive/engine/` | Nội dung |
-|---|---|
-| `models.py` | Dữ liệu Board/Character, trạng thái public/private, đọc và kiểm tra JSON |
-| `regions.py` | Các lớp Region, registry và decorator đăng ký vùng |
-| `clues.py` | Các lớp Clue, registry, decorator và tham chiếu highlight |
-| `cnf.py` | Dựng KB và tạo CNF, quản lý biến chính/biến phụ |
-| `sat.py` | DPLL: lan truyền đơn, phân nhánh và quay lui |
-| `game.py` | GameEngine, LogicAgent, kiểm chứng phán quyết và nghiệm duy nhất |
-
-Điểm bắt đầu là `main.py`. Luồng chính: UI gửi yêu cầu, engine tạo PublicState,
-agent kiểm chứng bằng CNF/DPLL, engine chấp nhận hoặc từ chối, UI nhận kết quả.
-Mỗi clue là một lớp có các hàm rõ tên, giữ evaluator độc lập với encoder.
-Khai báo `region_fields`, `person_fields`, `children` để tự kiểm tra tham chiếu
-và tạo highlight. Đăng ký bằng `@register_clue('NAME')` hoặc
-`@register_region('NAME')`, không sửa CNF/DPLL. Phương thức `wording()` tùy chọn
-tạo câu thường và HTML có liên kết ngay trong định nghĩa luật.
-
-Ví dụ đầy đủ và cách đăng ký riêng cho một phiên nằm trong
-[docs/EXTENDING.md](docs/EXTENDING.md).
-
-## Các thư mục khác
-
-- `griductive/presentation/`: câu tiếng Việt và lựa chọn tham chiếu, không Qt.
-- `griductive/ui/`: cửa sổ, thẻ, animation, nhật ký, controller và worker.
-- `assets/`: dữ liệu nhân vật và manifest ảnh.
-- `public/images/`: atlas và ảnh nền dùng chung; 25 người, 7 frame/người.
-- `puzzles/`: sáu màn, hai màn cho mỗi size 3x3, 4x4, 5x5; ID clue là mã ô.
-- `tests/`: kiểm tra thuật toán, UI, sprite và xử lý nền; cần giữ để chống lỗi.
-- `output/`: kết quả thực nghiệm chính và bản kiểm định độ khó đã lưu.
-- `docs/`: báo cáo nháp, thành viên, nguồn tham khảo và prompt AI.
-
-Thiết kế và ranh giới giữa các module được mô tả trong `docs/DESIGN.md`.
-Extension gồm `COMPARISON`, `CONDITIONAL` và các vùng `CORNERS`, `UNION`,
-`INTERSECTION`, `DIFFERENCE`.
-
-Worker chạy các phép SAT ngoài luồng UI. Engine chỉ đưa clue đã mở và trạng thái
-đã biết vào KB. Agent không nhận đáp án hoặc clue ẩn. Không dùng SAT library.
-Runtime đọc ảnh có sẵn, không sinh asset khi khởi động. Các script tạo map,
-xem thử sprite, ảnh concept và kế hoạch đã dùng xong được dọn khỏi project.
-Đầu ra cần dùng được giữ dưới dạng sáu puzzle JSON, atlas ảnh và manifest;
-không cần NumPy hay công cụ sinh ảnh để chạy game.
-
-## Kiểm tra và chạy lại thực nghiệm
-
-Để chạy cả test web và desktop, cài cả hai file requirements trước.
-
-```powershell
-.\.venv\Scripts\python.exe -B -m unittest discover -s tests
-.\.venv\Scripts\python.exe -B -m griductive.experiments
-```
-
-Thực nghiệm dùng cùng sáu màn cho hai heuristic `ordered` và `frequency`.
-Kết quả ở `output/experiments/`: CSV, JSON và trace theo màn/cấu hình.
-`output/puzzle-quality.json` là bản kiểm định độ khó đã lưu. Các test vẫn kiểm
-tra nghiệm duy nhất, public deduction loop và điều kiện của conditional.
-Mỗi mục kiểm định có SHA256 của puzzle nguồn và chứng nhận bước mở đầu đã
-đối chiếu với puzzle hiện tại. `output/verification.txt` lưu kết quả chạy test
-sau lần dọn project. Giữ bộ test và module thực nghiệm để kiểm tra lại khi sửa
-source; đây là các công cụ cần chạy nhiều lần.
-
-## Tài liệu bài nộp
-
-`AI - Project 2.pdf` là đề bài. `Report.pdf` (biên dịch từ nguồn LaTeX HCMUS tại
-`docs/latex/`) và bản đối chiếu `docs/REPORT.md` trình bày đầy đủ mô hình hóa,
-mã hóa CNF, thuật toán DPLL, kết quả thực nghiệm và giao diện. Thông tin thành
-viên, tỷ lệ hoàn thành và liên kết video trình diễn được lưu tại `docs/team.json`;
-nguồn tham khảo ở `docs/REFERENCES.md`; nhật ký prompt AI ở `docs/AI-PROMPTS.md`.

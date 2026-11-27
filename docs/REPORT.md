@@ -30,7 +30,7 @@ Nhóm thống nhất giao diện dữ liệu giữa bàn chơi và tác tử tr�
 Tỷ lệ trong bảng lấy từ hồ sơ nhóm `docs/team.json`. Điểm cá nhân bằng điểm nhóm nhân với tỷ lệ hoàn thành của thành viên. Theo ví dụ trong đề, điểm nhóm 9,0 và tỷ lệ 90% cho điểm cá nhân 8,1. Với tỷ lệ 100%, mỗi thành viên nhận điểm nhóm.
 
 > **Video trình diễn trên Google Drive**  
-> Liên kết xem: Chờ nhóm cung cấp.
+> Liên kết xem: [https://drive.google.com/file/d/1Y-84FGh__BUx-dtXgX3oKmJwhWga77Ou/view?usp=sharing](https://drive.google.com/file/d/1Y-84FGh__BUx-dtXgX3oKmJwhWga77Ou/view?usp=sharing)
 
 ### Quyền truy cập dữ liệu và luồng xử lý
 

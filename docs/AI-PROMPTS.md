@@ -1,3 +1,13 @@
+# Nhật ký Sử dụng AI Tạo sinh & Prompt Đồ họa (Appendix Provenance)
+
+Tài liệu này bổ trợ cho **Phụ lục A** của báo cáo kỹ thuật HCMUS (`Report.pdf`), lưu trữ nguyên văn các prompt sinh/chỉnh sửa tài sản đồ họa và tóm tắt quy trình kiểm chứng khi sử dụng công cụ AI trong dự án:
+
+- **Lập trình, tích hợp và rà soát (Codex & Antigravity):** Hỗ trợ phân tích đặc tả, tổ chức mô-đun giao diện, đối chiếu kiểm thử và chuẩn bị tài liệu/báo cáo/video. Mọi thuật toán lõi (`regions.py`, `clues.py`, `cnf.py`, `sat.py`, `game.py`) đều được kiểm chứng bằng phản ví dụ, đối chiếu vét cạn `evaluate()` với CNF và bộ **87 unit test** tự động.
+- **Minh họa nhân vật và sửa ảnh có mặt nạ (ImageGen & Stable Diffusion 1.5 Inpainting):** Sinh 25 nhân vật × 7 khung biểu cảm và đạo cụ nghề nghiệp, sau đó đóng gói thành các atlas dùng chung tại `public/images/` và `public/pixel/` kèm thông số cắt khung tại `assets/`. Tên tệp trung gian bên dưới được giữ nguyên làm hồ sơ truy vết nguồn gốc (*provenance*); các ảnh nháp trung gian đã được dọn khỏi kho mã.
+- **Thuyết minh tiếng Việt cho Video Demo (ElevenLabs TTS):** Sinh 16 phân đoạn thoại tiếng Việt từ kịch bản thuyết minh, chuẩn hóa âm lượng và ghép khớp khung hình 24 fps với giao diện thật.
+
+---
+
 # Asset generation prompts
 
 Created with built-in ImageGen, 2026-11-04.

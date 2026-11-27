@@ -1,130 +1,82 @@
-# Phân Công Công Việc Nhóm — Project 2: Griductive (Clues by Sam)
+# Phân Công Công Việc Nhóm — Project 2: Griductive Solver
 
-Tài liệu này hướng dẫn chi tiết phần việc của từng thành viên trong nhóm. Toàn bộ phần khung dự án (UI Desktop/Web, dữ liệu Puzzle, bộ Unit Test) đã được chuẩn bị sẵn. Các thành viên phụ trách phần thuật toán lõi trong `griductive/engine/` tìm đúng tag `TODO` theo tên mình, cài đặt code vào chỗ `raise NotImplementedError(...)` và chạy lệnh test tương ứng để kiểm tra.
-
----
-
-## 1. Bảng Phân Công Tổng Quan
-
-| Thành viên | MSSV | Phụ trách chính | Tag tìm kiếm trong code | Trạng thái |
-| --- | --- | --- | --- | --- |
-| **Bùi Phương Nam** | `24120502` | Bộ giải DPLL SAT Solver (ordered & frequency) & Suy luận phản chứng LogicAgent | `TODO(Nam)` | ✅ Đã hoàn thành (`edcd1c8`) |
-| **Phan Gia Phúc** | `24120503` | Mã hóa CNF (cổng Tseitin, quy hoạch động đếm ngưỡng unary) & Biểu diễn toàn bộ Clue sang CNF | `TODO(Phuc)` | ✅ Đã hoàn thành (`79718c2`) |
-| **Tống Phúc Thiện** | `24120141` | Hệ thống vùng (Regions & phép toán tập hợp), Đánh giá ngữ nghĩa trực tiếp (evaluate) & Luồng GameEngine / check_uniqueness | `TODO(Thien)` | ✅ Đã hoàn thành (`a56b700`) |
-| **Phan Ngọc Thức** | `24120228` | Kiến trúc dự án, Giao diện Desktop Cozy Harbor & Web Dash, Thực nghiệm, Báo cáo & Video Demo | — | ✅ Đã hoàn thành |
-| **Nguyễn Lê Minh Quân** | `24120219` | Thực nghiệm hệ thống, Phân tích so sánh 2 heuristic (ordered vs frequency), Báo cáo kỹ thuật & Video Demo | — | ✅ Đã hoàn thành |
+Tài liệu này ghi nhận phân công nhiệm vụ, tỷ lệ hoàn thành của từng thành viên lớp **24TN** (khớp với [docs/team.json](docs/team.json) và mục 1.1 của báo cáo kỹ thuật `Report.pdf`), chi tiết các mô-đun đã bàn giao và lệnh kiểm chứng tương ứng theo mục **4.6** của đề bài `AI - Project 2.pdf`.
 
 ---
 
-## 2. Chi Tiết Nhiệm Vụ Từng Thành Viên
+## 1. Bảng phân công tổng quan và tỷ lệ hoàn thành
 
-### 🔹 Phần 1: Bùi Phương Nam (`TODO(Nam)`) — SAT Solver & Suy Luận Phản Chứng ✅ (Đã hoàn thành)
+Công thức tính điểm cá nhân theo đề bài: $\text{Điểm cá nhân} = \text{Điểm nhóm} \times \text{Tỷ lệ hoàn thành}$. Với mức hoàn thành **100%** ở cả 5 thành viên, mỗi thành viên nhận trọn điểm nhóm.
 
-Nam phụ trách bộ giải DPLL và cơ chế chứng minh một ô là `CRIMINAL` / `INNOCENT` bằng phản chứng ($\text{KB} \land \neg \alpha \models \perp$).
+| Thành viên | MSSV | Phần việc phụ trách chính | Tỷ lệ hoàn thành | Trạng thái & Commit tiêu biểu |
+| --- | --- | --- | ---: | --- |
+| **Phan Ngọc Thức** | `24120228` | Kiến trúc dự án, giao diện Desktop Cozy Harbor & Web Dash, thực nghiệm, báo cáo & video demo | 100% | ✅ Đã hoàn thành (`8a64909`, `65a0f41`) |
+| **Nguyễn Lê Minh Quân** | `24120219` | Thực nghiệm hệ thống, phân tích so sánh 2 heuristic (`ordered` vs `frequency`), báo cáo kỹ thuật & video demo | 100% | ✅ Đã hoàn thành (`aada27b`) |
+| **Tống Phúc Thiện** | `24120141` | Hệ thống vùng (`Regions` & phép toán tập hợp), đánh giá ngữ nghĩa trực tiếp (`evaluate`) & luồng `GameEngine` / `check_uniqueness` | 100% | ✅ Đã hoàn thành (`a56b700`) |
+| **Bùi Phương Nam** | `24120502` | Bộ giải DPLL SAT Solver (`ordered` & `frequency`) & suy luận phản chứng `LogicAgent` | 100% | ✅ Đã hoàn thành (`edcd1c8`) |
+| **Phan Gia Phúc** | `24120503` | Mã hóa CNF (cổng Tseitin, quy hoạch động đếm ngưỡng unary) & biểu diễn toàn bộ `Clue` sang CNF | 100% | ✅ Đã hoàn thành (`79718c2`) |
 
-1. **File `griductive/engine/sat.py`**:
-   - **`search(current, assignment)`** (bên trong hàm `solve`):
-     - Thực hiện vòng lặp **Unit Propagation**: phát hiện mệnh đề rỗng `()`, tìm unit clauses (`len(clause) == 1`), gán giá trị biến, cộng `stats.propagations += 1`, và rút gọn danh sách mệnh đề `current`.
-     - Chọn biến phân nhánh theo 2 heuristic:
-       - `"ordered"`: chọn biến chưa gán có chỉ số nhỏ nhất.
-       - `"frequency"`: chọn biến xuất hiện nhiều nhất trong các mệnh đề hiện tại (nếu bằng nhau chọn chỉ số nhỏ hơn).
-     - Tăng `stats.decisions += 1`, thử gán `True` rồi `False` (đệ quy), nếu nhánh thất bại thì tăng `stats.backtracks += 1`.
-2. **File `griductive/engine/game.py`**:
-   - **`LogicAgent.verify(self, state, cell, verdict)`**:
-     - Tạo Knowledge Base từ `state`. Nếu bản thân KB đã `UNSAT` thì trả về `'INCONSISTENT', kb`.
-     - Kiểm tra phản chứng bằng cách truyền `assumptions=(-proposed,)` rồi `(proposed,)` vào `self.query(...)` để trả về `'ACCEPTED'`, `'CONTRADICTED'`, hoặc `'NOT_PROVABLE'`.
-   - **`LogicAgent.classify(self, state)`**:
-     - Phân loại mọi ô chưa mở trên bàn cờ thành `"CRIMINAL"`, `"INNOCENT"`, `"UNKNOWN"`, hoặc `"INCONSISTENT"`.
+> **Video trình diễn trên Google Drive (mục 4.7):** [https://drive.google.com/file/d/1Y-84FGh__BUx-dtXgX3oKmJwhWga77Ou/view?usp=sharing](https://drive.google.com/file/d/1Y-84FGh__BUx-dtXgX3oKmJwhWga77Ou/view?usp=sharing) (`05:33`, thuyết minh và phụ đề tiếng Việt, quyền xem công khai *Anyone with the link*).
 
-**Lệnh chạy test kiểm tra riêng phần của Nam:**
-```bash
-python -m unittest tests.test_solver
+---
+
+## 2. Chi tiết mô-đun bàn giao theo từng thành viên
+
+### 🔹 Phần 1: Bùi Phương Nam (`24120502`) — Bộ giải DPLL & Suy luận Phản chứng
+1. **Tệp [griductive/engine/sat.py](griductive/engine/sat.py):**
+   - Cài đặt thủ tục đệ quy `search(current, assignment)` bên trong `solve()`:
+     - Vòng lặp **Unit Propagation**: kiểm tra cờ hủy/timeout, phát hiện mệnh đề rỗng `()`, thu thập mệnh đề đơn, phát hiện xung đột hai đơn vị đối dấu ($x$ và $-x$), ghi nhận `stats.propagations` và rút gọn mệnh đề qua `simplify()`.
+     - Chiến lược chọn biến phân nhánh tất định: `"ordered"` (chỉ số biến nhỏ nhất) và `"frequency"` (biến xuất hiện nhiều nhất trong các mệnh đề còn lại, hòa chọn chỉ số nhỏ hơn).
+     - Phân nhánh đệ quy thử `True` rồi `False`, cập nhật `stats.decisions`, `stats.backtracks`, `stats.runtime` và điền mô hình đầy đủ cho dải biến $1 \dots m$.
+2. **Tệp [griductive/engine/game.py](griductive/engine/game.py):**
+   - `LogicAgent.verify(state, cell, verdict)`: kiểm tra $KB_t$ khả thỏa trước, sau đó kiểm chứng bằng phản chứng ($KB_t \land \neg\alpha$ vô nghiệm) để phân biệt `ACCEPTED`, `CONTRADICTED`, `NOT_PROVABLE` và `INCONSISTENT`.
+   - `LogicAgent._verdicts(state)` và `LogicAgent.classify(state)`: phân loại toàn bộ ô chưa mở kèm bộ nhớ nhân chứng mô hình (`can_be_true`, `can_be_false`) giúp giảm số lần gọi SAT.
+
+```powershell
+# Kiểm tra riêng phần DPLL và LogicAgent
+.\.venv\Scripts\python.exe -B -m unittest tests.test_solver -v
 ```
 
 ---
 
-### 🔹 Phần 2: Phan Gia Phúc (`TODO(Phuc)`) — Mã Hóa CNF & Chuyển Đổi Clue Sang CNF
+### 🔹 Phần 2: Phan Gia Phúc (`24120503`) — Mã hóa CNF & Biên dịch Manh mối
+1. **Tệp [griductive/engine/cnf.py](griductive/engine/cnf.py):**
+   - `Encoder.gate(kind, operands)`: rút gọn hằng `bool`, khử literal trùng, phát hiện cặp đối ngẫu, tra bảng băm `self.gates` để dùng chung biến phụ Tseitin và sinh các mệnh đề tương đương hai chiều cho cổng `"AND"` / `"OR"`.
+   - `Encoder.thresholds(cells)`: quy hoạch động bậc đa thức $O(|R|^2)$ tính dãy literal ngưỡng `counts[k]` (*có ít nhất $k$ tội phạm trong vùng*), dùng chung không gian biến phụ của `Encoder`.
+   - `build_knowledge_base(state, registry)`: tạo $KB_t$ chỉ từ `state.clues` đã mở và mệnh đề đơn của `state.statuses` đã chứng minh.
+2. **Tệp [griductive/engine/clues.py](griductive/engine/clues.py):**
+   - Cài đặt phương thức biên dịch `expression()` cho cả 6 mẫu cơ sở (`Fact`, `Same`/`Different`, `Count` + `Exactly`/`AtLeast`/`AtMost`) và 2 mẫu mở rộng (`Comparison` qua quan hệ `greater_equal`, `Conditional` qua $\neg P \lor Q$).
 
-Phúc phụ trách chuyển đổi các biểu thức logic và phép đếm số lượng sang dạng chuẩn hội (CNF) sử dụng biến phụ Tseitin và quy hoạch động đếm ngưỡng.
-
-1. **File `griductive/engine/cnf.py`**:
-   - **`Encoder.gate(self, kind, operands)`**:
-     - Rút gọn các hằng `bool` (`True`/`False`), loại bỏ literal trùng, phát hiện cặp đối ngẫu (`v` và `-v`).
-     - Dùng `self.gates` để tránh tạo trùng biến phụ cho cùng một cổng `(kind, inputs)`.
-     - Cấp phát biến phụ `out` và sinh các mệnh đề tương đương Tseitin cho cổng `"AND"` hoặc `"OR"`.
-   - **`Encoder.thresholds(self, cells)`**:
-     - Quy hoạch động tính danh sách ngưỡng `counts` cho tập ô `cells`, trong đó `counts[k]` biểu diễn mệnh đề *"có ít nhất $k$ ô trong `cells` là Criminal"*.
-   - **`build_knowledge_base(state, registry)`**:
-     - Khởi tạo `Encoder`, nạp toàn bộ `state.clues` (các manh mối đã mở) và `state.statuses` (các ô đã biết trạng thái dưới dạng unit clause) rồi trả về `encoder.finish()`.
-2. **File `griductive/engine/clues.py`**:
-   - Cài đặt các phương thức mã hóa CNF cho từng loại manh mối:
-     - `Fact.expression`
-     - `Same.expression` (dùng chung cho cả `SAME` và `DIFFERENT`)
-     - `Count.expression`, `Exactly.bound`, `AtLeast.bound`, `AtMost.bound`
-     - `Comparison.expression` (so sánh số lượng Criminal giữa 2 vùng bằng `greater_equal`)
-     - `Conditional.expression` (mệnh đề kéo theo $P \rightarrow Q \equiv \neg P \lor Q$)
-
-**Lệnh chạy test kiểm tra phần của Phúc (sau khi Thiện xong `regions.py` hoặc kết hợp cùng Thiện):**
-```bash
-python -m unittest tests.test_core tests.test_rule_extensions
+```powershell
+# Kiểm tra riêng phần mã hóa CNF và luật mở rộng
+.\.venv\Scripts\python.exe -B -m unittest tests.test_core tests.test_rule_extensions tests.test_rule_registration -v
 ```
 
 ---
 
-### 🔹 Phần 3: Tống Phúc Thiện (`TODO(Thien)`) — Regions, Clue Evaluation & Game Engine
+### 🔹 Phần 3: Tống Phúc Thiện (`24120141`) — Hệ thống Vùng, Đánh giá Ngữ nghĩa & Luồng GameEngine
+1. **Tệp [griductive/engine/regions.py](griductive/engine/regions.py):**
+   - Cài đặt `resolve()` cho 4 vùng cơ sở (`Row`, `Column`, `Neighbors` theo khoảng cách Chebyshev $\le 1$ loại trừ ô mốc, `Explicit`) và 4 vùng mở rộng (`Corners`, cùng `SetOperation.combine` cho `Union`, `Intersection`, `Difference`).
+2. **Tệp [griductive/engine/clues.py](griductive/engine/clues.py):**
+   - Cài đặt bộ đánh giá ngữ nghĩa trực tiếp `evaluate()` / `compare()` hoàn toàn độc lập với CNF/SAT cho toàn bộ 8 kiểu manh mối.
+3. **Tệp [griductive/engine/game.py](griductive/engine/game.py):**
+   - Cài đặt `GameEngine.hint()` (chỉ dùng `PublicState`, không đọc nghiệm ẩn), `GameEngine.step()` và `check_uniqueness()` (kiểm tra nghiệm duy nhất ngoại tuyến bằng mệnh đề chặn trên tập biến chính).
 
-Thiện phụ trách hệ thống xác định vùng trên bàn cờ, đánh giá trực tiếp tính đúng/sai của manh mối trên một nghiệm, và điều phối luồng chơi.
-
-1. **File `griductive/engine/regions.py`**:
-   - Cài đặt phương thức `resolve()` cho các loại vùng cơ bản:
-     - `Row.resolve` (hàng $1 \dots N$)
-     - `Column.resolve` (cột $A, B, \dots$)
-     - `Neighbors.resolve` (8 ô lân cận Chebyshev distance $\le 1$)
-     - `Explicit.resolve` (danh sách ô liệt kê tường minh)
-     - `Corners.resolve` (4 ô góc bàn cờ)
-   - Cài đặt `combine(self, left, right)` cho 3 phép toán tập hợp:
-     - `Union.combine` (`|`), `Intersection.combine` (`&`), `Difference.combine` (`-`)
-2. **File `griductive/engine/clues.py`**:
-   - Cài đặt phương thức đánh giá trực tiếp `evaluate()` / `compare()` (không qua SAT):
-     - `Fact.evaluate`, `Same.evaluate`
-     - `Count.evaluate`, `Exactly.compare`, `AtLeast.compare`, `AtMost.compare`
-     - `Comparison.evaluate`
-     - `Conditional.evaluate`
-3. **File `griductive/engine/game.py`**:
-   - `GameEngine.hint()` và `GameEngine.step()`
-   - `check_uniqueness(puzzle, registry, heuristic, timeout)`: kiểm tra một puzzle có nghiệm duy nhất trên tập biến chính bằng kỹ thuật thêm mệnh đề chặn (*blocking clause*).
-
-**Lệnh chạy test kiểm tra phần của Thiện:**
-```bash
-python -m unittest tests.test_core tests.test_puzzle_5x5
+```powershell
+# Kiểm tra riêng phần vùng, đánh giá ngữ nghĩa và các màn 5x5
+.\.venv\Scripts\python.exe -B -m unittest tests.test_core tests.test_puzzle_5x5 -v
 ```
 
 ---
 
-### 🔹 Phần 4: Phan Ngọc Thức & Nguyễn Lê Minh Quân — Thực Nghiệm, Báo Cáo & Video
+### 🔹 Phần 4: Phan Ngọc Thức (`24120228`) & Nguyễn Lê Minh Quân (`24120219`) — Kiến trúc, Giao diện, Thực nghiệm, Báo cáo & Video
+1. **Kiến trúc, Dữ liệu câu đố & Hai giao diện ([griductive/ui/](griductive/ui/), [griductive/web.py](griductive/web.py), [griductive/web_game.py](griductive/web_game.py), [puzzles/](puzzles/)):**
+   - Thiết kế mô hình dữ liệu bất biến `PublicState` / `PrivatePuzzle`, luồng nền `EngineWorker` có cơ chế `fork()` và hủy an toàn trên Desktop Cozy Harbor, phiên chơi Web Dash tái dựng lịch sử không trạng thái, bộ dựng câu tiếng Việt [wording_vi.py](griductive/presentation/wording_vi.py), 6 hồ sơ câu đố chuẩn (`3×3`, `4×4`, `5×5`) và bộ 87 bài kiểm thử tự động.
+2. **Thực nghiệm hệ thống, Báo cáo HCMUS & Video trình diễn ([griductive/experiments.py](griductive/experiments.py), [output/experiments/](output/experiments/)):**
+   - Đo kiểm 12 lượt chạy đối sánh `ordered` và `frequency` trên cùng 6 màn chơi (môi trường đo chính thức trên máy Quân: `Windows 11, Python 3.14.6, CPU Intel Core i5-12450HX`), xuất đầy đủ CSV/JSON/12 tệp trace, phân tích số liệu & biểu đồ 300 DPI, biên soạn báo cáo LaTeX 22 trang chuẩn mẫu HCMUS (`Report.pdf`) và dựng video thuyết minh tiếng Việt `Demo.mp4`.
 
-1. Sau khi Nam, Phúc, Thiện hoàn tất và pass toàn bộ unit test:
-   ```bash
-   python -m unittest discover -s tests
-   ```
-2. Chạy script thực nghiệm so sánh 2 heuristic (`ordered` vs `frequency`) trên toàn bộ 6 puzzle ($3\times 3$, $4\times 4$, $5\times 5$):
-   ```bash
-   python -m griductive.experiments
-   ```
-3. Tổng hợp bảng số liệu (`decisions`, `propagations`, `backtracks`, `runtime`), hoàn thiện báo cáo và quay video demo.
-
----
-
-## 3. Quy Trình Làm Việc Với Git
-
-1. Pull code mới nhất từ nhánh `main`:
-   ```bash
-   git pull origin main
-   ```
-2. Tìm tất cả các vị trí `TODO` của mình (ví dụ trong VS Code nhấn `Ctrl+Shift+F` và gõ `TODO(Nam)`, `TODO(Phuc)`, hoặc `TODO(Thien)`).
-3. Sau khi điền code và chạy pass các bài test liên quan, commit và push phần việc của mình:
-   ```bash
-   git add griductive/engine/
-   git commit -m "Implement <tên phần việc của bạn>"
-   git push origin main
-   ```
+```powershell
+# Chạy toàn bộ 87 kiểm thử và tái lập thực nghiệm
+.\.venv\Scripts\python.exe -B -m unittest discover -s tests -v
+.\.venv\Scripts\python.exe -B -m griductive.experiments
+```

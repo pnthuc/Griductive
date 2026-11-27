@@ -1,13 +1,25 @@
-# Thêm region và clue
+# Hướng dẫn Mở rộng Vùng (`Region`) và Manh mối (`Clue`)
 
-Engine có sáu file: `models.py`, `regions.py`, `clues.py`, `cnf.py`, `sat.py`,
-`game.py`. Thêm luật ở `regions.py` hoặc `clues.py`; giữ các hàm liên quan trong
-cùng một lớp. Compiler, solver, game và GUI không cần biết tên loại mới.
+Lõi suy luận trong `griductive/engine/` gồm 6 tệp: [models.py](../griductive/engine/models.py), [regions.py](../griductive/engine/regions.py), [clues.py](../griductive/engine/clues.py), [cnf.py](../griductive/engine/cnf.py), [sat.py](../griductive/engine/sat.py) và [game.py](../griductive/engine/game.py). Nhờ cơ chế đăng ký qua decorator, khi cần bổ sung một loại vùng hoặc mẫu manh mối mới, bạn chỉ cần định nghĩa lớp xử lý tại `regions.py` hoặc `clues.py` (hoặc đăng ký cục bộ cho riêng một phiên chơi) mà **không cần sửa đổi** bộ biên dịch CNF, bộ giải DPLL, `GameEngine` hay giao diện Desktop/Web.
 
-## 1. Thêm region
+---
 
-Ví dụ vùng biên: thêm lớp dưới đây vào `griductive/engine/regions.py`.
-Hai hàm cần viết là `resolve()` và `describe()`.
+## 1. Danh mục các loại vùng và manh mối có sẵn
+
+Trước khi viết luật mới, đối chiếu danh mục mặc định đang được đăng ký sẵn khi nạp gói `griductive.engine`:
+
+- **8 kiểu vùng (`@register_region` trong [regions.py](../griductive/engine/regions.py)):**
+  - *4 vùng cơ sở (mục 2.1 & 3.2 đề bài):* `ROW`, `COLUMN`, `NEIGHBORS`, `EXPLICIT`.
+  - *4 vùng mở rộng:* `CORNERS` (4 ô góc), `UNION` ($R_1 \cup R_2$), `INTERSECTION` ($R_1 \cap R_2$), `DIFFERENCE` ($R_1 \setminus R_2$).
+- **8 kiểu manh mối (`@register_clue` trong [clues.py](../griductive/engine/clues.py)):**
+  - *6 mẫu cơ sở (Bảng 1 mục 3.2 đề bài):* `FACT`, `SAME`, `DIFFERENT`, `EXACTLY`, `AT_LEAST`, `AT_MOST`.
+  - *2 mẫu mở rộng:* `COMPARISON` (so sánh số `CRIMINAL` giữa hai vùng với `=`, `!=`, `<`, `<=`, `>`, `>=`) và `CONDITIONAL` (kéo theo đệ quy `if` $\to$ `then`).
+
+---
+
+## 2. Thêm một loại vùng mới (`@register_region`)
+
+Ví dụ thêm vùng biên bàn cờ `BOUNDARY` vào [regions.py](../griductive/engine/regions.py). Hai phương thức bắt buộc là `resolve()` và `describe()`:
 
 ```python
 @register_region('BOUNDARY')
@@ -23,7 +35,7 @@ class Boundary(Region):
         return 'những người ở biên bàn'
 ```
 
-Dùng ngay trong clue đếm có sẵn:
+Ngay sau khi đăng ký, vùng mới dùng được trực tiếp trong mọi manh mối đếm, phép so sánh hoặc phép toán tập hợp có sẵn:
 
 ```json
 {
@@ -33,19 +45,17 @@ Dùng ngay trong clue đếm có sẵn:
 }
 ```
 
-Registry kiểm tra các ô mà `resolve()` trả về. Nếu vùng có ô mốc, khai báo
-`anchor_fields = ('cell',)`: ô đó được kiểm tra và ghi vào metadata highlight,
-nhưng chỉ được đếm nếu chính `resolve()` trả về nó.
+### Quy ước cho lớp kế thừa `Region`
+- `RegionRegistry.resolve()` tự động kiểm tra mọi mã ô do `resolve()` trả về có nằm trên `board` hay không và chuyển kết quả thành `frozenset`.
+- Nếu vùng có ô mốc tham chiếu (như `NEIGHBORS`), khai báo `anchor_fields = ('cell',)`: ô mốc sẽ được kiểm tra hợp lệ và đánh dấu vai trò `anchor` khi giao diện tô sáng, nhưng chỉ được đếm vào tổng tội phạm nếu chính `resolve()` trả về ô đó.
+- Nếu là vùng tổ hợp đệ quy, khai báo `children = ('left', 'right')` và gọi `regions.resolve(spec['left'], board, depth + 1)` để duy trì giới hạn lồng tối đa **12 cấp**.
+- Đặt `named_cells = True` nếu vùng liệt kê trực tiếp danh sách nghi phạm cụ thể (như `EXPLICIT`).
 
-Vùng ghép khai báo `children = ('left', 'right')`. Trong `resolve()`, gọi
-`regions.resolve(spec['left'], board, depth + 1)` và tương tự cho vế phải.
-Truyền `depth + 1` để giữ giới hạn lồng 12 cấp. `named_cells = True` dành cho
-vùng liệt kê trực tiếp người, như EXPLICIT.
+---
 
-## 2. Thêm clue
+## 3. Thêm một mẫu manh mối mới (`@register_clue`)
 
-Ví dụ mọi người trong vùng đều vô tội: thêm vào `griductive/engine/clues.py`.
-Ba hàm bắt buộc là `evaluate()`, `expression()` và `describe()`.
+Ví dụ thêm mẫu `ALL_INNOCENT` (*mọi người trong vùng đều vô tội*) vào [clues.py](../griductive/engine/clues.py). Ba phương thức bắt buộc là `evaluate()`, `expression()` và `describe()`:
 
 ```python
 @register_clue('ALL_INNOCENT')
@@ -70,12 +80,7 @@ class AllInnocent(Clue):
         return text.region(spec['region']) + ' đều vô tội.'
 ```
 
-`wording()` tùy chọn. Nếu bỏ, giao diện dùng `describe()` làm mô tả, và vẫn
-highlight các ô dựa trên metadata. Nếu thêm như ví dụ, đoạn chữ chỉ vùng còn
-có liên kết hover/click đúng với highlight. Cùng một hàm dùng được cho câu
-thường và HTML, kể cả khi clue nằm trong CONDITIONAL.
-
-Clue mới có thể dùng vùng mới và lồng trong clue có sẵn:
+Manh mối mới tự động kết hợp được với vùng mới và lồng bên trong `CONDITIONAL`:
 
 ```json
 {
@@ -88,61 +93,43 @@ Clue mới có thể dùng vùng mới và lồng trong clue có sẵn:
 }
 ```
 
-Evaluator nhận assignment đầy đủ dạng `{'A1': True, 'B1': False, ...}`.
-Không gọi encoder/SAT từ evaluator: hai đường độc lập để kiểm tra chéo.
-`expression()` trả về literal số nguyên hoặc hằng bool, và chỉ dùng encoder
-được truyền vào. Không tạo Encoder riêng cho từng phần của cùng một KB.
+### Hai nguyên tắc bất biến khi cài đặt `Clue`
+1. **Tách rời ngữ nghĩa và mã hóa CNF (mục 4.2 đề bài):** `evaluate()` nhận phép gán đầy đủ `{'A1': True, 'B1': False, ...}` và phải tính chân trị trực tiếp bằng logic Python thuần — **tuyệt đối không gọi `Encoder` hay bộ giải SAT** từ bên trong `evaluate()`.
+2. **Dùng chung không gian biến phụ Tseitin:** `expression()` trả về một literal số nguyên (hoặc hằng `bool`) thông qua đối tượng `encoder` được truyền vào (`encoder.gate('AND' | 'OR', ...)`, `encoder.negate(...)`, `encoder.thresholds(cells)`). Không khởi tạo `Encoder` riêng lẻ cho từng biểu thức con của cùng một $KB_t$.
 
-## 3. Metadata thay cho các callback lặp lại
+---
 
-| Khai báo trong lớp Clue | Registry tự làm |
-|---|---|
-| `region_fields = ('region',)` | Kiểm tra vùng và đưa các ô vào tham chiếu highlight |
-| `person_fields = ('a', 'b')` | Kiểm tra tọa độ người và tạo tham chiếu từng người |
-| `children = ('if', 'then')` | Kiểm tra clue con và duyệt tham chiếu đệ quy |
+## 4. Khai báo metadata tham chiếu và kiểm tra tham số
 
-Không cần tự viết `cells()` cho các trường hợp trên. Nếu có tham số bổ sung,
-viết `validate(self, spec, board, clues)` để kiểm tra chúng; các trường đã khai
-báo ở metadata được kiểm tra trước. Ném `PuzzleError` khi tham số không hợp lệ.
-Xem `Fact`, `Count`, `Comparison`, `Conditional` để tham khảo các luật có sẵn.
+| Thuộc tính lớp `Clue` | Tác dụng tự động từ `ClueRegistry` |
+| --- | --- |
+| `region_fields = ('region',)` | Kiểm tra tính hợp lệ của vùng và tự động đưa các ô vào danh sách tô sáng (`cells()`, `clue_parts()`). |
+| `person_fields = ('a', 'b')` | Kiểm tra tọa độ ô trên bàn cờ và sinh tham chiếu tô sáng cho từng người. |
+| `children = ('if', 'then')` | Kiểm tra đệ quy các manh mối con (tối đa 12 cấp) và ghép tiền tố khóa tham chiếu tự động. |
 
-## 4. Câu chữ có liên kết
+Nhờ các thuộc tính trên, lớp mới không cần viết lại hàm duyệt ô. Nếu manh mối có tham số riêng (ví dụ số nguyên `k` hoặc toán tử `op`), ghi đè `validate(self, spec, board, clues)` và ném `PuzzleError` khi tham số không hợp lệ (các trường trong metadata luôn được kiểm tra trước khi gọi `validate`).
 
-Các helper của `text` xử lý tên, escape HTML và tiền tố của clue lồng:
+---
 
-| Helper | Cách dùng |
-|---|---|
-| `text.region(region_spec, key='region', role='result')` | Mô tả một vùng có liên kết |
-| `text.person(cell, key, role)` | Tên người có liên kết |
-| `text.token(key, value)` | Chữ thường, tự escape trong HTML |
-| `text.token(key, value, role, True)` | Chữ có liên kết |
-| `text.child(clue_spec, field)` | Render clue con với prefix đúng |
+## 5. Sinh câu tiếng Việt có liên kết tô sáng (`wording`)
 
-`key` trùng tên trường metadata: `region`, `left`, `right`, `person`, `a`, `b`.
-Role màu là `result`, `a`, `b`, `anchor`. Không tự thêm prefix `if.` hay
-`then.`: các helper đã làm việc đó.
+Phương thức `wording(self, spec, text)` là tùy chọn: nếu lược bỏ, giao diện dùng chuỗi từ `describe()` và vẫn tô sáng đầy đủ các ô dựa trên metadata. Khi cài đặt `wording()`, đối tượng `RuleText` trong [wording_vi.py](../griductive/presentation/wording_vi.py) cung cấp các helper dùng chung cho cả văn bản thuần và HTML (tự động escape ký tự đặc biệt và nối tiền tố khi lồng trong `CONDITIONAL`):
 
-Region có thể thêm `wording(self, spec, text, key, role)` trong chính lớp của
-nó. Ví dụ, vùng quanh một người có thể dùng:
+| Helper | Công dụng |
+| --- | --- |
+| `text.region(region_spec, key='region', role='result')` | Sinh cụm từ mô tả vùng có liên kết hover/ghim trên thẻ. |
+| `text.person(cell, key, role)` | Sinh tên nhân vật có liên kết tới ô tương ứng. |
+| `text.token(key, value)` | Sinh đoạn chữ thường (tự động escape HTML). |
+| `text.token(key, value, role, True)` | Sinh đoạn chữ màu có liên kết tới khóa `key`. |
+| `text.child(clue_spec, field)` | Dựng câu cho manh mối con với tiền tố `if.` hoặc `then.` chính xác. |
 
-```python
-def wording(self, spec, text, key, role):
-    return (
-        text.token(key, 'những người quanh ', role, True)
-        + text.person(spec['cell'], key + '.anchor.' + spec['cell'], 'anchor')
-    )
-```
+Trong đó `key` khớp với tên trường metadata (`region`, `left`, `right`, `person`, `a`, `b`), còn `role` chọn bảng màu ngữ nghĩa (`result`, `a`, `b`, `anchor`). Một lớp `Region` cũng có thể định nghĩa `wording(self, spec, text, key, role)` kèm `anchor_fields = ('cell',)` — xem ví dụ hoàn chỉnh `Cross` và `AllInnocent` trong [test_rule_registration.py](../tests/test_rule_registration.py).
 
-Khai báo `anchor_fields = ('cell',)` cho ví dụ này để liên kết ô mốc có metadata
-tương ứng. Xem `tests/test_rule_registration.py` cho một ví dụ chạy hoàn chỉnh.
+---
 
-## 5. Catalog mặc định và đăng ký riêng
+## 6. Đăng ký cục bộ cho riêng một phiên chơi hoặc bài kiểm thử
 
-`@register_region` và `@register_clue` đăng ký vào catalog mặc định lúc module
-được import. Không cần thêm tên lớp vào danh sách hoặc hàm factory.
-Nếu định nghĩa ở module riêng, import module đó trước khi tạo registry.
-
-Để đăng ký chỉ cho một phiên hoặc một test, dùng cùng cú pháp trên registry:
+`@register_region` và `@register_clue` đăng ký vào catalog mặc định lúc nạp module. Nếu chỉ muốn thử nghiệm luật mới trong một phiên chơi hoặc một unit test mà không làm thay đổi catalog toàn cục, hãy đăng ký trực tiếp trên thực thể registry:
 
 ```python
 from griductive.engine import (
@@ -152,28 +139,30 @@ from griductive.engine import (
 regions = region_registry()
 clues = clue_registry(regions)
 
-# Dùng @regions.register('NAME') trên lớp Region riêng.
-# Dùng @clues.register('NAME') trên lớp Clue riêng.
-
+# Dùng @regions.register('NAME') và @clues.register('NAME') trên catalog cục bộ
 puzzle = load_puzzle('puzzles/case-3x3-01.json', clues)
 engine = GameEngine(puzzle, clues)
 ```
 
-Cũng hỗ trợ `regions.register('NAME', MyRegion)` hoặc một instance. Tên trùng
-bị từ chối. Catalog mới không nhận các đăng ký local của catalog khác.
-Mỗi registry là một bản chụp catalog tại lúc tạo; đăng ký global sau đó chỉ
-xuất hiện trong những registry tạo sau. Các instance luật phải không giữ
-trạng thái phiên: lấy tham số từ `spec`, không gán dữ liệu puzzle vào `self`.
+- Tên trùng lặp hoặc đối tượng không kế thừa `Region`/`Clue` sẽ bị từ chối ngay lúc đăng ký.
+- Giữ các thực thể luật hoàn toàn **không trạng thái (*stateless*)**: đọc mọi tham số từ `spec`, không lưu dữ liệu của từng màn vào `self`.
 
-## 6. Kiểm tra sau khi thêm luật
+---
 
-Chạy từ thư mục project trên Windows:
+## 7. Kiểm tra sau khi thêm luật mới
+
+Chạy kiểm thử tự động và thực nghiệm từ thư mục gốc (hoặc thư mục `Source/`):
 
 ```powershell
-.\.venv\Scripts\python.exe -B -m unittest discover -s tests
+# Windows PowerShell
+.\.venv\Scripts\python.exe -B -m unittest discover -s tests -v
 .\.venv\Scripts\python.exe -B -m griductive.experiments
 ```
 
-Với luật mới, kiểm tra tham số sai, trường hợp biên, evaluator so với khả thỏa
-CNF khi cố định biến chính, lồng CONDITIONAL và các key của text/highlight.
-Giữ nguyên điều kiện agent chỉ nhận thông tin công khai và không đoán.
+```bash
+# macOS / Linux
+./.venv/bin/python -B -m unittest discover -s tests -v
+./.venv/bin/python -B -m griductive.experiments
+```
+
+Khi viết unit test cho luật mới (xem mẫu tại [test_rule_extensions.py](../tests/test_rule_extensions.py) và [test_rule_registration.py](../tests/test_rule_registration.py)), hãy kiểm tra đủ 5 khía cạnh: (1) từ chối tham số sai bằng `PuzzleError`, (2) trường hợp vùng biên/rỗng, (3) tính tương đương vét cạn giữa `evaluate()` và khả thỏa CNF khi cố định biến chính, (4) lồng bên trong `CONDITIONAL`, và (5) sự ăn khớp của các khóa `clue_parts()` với liên kết HTML.
