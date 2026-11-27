@@ -69,7 +69,7 @@ Với những nhân vật cần đồng bộ mí mắt nhắm/mở mà không l�
 eyes naturally open with dark brown irises, subtle small pupils, matching
 eyelids, same expression and eyebrows, crisp video game portrait
 ```
-- **Cách nhóm kiểm chứng:** Mô-đun `tests/test_sprite_registration.py` quét toàn bộ $25 \times 7 = 175$ ô kích thước `256×256`, xác nhận dải viền trong suốt 8 pixel ở cả bốn cạnh mỗi ô và kiểm tra chiều cao hiển thị giữa các khung của cùng một nhân vật không lệch quá ngưỡng pixel cho phép.
+- **Cách nhóm kiểm chứng:** Mô-đun `tests/test_sprite_registration.py` quét toàn bộ $25 \times 7 = 175$ ô kích thước `256×256`, xác nhận dải viền trong suốt 8 pixel ở cả bốn cạnh mỗi ô và kiểm tra chiều cao hiển thị giữa các khung của cùng một nhân vật không lệch quá ngưỡng pixel cho phép; khi cập nhật lại 7 khung của nhân vật Finn, nhóm đối chiếu từng byte trên 24 hàng nhân vật còn lại để bảo đảm không làm thay đổi các ô khác.
 
 ### 3.3. Đạo cụ 25 nghề nghiệp (`assets/scenery/pixel-profession-props.png`)
 ```text

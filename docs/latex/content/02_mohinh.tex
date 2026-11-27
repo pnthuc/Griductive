@@ -2,11 +2,7 @@
 
 \subsection{Biến mệnh đề chính và cơ sở tri thức công khai}
 
-<<<<<<< HEAD
-Trên bàn $N\times N$, với $N\in\{3,4,5\}$, cột A có chỉ số $c=1$ và hàng trên cùng có $r=1$. Biến $C_i$ mang giá trị True (Criminal, tội phạm) hoặc False (Innocent, vô tội), với chỉ số $i=(r-1)N+c$ chạy từ 1 đến $N^2$ (chẳng hạn A3 trên bàn $3\times3$ là biến số 7). Tên và nghề nghiệp chỉ dùng để hiển thị nhận diện nhân vật, còn mọi lời khai đã mở đều luôn đúng kể cả khi chủ thẻ là tội phạm.
-=======
-Trên bàn $N\times N$ với $N\in\{3,4,5\}$, cột đánh chữ từ A ($c=1$) sang phải và hàng đánh số từ 1 ($r=1$) xuống dưới. Nhân vật ở hàng $r$, cột $c$ ứng với biến chính $C_i$ có chỉ số tất định $i=(r-1)N+c\in\{1,\ldots,N^2\}$ (ô A3 trên bàn $3\times3$ là biến số 7), nhận \texttt{True} nếu là tội phạm (\texttt{CRIMINAL}) và \texttt{False} nếu vô tội (\texttt{INNOCENT}). Tên và nghề giúp nhận diện nhân vật; mọi lời khai đã mở đều đúng bất kể chủ thẻ là tội phạm hay vô tội.
->>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
+Trên bàn $N\times N$ với $N\in\{3,4,5\}$, cột đánh chữ từ A ($c=1$) sang phải và hàng đánh số từ 1 ($r=1$) xuống dưới. Nhân vật ở hàng $r$, cột $c$ ứng với biến chính $C_i$ có chỉ số tất định $i=(r-1)N+c\in\{1,\ldots,N^2\}$ (chẳng hạn A3 trên bàn $3\times3$ là biến số 7), nhận \texttt{True} nếu là tội phạm (\texttt{CRIMINAL}) và \texttt{False} nếu vô tội (\texttt{INNOCENT}). Tên và nghề nghiệp chỉ dùng để nhận diện nhân vật; mọi lời khai đã mở đều đúng kể cả khi chủ thẻ là tội phạm.
 
 Ở bước $t$, gọi $L_t$ là tập lời khai đã mở và $S_t$ là tập ô đã biết trạng thái. Đặt $\ell_i=C_i$ nếu ô $i\in S_t$ là tội phạm và $\ell_i=\neg C_i$ nếu vô tội; cơ sở tri thức công khai có dạng:
 

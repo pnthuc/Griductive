@@ -37,23 +37,14 @@ Hai mệnh đề đơn đối dấu gây xung đột ngay trong vòng lan truy�
 
 \subsection{Kiểm chứng phán quyết bằng phản chứng và lưu mô hình nhân chứng}
 
-<<<<<<< HEAD
-Trước hết phải xác nhận $KB$ khả thỏa. Khi đó, $KB\land\neg C_i$ vô nghiệm chứng minh ô $i$ là tội phạm; ngược lại nếu $KB\land C_i$ vô nghiệm thì ô đó vô tội. Nếu cả hai đều khả thỏa, mỗi mô hình đóng vai trò nhân chứng (\textit{witness}) cho một khả năng và ô vẫn ở trạng thái \texttt{UNKNOWN}.
-=======
-Trước hết \texttt{LogicAgent} kiểm tra $KB_t$ khả thỏa để loại trường hợp cơ sở tri thức mâu thuẫn. Khi đó, $KB_t\land\neg C_i$ vô nghiệm chứng minh ô $i$ là tội phạm, còn $KB_t\land C_i$ vô nghiệm chứng minh ô $i$ vô tội. Nếu cả hai đều khả thỏa, hai mô hình tìm được chứng tỏ ô $i$ còn \texttt{UNKNOWN}.
->>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
+Trước hết \texttt{LogicAgent} kiểm tra $KB_t$ khả thỏa để loại trường hợp cơ sở tri thức mâu thuẫn. Khi đó, $KB_t\land\neg C_i$ vô nghiệm chứng minh ô $i$ là tội phạm, còn $KB_t\land C_i$ vô nghiệm chứng minh ô $i$ vô tội. Nếu cả hai đều khả thỏa, mỗi mô hình tìm được đóng vai trò nhân chứng (\textit{witness}) cho một khả năng và ô $i$ vẫn ở trạng thái \texttt{UNKNOWN}.
 
 \begin{algorithm}[H]
 \small\singlespacing
 \caption{Phân loại các ô chưa mở và kiểm chứng đề nghị}
 \begin{algorithmic}[1]
-<<<<<<< HEAD
-\Require Trạng thái công khai, chế độ phân loại hoặc kiểm chứng literal đề nghị $p$
-\State Dựng $KB$, giải một lần. Nếu UNSAT, trả \texttt{INCONSISTENT}.
-=======
 \Require Trạng thái công khai \texttt{PublicState}; chế độ phân loại hoặc kiểm chứng literal đề nghị $p$
 \State Dựng $KB_t$ và giải một lần; nếu UNSAT thì trả \texttt{INCONSISTENT}.
->>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
 \If{chế độ \texttt{verify}}
 \State Nếu $KB_t\land\neg p$ là UNSAT thì trả \texttt{ACCEPTED}.
 \State Nếu $KB_t\land p$ là UNSAT thì trả \texttt{CONTRADICTED}; ngược lại trả \texttt{NOT\_PROVABLE}.
@@ -71,11 +62,7 @@ Trước hết \texttt{LogicAgent} kiểm tra $KB_t$ khả thỏa để loại t
 \end{algorithmic}
 \end{algorithm}
 
-<<<<<<< HEAD
-Trong \texttt{LogicAgent.\_verdicts}, mô hình cơ sở cung cấp ít nhất một dấu cho mọi ô, nhờ đó sau truy vấn chung, mỗi ô chỉ cần tối đa một truy vấn bổ sung (đôi khi bằng không). Bộ nhớ nhân chứng này chỉ tồn tại trong phạm vi một lần duyệt KB, còn hàm \texttt{verify} kiểm tra độc lập từng đề nghị gửi lên nên có thể cần cả hai truy vấn giả định.
-=======
-Trong \texttt{LogicAgent.\_verdicts}, mô hình cơ sở ban đầu đã cho sẵn một giá trị thỏa mãn tại mọi biến chính, nên mỗi ô chưa mở chỉ cần tối đa một truy vấn SAT bổ sung (hoặc bằng 0 nếu các mô hình trước đã phủ đủ hai chiều). Các tập đánh dấu chỉ dùng nội bộ trong lượt duyệt $KB_t$ hiện tại, còn \texttt{verify()} vẫn kiểm tra độc lập từng đề nghị gửi lên.
->>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
+Trong \texttt{LogicAgent.\_verdicts}, mô hình cơ sở ban đầu đã cho sẵn một giá trị thỏa mãn tại mọi biến chính, nên mỗi ô chưa mở chỉ cần tối đa một truy vấn SAT bổ sung (hoặc bằng 0 nếu các mô hình trước đã phủ đủ hai chiều). Bộ nhớ nhân chứng này chỉ tồn tại trong phạm vi một lượt duyệt $KB_t$, còn \texttt{verify()} kiểm tra độc lập từng đề nghị gửi lên nên có thể cần cả hai truy vấn giả định.
 
 Với ví dụ $KB=(C_A\lor C_B)\land(\neg C_A\lor C_B)$, giả định $\neg C_B$ kéo theo cả $C_A$ lẫn $\neg C_A$ nên $B$ bắt buộc là tội phạm; trong khi $A$ nhận được cả \texttt{True} lẫn \texttt{False} khi $C_B=\mathrm{True}$, do đó trạng thái của $A$ là \texttt{UNKNOWN} và thẻ $A$ giữ nguyên úp.
 
@@ -83,11 +70,7 @@ Với ví dụ $KB=(C_A\lor C_B)\land(\neg C_A\lor C_B)$, giả định $\neg C_
 
 \subsection{Vòng lặp mở thẻ, nhật ký suy luận và kiểm tra nghiệm duy nhất}
 
-<<<<<<< HEAD
-\texttt{next\_verdict} dừng tại ô bắt buộc đầu tiên; \texttt{hint} trả lại gợi ý, còn \texttt{step} gửi phán quyết cho engine kiểm chứng. Khi chấp nhận, engine ghi số bước, ô, phán quyết, ID các lời khai đang hoạt động, truy vấn SAT và lời khai mới, rồi dùng trạng thái công khai đã cập nhật cho bước kế tiếp. Khi tất cả ô chưa mở đều còn hai khả năng, vòng tự giải dừng ở UNKNOWN và giữ nguyên bàn.
-=======
-Hàm \texttt{next\_verdict()} dừng tại ô bắt buộc đầu tiên: \texttt{hint()} trả về ô gợi ý, còn \texttt{step()} gọi \texttt{submit()} để kiểm chứng lại rồi lật thẻ và ghi nhật ký (gồm số bước, ô, phán quyết, danh sách ID lời khai đang mở, các truy vấn SAT và lời khai mới). Nếu mọi ô còn lại đều \texttt{UNKNOWN}, vòng tự giải dừng mà không đoán mò.
->>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
+Hàm \texttt{next\_verdict()} dừng tại ô bắt buộc đầu tiên: \texttt{hint()} trả về ô gợi ý, còn \texttt{step()} gọi \texttt{submit()} để kiểm chứng lại, lật thẻ, ghi nhật ký (số bước, ô, phán quyết, danh sách ID lời khai đang mở, truy vấn SAT và lời khai mới) rồi dùng trạng thái công khai đã cập nhật cho bước kế tiếp. Khi mọi ô chưa mở đều còn \texttt{UNKNOWN}, vòng tự giải dừng mà không đoán mò.
 
 Nhật ký thực tế của \texttt{case-3x3-01} (\texttt{ordered}) minh họa rõ quy trình này: ở bước 1 với hai lời khai B1 và C1, $KB_1$ gồm 9 biến chính, 39 biến phụ và 123 mệnh đề. Truy vấn cơ sở trả SAT, còn giả định $-7$ trả UNSAT sau 46 phép lan truyền và 0 quyết định, qua đó chứng minh A3 là tội phạm và mở lời khai A3 cho bước 2.
 
