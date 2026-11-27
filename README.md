@@ -1,8 +1,8 @@
-# Griductive Solver — Suy luận Không Đoán Mò với Mã hóa CNF và Bộ giải DPLL
+# Griductive Solver: Suy luận Không Đoán Mò với Mã hóa CNF và Bộ giải DPLL
 
-Đồ án thực hành 2 môn **CSC14003 – Introduction to Artificial Intelligence** (Lớp **24TN**, Khoa Công nghệ Thông tin, Trường Đại học Khoa học Tự nhiên – ĐHQG-HCM).
+Đồ án thực hành 2 môn **CSC14003 – Introduction to Artificial Intelligence** (Lớp **24TN**, Khoa Công nghệ Thông tin, Trường Đại học Khoa học Tự nhiên, ĐHQG-HCM).
 
-Dự án cài đặt lại trò chơi suy luận lưới **Griductive** kết hợp tác tử suy diễn logic mệnh đề **không đoán mò (*no-guess*)** trên giao diện **Desktop PySide6 (Cozy Harbor)**. Toàn bộ bộ biên dịch công thức chuẩn hội (**CNF** — cổng Tseitin dùng chung không gian biến phụ và quy hoạch động đếm ngưỡng unary) cùng bộ giải **DPLL SAT Solver** (`ordered` và `frequency`) đều được tự cài đặt bằng Python thuần.
+Dự án cài đặt lại trò chơi suy luận lưới **Griductive** kết hợp bộ suy diễn logic mệnh đề **không đoán mò (*no-guess*)** trên giao diện **Desktop PySide6 (Cozy Harbor)**. Toàn bộ bộ biên dịch công thức chuẩn hội (**CNF**: cổng Tseitin dùng chung không gian biến phụ và quy hoạch động đếm ngưỡng unary) cùng bộ giải **DPLL SAT Solver** (`ordered` và `frequency`) đều do nhóm tự cài đặt bằng Python thuần.
 
 ---
 
@@ -125,18 +125,18 @@ Số liệu lưu tại [output/experiments/results.json](output/experiments/resu
 
 | Màn | Chiến lược | N | Kết quả | Nghiệm | Biến chính | Biến phụ | Mệnh đề | Bước | Gọi SAT | Quyết định | Lan truyền | Quay lui | Thời gian (s) |
 | --- | --- | ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| `case-3x3-01` | `ordered` | 3 | `SOLVED` | `UNIQUE` | 9 | 156 | 491 | 7 | 34 | 48 | 2944 | 4 | 0.046907 |
-| `case-3x3-01` | `frequency` | 3 | `SOLVED` | `UNIQUE` | 9 | 156 | 491 | 7 | 33 | 40 | 2942 | 4 | 0.059760 |
-| `case-3x3-02` | `ordered` | 3 | `SOLVED` | `UNIQUE` | 9 | 144 | 455 | 7 | 30 | 34 | 2802 | 15 | 0.070753 |
-| `case-3x3-02` | `frequency` | 3 | `SOLVED` | `UNIQUE` | 9 | 144 | 455 | 7 | 30 | 27 | 2693 | 9 | 0.051107 |
-| `case-4x4-01` | `ordered` | 4 | `SOLVED` | `UNIQUE` | 16 | 364 | 1138 | 13 | 84 | 518 | 29666 | 444 | 1.014534 |
-| `case-4x4-01` | `frequency` | 4 | `SOLVED` | `UNIQUE` | 16 | 364 | 1138 | 13 | 85 | 287 | 18887 | 8 | 0.504275 |
-| `case-4x4-02` | `ordered` | 4 | `SOLVED` | `UNIQUE` | 16 | 273 | 862 | 13 | 93 | 168 | 12568 | 7 | 1.150945 |
-| `case-4x4-02` | `frequency` | 4 | `SOLVED` | `UNIQUE` | 16 | 273 | 862 | 13 | 91 | 158 | 12567 | 16 | 1.089805 |
-| `case-5x5-01` | `ordered` | 5 | `SOLVED` | `UNIQUE` | 25 | 668 | 2068 | 22 | 162 | 193 | 43608 | 18 | 3.482976 |
-| `case-5x5-01` | `frequency` | 5 | `SOLVED` | `UNIQUE` | 25 | 668 | 2068 | 22 | 164 | 247 | 44288 | 45 | 3.591465 |
-| `case-5x5-02` | `ordered` | 5 | `SOLVED` | `UNIQUE` | 25 | 654 | 2045 | 22 | 182 | 752 | 55976 | 113 | 6.432318 |
-| `case-5x5-02` | `frequency` | 5 | `SOLVED` | `UNIQUE` | 25 | 654 | 2045 | 22 | 182 | 647 | 53655 | 37 | 5.540037 |
+| `case-3x3-01` | `ordered` | 3 | `SOLVED` | `UNIQUE` | 9 | 156 | 491 | 7 | 34 | 48 | 2944 | 4 | 0.0469 |
+| `case-3x3-01` | `frequency` | 3 | `SOLVED` | `UNIQUE` | 9 | 156 | 491 | 7 | 33 | 40 | 2942 | 4 | 0.0598 |
+| `case-3x3-02` | `ordered` | 3 | `SOLVED` | `UNIQUE` | 9 | 144 | 455 | 7 | 30 | 34 | 2802 | 15 | 0.0708 |
+| `case-3x3-02` | `frequency` | 3 | `SOLVED` | `UNIQUE` | 9 | 144 | 455 | 7 | 30 | 27 | 2693 | 9 | 0.0511 |
+| `case-4x4-01` | `ordered` | 4 | `SOLVED` | `UNIQUE` | 16 | 364 | 1138 | 13 | 84 | 518 | 29666 | 444 | 1.0145 |
+| `case-4x4-01` | `frequency` | 4 | `SOLVED` | `UNIQUE` | 16 | 364 | 1138 | 13 | 85 | 287 | 18887 | 8 | 0.5043 |
+| `case-4x4-02` | `ordered` | 4 | `SOLVED` | `UNIQUE` | 16 | 273 | 862 | 13 | 93 | 168 | 12568 | 7 | 1.1509 |
+| `case-4x4-02` | `frequency` | 4 | `SOLVED` | `UNIQUE` | 16 | 273 | 862 | 13 | 91 | 158 | 12567 | 16 | 1.0898 |
+| `case-5x5-01` | `ordered` | 5 | `SOLVED` | `UNIQUE` | 25 | 668 | 2068 | 22 | 162 | 193 | 43608 | 18 | 3.4830 |
+| `case-5x5-01` | `frequency` | 5 | `SOLVED` | `UNIQUE` | 25 | 668 | 2068 | 22 | 164 | 247 | 44288 | 45 | 3.5915 |
+| `case-5x5-02` | `ordered` | 5 | `SOLVED` | `UNIQUE` | 25 | 654 | 2045 | 22 | 182 | 752 | 55976 | 113 | 6.4323 |
+| `case-5x5-02` | `frequency` | 5 | `SOLVED` | `UNIQUE` | 25 | 654 | 2045 | 22 | 182 | 647 | 53655 | 37 | 5.5400 |
 
 *(Giá trị `runtime` đầy đủ độ chính xác dấu phẩy động nằm trong [output/experiments/results.json](output/experiments/results.json). Với các lượt chạy hoàn tất không gặp `TIMEOUT`, tất cả các cột đếm logic từ `Biến chính` đến `Quay lui` đều tất định trên mọi máy; riêng `Thời gian (s)` — cũng như bước dừng và bộ đếm nếu đặt `--timeout` nhỏ gây `TIMEOUT` giữa chừng — phụ thuộc tốc độ phần cứng.)*
 

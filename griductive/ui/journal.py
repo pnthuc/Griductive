@@ -22,7 +22,7 @@ class LedgerPaper(QWidget):
 
 
 class MiniAvatar(QWidget):
-    """Cute rounded pastel frame around the character sprite inside each journal step."""
+    """Rounded portrait frame inside each journal step."""
 
     def __init__(self, portrait, criminal: bool, parent=None):
         super().__init__(parent)
@@ -223,7 +223,7 @@ class SolverJournal(QDockWidget):
         self.complete = False
         self.entries = []
 
-        # Hide native dock title bar and render an integrated Cozy Harbor Notebook shell!
+        # Hide native dock title bar and render an integrated notebook shell
         empty_title = QWidget(self)
         empty_title.setFixedHeight(0)
         self.setTitleBarWidget(empty_title)
@@ -305,7 +305,7 @@ class SolverJournal(QDockWidget):
         self.rows.setSpacing(9)
         self.rows.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        # Wrap empty message inside a QFrame layout (avoids HiDPI QSS QLabel padding clip!)
+        # Wrap empty message inside a QFrame layout to avoid HiDPI QSS QLabel clipping
         self.empty = QFrame()
         self.empty.setObjectName('journalEmptyFrame')
         empty_lay = QVBoxLayout(self.empty)

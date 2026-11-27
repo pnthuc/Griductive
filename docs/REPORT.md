@@ -5,39 +5,48 @@
 Đại học Quốc gia TP.HCM · Trường Đại học Khoa học Tự nhiên · Khoa Công nghệ Thông tin · Bộ môn Công nghệ Tri thức
 
 **CSC14003 – Nhập môn Trí tuệ Nhân tạo** · Lớp học phần **24TN**  
-Thành phố Hồ Chí Minh, ngày 27 tháng 11 năm 2026
+Thành phố Hồ Chí Minh, tháng 11 năm 2026
 
 Phan Ngọc Thức (24120228), Nguyễn Lê Minh Quân (24120219), Tống Phúc Thiện (24120141), Bùi Phương Nam (24120502) và Phan Gia Phúc (24120503).
 
 ## 1. Kế hoạch dự án, phân công và kiến trúc hệ thống
 
+<<<<<<< HEAD
 Một lượt chơi chỉ hợp lệ khi người chơi hoặc tác tử chứng minh được trạng thái của một nhân vật từ những lá bài đã mở. Nhóm triển khai cùng một quy tắc cho chế độ chơi thủ công, chức năng gợi ý và chế độ tự động giải, theo yêu cầu của đồ án CSC14003 [1]. Cách lật thẻ và chọn lời khai tham khảo Griductive và Clues by Sam [2], [3].
+=======
+Trong trò chơi Griductive, người chơi chỉ được mở tiếp một thẻ nghi phạm khi trạng thái của nhân vật đó là hệ quả logic bắt buộc từ các dữ kiện đã lật mở. Nhóm xây dựng chương trình áp dụng chung quy tắc không đoán mò này cho thao tác chơi tay, chức năng gợi ý và bộ giải tự động theo đề bài môn CSC14003 [1], đồng thời tham khảo cơ chế lật thẻ và tô sáng vùng của hai trò chơi gốc Griductive và Clues by Sam [2], [3].
+>>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
 
-### Kế hoạch và mức hoàn thành
+### Kế hoạch thực hiện và mức độ hoàn thành
 
-Nhóm thống nhất giao diện dữ liệu giữa bàn chơi và tác tử trước khi phát triển song song ba mô-đun lõi. Sau khi tích hợp bộ mã hóa, bộ giải SAT và cơ chế mở thẻ, nhóm tích hợp giao diện Desktop, chạy kiểm thử, đo sáu màn chơi rồi đối chiếu nhật ký để lập báo cáo và dựng video.
+Trước khi chia nhánh cài đặt, nhóm thống nhất cấu trúc dữ liệu trao đổi giữa bàn chơi và bộ suy luận để ba phần việc lõi (phân giải vùng, mã hóa CNF và giải SAT bằng DPLL) có thể phát triển song song. Sau khi ghép nối các mô-đun lõi và kiểm thử chéo với bộ đánh giá ngữ nghĩa trực tiếp, nhóm hoàn thiện giao diện Desktop, chạy thực nghiệm trên sáu màn chơi chuẩn rồi tổng hợp số liệu vào báo cáo và video trình diễn.
 
 **Phân công theo mô-đun và tỷ lệ hoàn thành**
 
 | Thành viên | MSSV | Phần việc phụ trách | Hoàn thành |
 | --- | --- | --- | --- |
-| Phan Ngọc Thức | 24120228 | Kiến trúc chung, giao diện Desktop Cozy Harbor, thực nghiệm, báo cáo và video. | 100% |
-| Nguyễn Lê Minh Quân | 24120219 | Tổ chức thực nghiệm, so sánh hai chiến lược chọn biến, phân tích số liệu, báo cáo và video. | 100% |
-| Tống Phúc Thiện | 24120141 | Phân giải vùng và phép tập hợp, đánh giá ngữ nghĩa, điều phối GameEngine và kiểm tra nghiệm duy nhất. | 100% |
-| Bùi Phương Nam | 24120502 | Bộ giải DPLL với hai chiến lược chọn biến và suy luận phản chứng của LogicAgent. | 100% |
-| Phan Gia Phúc | 24120503 | Cổng Tseitin, bộ đếm ngưỡng bằng quy hoạch động và mã hóa tất cả dạng manh mối sang CNF. | 100% |
+| Phan Ngọc Thức | 24120228 | Kiến trúc dự án, giao diện Desktop Cozy Harbor, thực nghiệm, báo cáo và video. | 100% |
+| Nguyễn Lê Minh Quân | 24120219 | Chạy thực nghiệm, đối sánh hai chiến lược chọn biến, phân tích số liệu, báo cáo và video. | 100% |
+| Tống Phúc Thiện | 24120141 | Hệ thống vùng và phép toán tập hợp, hàm đánh giá ngữ nghĩa, `GameEngine` và kiểm tra nghiệm duy nhất. | 100% |
+| Bùi Phương Nam | 24120502 | Bộ giải DPLL với hai chiến lược chọn biến và cơ chế suy luận phản chứng của `LogicAgent`. | 100% |
+| Phan Gia Phúc | 24120503 | Cổng Tseitin, bộ đếm ngưỡng quy hoạch động và biên dịch toàn bộ mẫu manh mối sang CNF. | 100% |
 
+<<<<<<< HEAD
 Tỷ lệ hoàn thành trong bảng được các thành viên thống nhất và ghi nhận tại `docs/team.json`. Theo công thức tính điểm cá nhân bằng điểm nhóm nhân với tỷ lệ hoàn thành, với mức 100%, mỗi thành viên nhận trọn điểm nhóm.
+=======
+Bảng phân công trên được đối chiếu trực tiếp với tệp `docs/team.json`. Theo quy định chấm điểm của đề bài, điểm cá nhân bằng điểm nhóm nhân với tỷ lệ hoàn thành (chẳng hạn nhóm đạt 9,0 điểm thì thành viên hoàn thành 90% nhận 8,1 điểm). Cả năm thành viên trong nhóm đều hoàn thành đầy đủ phần việc được giao nên cùng đạt mức 100%.
+>>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
 
 > **Video trình diễn trên Google Drive**  
 > Liên kết xem: [https://drive.google.com/file/d/1Y-84FGh__BUx-dtXgX3oKmJwhWga77Ou/view?usp=sharing](https://drive.google.com/file/d/1Y-84FGh__BUx-dtXgX3oKmJwhWga77Ou/view?usp=sharing)
 
-### Quyền truy cập dữ liệu và luồng xử lý
+### Phân tách dữ liệu ẩn, công khai và luồng xử lý
 
-**Trách nhiệm và dữ liệu qua từng thành phần**
+**Trách nhiệm và phạm vi dữ liệu của từng thành phần**
 
-| Thành phần | Dữ liệu và trách nhiệm |
+| Thành phần | Dữ liệu nắm giữ và nhiệm vụ |
 | --- | --- |
+<<<<<<< HEAD
 | `GameEngine` | Giữ `PrivatePuzzle`, nghiệm đầy đủ, lời khai chưa mở và nhật ký các bước đã chấp nhận; tạo bản sao trạng thái công khai để kiểm tra từng yêu cầu. |
 | `PublicState` | Đối tượng bất biến chứa thông tin bàn, nhân vật, các trạng thái đã biết và lời khai đã mở; các cấu trúc dữ liệu lồng bên trong cũng ở dạng bất biến (`freeze`). |
 | `LogicAgent` | Chỉ nhận trạng thái công khai và bộ xử lý luật; dựng KB, gọi SAT và chứng minh hoặc từ chối phán quyết. |
@@ -46,60 +55,74 @@ Tỷ lệ hoàn thành trong bảng được các thành viên thống nhất v�
 Khi người chơi gửi một phán quyết, engine chuyển trạng thái công khai hiện tại cho một tác tử kiểm chứng độc lập. Chỉ sau khi có chứng minh, engine mới đối chiếu nghiệm riêng để phát hiện dữ liệu bất nhất, ghi trạng thái, mở lời khai và thêm một bước vào nhật ký; mọi đề nghị bị bác đều không làm lộ nội dung thẻ.
 
 Trong giao diện, `EngineWorker` chạy hàng đợi tuần tự trong `QThread` và gửi kết quả về cửa sổ qua signal của Qt [4]. Mỗi tác vụ chạy trên bản sao `GameEngine.fork()`, dùng chung câu đố bất biến nhưng tách riêng trạng thái, lời khai đã mở và danh sách nhật ký. Khi đổi màn hoặc hủy yêu cầu, cờ hủy được kiểm tra cả trong DPLL lẫn trước khi ghi phán quyết để `SolverCancelled` dừng phép tìm kiếm cũ, đồng thời mã phiên (`generation`) và mã yêu cầu giúp cửa sổ bỏ qua các kết quả đến muộn.
+=======
+| `GameEngine` | Giữ đối tượng `PrivatePuzzle` gồm đáp án ẩn, các lời khai chưa mở và nhật ký nước đi hợp lệ. Trích xuất trạng thái công khai ở mỗi lượt kiểm tra. |
+| `PublicState` | Cấu trúc dữ liệu bất biến chứa kích thước bàn, danh sách nhân vật, các trạng thái đã chứng minh và lời khai đã lật. Các từ điển và danh sách con đều bị khóa sửa đổi. |
+| `LogicAgent` | Chỉ nhận `PublicState` và bộ đăng ký luật chơi để tạo công thức CNF, gọi DPLL và kết luận chấp nhận hay bác bỏ phán quyết. |
+| Giao diện Desktop | Ứng dụng PySide6 (Cozy Harbor) gửi yêu cầu suy luận qua luồng nền và cập nhật hiển thị hoàn toàn dựa trên dữ liệu công khai. |
 
-Mọi thao tác trên cửa sổ, bộ thực nghiệm dòng lệnh và bộ kiểm thử đều gọi chung lõi kiểm chứng này. Vì vậy, lời giải và nhật ký có thể đối chiếu trực tiếp từ cùng một tập đầu vào.
+Mỗi khi người chơi chọn phán quyết cho một ô đang úp, `GameEngine` tạo bản `PublicState` tại thời điểm đó và chuyển cho một đối tượng `LogicAgent` kiểm chứng độc lập. Chỉ khi phán quyết được chứng minh là hệ quả bắt buộc, engine mới đối chiếu lại đáp án gốc để phòng trường hợp tệp câu đố mâu thuẫn, sau đó mở lời khai của ô vừa giải và ghi thêm một bước vào nhật ký. Nếu phán quyết chưa đủ cơ sở hoặc trái với dữ kiện đã mở, trạng thái bàn chơi được giữ nguyên và không tiết lộ lời khai ẩn.
+
+Để giao diện không bị đơ khi giải các màn $5\times5$, lớp `EngineWorker` xử lý tuần tự các yêu cầu trên một luồng `QThread` riêng và trả kết quả về cửa sổ chính thông qua cơ chế signal của Qt [4]. Mỗi yêu cầu chạy trên bản sao tạm `GameEngine.fork()`, dùng chung dữ liệu câu đố gốc nhưng tách riêng từ điển trạng thái và lịch sử bước giải. Khi người chơi đổi màn hoặc bấm làm lại giữa chừng, cờ hủy sẽ dừng vòng tìm kiếm DPLL bằng ngoại lệ `SolverCancelled`, còn cặp mã phiên và mã yêu cầu giúp cửa sổ loại bỏ các kết quả cũ trả về trễ.
+>>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
+
+Cả giao diện đồ họa, công cụ chạy thực nghiệm dòng lệnh và bộ kiểm thử tự động đều gọi chung một lớp kiểm chứng trong `GameEngine`. Nhờ vậy, chuỗi bước mở thẻ và nội dung nhật ký suy luận luôn khớp nhau khi chạy trên cùng một tệp câu đố.
 
 ## 2. Mô hình hóa bài toán và ngôn ngữ manh mối
 
-### Biến chính và tri thức công khai
+### Biến mệnh đề chính và cơ sở tri thức công khai
 
+<<<<<<< HEAD
 Trên bàn $N\times N$, với $N\in\{3,4,5\}$, cột A có chỉ số $c=1$ và hàng trên cùng có $r=1$. Biến $C_i$ mang giá trị True (Criminal, tội phạm) hoặc False (Innocent, vô tội), với chỉ số $i=(r-1)N+c$ chạy từ 1 đến $N^2$ (chẳng hạn A3 trên bàn $3\times3$ là biến số 7). Tên và nghề nghiệp chỉ dùng để hiển thị nhận diện nhân vật, còn mọi lời khai đã mở đều luôn đúng kể cả khi chủ thẻ là tội phạm.
+=======
+Xét bàn chơi kích thước $N\times N$ với $N\in\{3,4,5\}$, trong đó các cột được đánh chữ từ A ($c=1$) sang phải và các hàng được đánh số từ 1 ($r=1$) xuống dưới. Mỗi nhân vật tại hàng $r$, cột $c$ được ánh xạ tất định vào một biến mệnh đề chính $C_i$ với chỉ số $i=(r-1)N+c\in\{1,\ldots,N^2\}$ (ví dụ ô A3 trên bàn $3\times3$ ứng với biến số 7). Ta quy ước $C_i=\mathrm{True}$ khi nhân vật là tội phạm (`CRIMINAL`) và $C_i=\mathrm{False}$ khi vô tội (`INNOCENT`). Tên gọi và nghề nghiệp chỉ dùng để hiển thị hoặc nhận diện nhân vật; mọi lời khai đã lật mở đều luôn đúng, bất kể người phát biểu là tội phạm hay vô tội.
+>>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
 
-Gọi $L_t$ là tập lời khai đã mở và $S_t$ là tập ô đã biết ở bước $t$. Với mỗi ô trong $S_t$, đặt $\ell_i=C_i$ nếu ô là tội phạm và $\ell_i=\neg C_i$ nếu ô vô tội. Cơ sở tri thức (KB) có dạng
+Ở bước suy luận thứ $t$, gọi $L_t$ là tập các lời khai đã mở và $S_t$ là tập các ô đã xác định trạng thái. Với mỗi $i\in S_t$, đặt literal đơn $\ell_i=C_i$ nếu ô đó là tội phạm và $\ell_i=\neg C_i$ nếu vô tội. Cơ sở tri thức công khai tại bước $t$ được biểu diễn dưới dạng hội của các mệnh đề:
 
 $$
 KB_t=\bigwedge_{q\in L_t}\operatorname{CNF}(q)\ \land\ \bigwedge_{i\in S_t}(\ell_i).
 $$
 
-Tác tử duyệt các ô chưa mở theo thứ tự hàng, chọn ô đầu tiên có phán quyết bắt buộc. Khi engine chấp nhận, trạng thái và lời khai của ô cùng gia nhập KB ở bước kế tiếp. Vòng lặp dừng khi mở hết bàn, hết phán quyết chứng minh được hoặc gặp mâu thuẫn.
+Bộ suy luận duyệt các ô chưa mở theo thứ tự hàng từ trên xuống dưới, từ trái sang phải và chọn ô đầu tiên có trạng thái bị ép buộc bởi $KB_t$. Sau khi `GameEngine` xác nhận phán quyết, cả trạng thái vừa chứng minh lẫn lời khai mới lật sẽ được đưa vào $KB_{t+1}$. Quá trình lặp dừng lại khi toàn bộ $N^2$ ô đã mở, khi không còn ô nào suy ra được một cách chắc chắn, hoặc khi phát hiện $KB_t$ mâu thuẫn.
 
-**Sáu kiểu manh mối cơ sở**
+**Sáu mẫu manh mối cơ sở theo yêu cầu đề bài**
 
-| Kiểu | Nội dung trên một phép gán |
+| Kiểu | Ý nghĩa logic trên một phép gán |
 | --- | --- |
-| `FACT` | Một người có trạng thái chỉ định, biểu diễn bằng $C_i$ hoặc $\neg C_i$. |
-| `SAME` | Hai người cùng trạng thái, $C_i\leftrightarrow C_j$. |
-| `DIFFERENT` | Hai người khác trạng thái, $C_i\oplus C_j$. |
-| `EXACTLY` | Số tội phạm trong vùng $R$ đúng bằng $k$. |
-| `AT_LEAST` | Có ít nhất $k$ tội phạm trong $R$. |
-| `AT_MOST` | Có nhiều nhất $k$ tội phạm trong $R$. |
+| `FACT` | Khẳng định trực tiếp trạng thái của một nhân vật, biểu diễn bằng $C_i$ hoặc $\neg C_i$. |
+| `SAME` | Hai nhân vật có cùng trạng thái: $C_i\leftrightarrow C_j$. |
+| `DIFFERENT` | Hai nhân vật có trạng thái trái ngược nhau: $C_i\oplus C_j$. |
+| `EXACTLY` | Trong vùng $R$ có đúng $k$ tội phạm ($\sum_{i\in R} C_i = k$). |
+| `AT_LEAST` | Trong vùng $R$ có ít nhất $k$ tội phạm ($\sum_{i\in R} C_i \ge k$). |
+| `AT_MOST` | Trong vùng $R$ có nhiều nhất $k$ tội phạm ($\sum_{i\in R} C_i \le k$). |
 
-Các manh mối đếm yêu cầu $k$ nguyên và $0\le k\le |R|$. Câu “không có tội phạm” tương ứng với $\operatorname{EXACTLY}(0,R)$. Với vùng rỗng, số tội phạm bằng 0.
+Với ba mẫu đếm số lượng, tham số $k$ là số nguyên thỏa $0\le k\le |R|$. Cách diễn đạt “không có ai là tội phạm” được quy về $\operatorname{EXACTLY}(0,R)$; trường hợp vùng $R$ rỗng thì tổng số tội phạm trong vùng mặc định bằng 0.
 
-### Vùng, so sánh và điều kiện lồng
+### Hệ thống vùng và các phần mở rộng luật chơi
 
-**Vùng cơ sở và các phép hợp thành**
+**Bốn vùng cơ sở và bốn phép mở rộng vùng**
 
-| Kiểu vùng | Tập ô được chọn |
+| Kiểu vùng | Tập ô được phân giải trên bàn cờ |
 | --- | --- |
-| `ROW`, `COLUMN` | Toàn bộ một hàng hoặc một cột hợp lệ. |
-| `NEIGHBORS` | Các ô kề theo tám hướng, bỏ ô mốc. Một ô góc có ba láng giềng, ô biên còn lại có năm và ô ở trong có tám. |
-| `EXPLICIT` | Các ô phân biệt được liệt kê theo định danh. Danh sách có thể rỗng. |
-| `CORNERS` | Bốn ô góc của bàn. |
-| `UNION`, `INTERSECTION` | Hợp hoặc giao của hai vùng con. Mỗi ô chỉ xuất hiện một lần trong vùng kết quả. |
-| `DIFFERENCE` | Các ô thuộc vùng trái và không thuộc vùng phải. Thứ tự hai toán hạng quyết định kết quả. |
+| `ROW`, `COLUMN` | Toàn bộ các ô thuộc một hàng hoặc một cột hợp lệ. |
+| `NEIGHBORS` | Các ô tiếp xúc ngang, dọc hoặc chéo với ô mốc (loại trừ chính ô mốc): ô góc có 3 láng giềng, ô sát biên có 5 và ô bên trong có 8. |
+| `EXPLICIT` | Tập các ô phân biệt được chỉ định tường minh theo tọa độ (có thể rỗng). |
+| `CORNERS` | Bốn ô nằm ở bốn góc bàn cờ. |
+| `UNION`, `INTERSECTION` | Hợp hoặc giao của hai vùng con; mỗi ô trong vùng kết quả chỉ tính một lần. |
+| `DIFFERENCE` | Hiệu tập hợp gồm các ô thuộc vùng bên trái nhưng không thuộc vùng bên phải. |
 
-`COMPARISON` so sánh số tội phạm trong hai vùng bằng một trong sáu quan hệ $=,\ne,<,\le,>,\ge$. Nếu hai vùng giao nhau, cùng một biến ô tham gia vào cả hai tổng. `CONDITIONAL` nhận hai manh mối bất kỳ làm tiền đề và kết luận. Hai vế có thể tiếp tục chứa điều kiện lồng. Mệnh đề kéo theo sai đúng trong trường hợp tiền đề đúng và kết luận sai.
+Bên cạnh các vùng ghép trên, nhóm cài đặt thêm hai kiểu manh mối mở rộng là `COMPARISON` và `CONDITIONAL`. Kiểu `COMPARISON` so sánh số lượng tội phạm giữa hai vùng bất kỳ theo một trong sáu toán tử $=,\ne,<,\le,>,\ge$; nếu hai vùng có ô chung thì biến của ô đó vẫn tham gia bình thường vào cả hai vế đếm. Kiểu `CONDITIONAL` biểu diễn phép kéo theo $P\to Q$ giữa hai manh mối con tùy ý (cho phép lồng nhiều tầng) và chỉ nhận giá trị sai khi tiền đề $P$ đúng nhưng kết luận $Q$ sai.
 
-Trong màn `case-3x3-01`, lời khai công khai B1 đòi hỏi ít nhất ba tội phạm trong tập láng giềng của A2 sau khi trừ hàng 2. Trên bàn này, vùng còn lại là $\{\mathrm{A1},\mathrm{B1},\mathrm{A3},\mathrm{B3}\}$. Cách phân giải vùng xác định chính xác bốn biến đi vào bộ đếm và bốn ô giao diện cần tô sáng.
+Chẳng hạn ở màn `case-3x3-01`, lời khai mở sẵn tại B1 yêu cầu có ít nhất ba tội phạm trong vùng gồm các láng giềng của A2 sau khi loại bỏ hàng 2. Phép hiệu tập hợp cho ra đúng bốn ô $\{\mathrm{A1},\mathrm{B1},\mathrm{A3},\mathrm{B3}\}$, vừa là đầu vào cho bộ đếm CNF vừa là tập ô để giao diện viền sáng khi người chơi bấm xem lời khai.
 
-Bộ đăng ký ánh xạ tên kiểu JSON sang lớp xử lý. `@register_region` gắn kiểu vùng với hàm phân giải, còn `@register_clue` gắn kiểu manh mối với kiểm tra tham số, biểu thức logic và hàm đánh giá. Gốc có độ sâu 0. Bộ kiểm tra từ chối cây vùng hoặc cây điều kiện khi độ sâu vượt 12. Nhờ giao diện chung, thêm luật mới chỉ cần đăng ký lớp xử lý và kiểm thử ngữ nghĩa của luật đó.
+Trong mã nguồn, cơ chế đăng ký qua decorator `@register_region` và `@register_clue` ánh xạ trực tiếp tên kiểu trong tệp JSON sang lớp xử lý tương ứng, giới hạn độ sâu lồng tối đa 12 cấp để tránh đệ quy vô hạn trên dữ liệu lỗi. Nhờ tách rời từng luật thành lớp độc lập, việc bổ sung vùng hoặc kiểu manh mối mới không đòi hỏi chỉnh sửa lại bộ mã hóa CNF hay thuật toán DPLL.
 
 ## 3. Biểu diễn logic tự động và chuyển đổi sang CNF
 
-### Từ quan hệ hai ngôi đến mệnh đề
+### Biến đổi các manh mối quan hệ hai ngôi
 
-Mã hóa SAME bắt đầu từ hai chiều kéo theo. Mỗi chiều loại một khả năng trái với điều kiện “cùng trạng thái”. Thay phép kéo theo bằng phép tuyển cho hai mệnh đề sau.
+Chương trình không lưu sẵn công thức CNF cho từng màn mà tự động biên dịch mọi lời khai đang mở. Với manh mối `SAME`, quan hệ tương đương giữa hai biến chính $C_A$ và $C_B$ được tách thành hai chiều kéo theo để loại bỏ hai trường hợp lệch trạng thái, sau đó đổi $p\to q\equiv \neg p\lor q$ để thu được dạng chuẩn hội:
 
 $$
 \begin{aligned}
@@ -109,7 +132,7 @@ $$
 \end{aligned}
 $$
 
-Với DIFFERENT, ít nhất một biến phải đúng và ít nhất một biến phải sai. Hai mệnh đề này lần lượt loại trường hợp cả hai vô tội và cả hai là tội phạm.
+Tương tự, manh mối `DIFFERENT` đòi hỏi đúng một trong hai người là tội phạm. Phép tuyển loại trừ tương đương với việc có ít nhất một biến đúng và không thể đồng thời cả hai cùng đúng:
 
 $$
 \begin{aligned}
@@ -119,9 +142,9 @@ $$
 \end{aligned}
 $$
 
-### Đếm trực tiếp trên ba ô
+### Ví dụ mã hóa đếm tổ hợp trực tiếp trên vùng nhỏ
 
-Viết $A,B,C$ cho ba biến của vùng. Để có ít nhất hai tội phạm, mọi cặp ô đều phải chứa một tội phạm. Để có nhiều nhất hai, bộ ba phải chứa một người vô tội. Lấy hội của hai điều kiện thu được
+Xét vùng gồm ba biến $A,B,C$ với ràng buộc có đúng $k=2$ tội phạm. Điều kiện “ít nhất 2” buộc mọi cặp 2 ô bất kỳ phải chứa ít nhất một biến đúng, còn điều kiện “nhiều nhất 2” buộc cả 3 ô không thể đồng thời là tội phạm. Kết hợp hai phần ta có công thức CNF trực tiếp:
 
 $$
 \begin{aligned}
@@ -131,19 +154,19 @@ $$
 \end{aligned}
 $$
 
-Tổng quát, mỗi tập con cỡ $n-k+1$ cho một mệnh đề dương và mỗi tập con cỡ $k+1$ cho một mệnh đề âm. Vì $\binom{n}{n-k+1}=\binom{n}{k-1}$, số mệnh đề là $\binom{n}{k-1}+\binom{n}{k+1}$, quy ước hệ số bằng 0 ngoài miền. Với $n=25,\ k=12$, riêng một manh mối đã cần $9\,657\,700$ mệnh đề.
+Trong trường hợp tổng quát trên vùng $n$ ô, cách liệt kê tổ hợp không dùng biến phụ cần $\binom{n}{n-k+1}=\binom{n}{k-1}$ mệnh đề dương và $\binom{n}{k+1}$ mệnh đề âm, tổng cộng $\binom{n}{k-1}+\binom{n}{k+1}$ mệnh đề (quy ước hệ số bằng 0 khi chỉ số vượt ngoài phạm vi). Cách này gọn trên vùng 3 hoặc 4 ô nhưng bùng nổ tổ hợp rất nhanh khi vùng rộng: nếu $n=25$ và $k=12$, chỉ riêng một manh mối đã phát sinh tới $9\,657\,700$ mệnh đề.
 
-### Bộ đếm ngưỡng unary và cổng Tseitin
+### Quy hoạch động đếm ngưỡng unary và cổng Tseitin
 
-Gọi $T(i,k)$ là mệnh đề “ít nhất $k$ trong $i$ ô đầu là tội phạm”. Ngưỡng 0 luôn đúng, còn $k>i$ luôn sai. Khi thêm ô thứ $i$, ngưỡng $k$ hoặc đã đạt trước đó, hoặc vừa đạt nhờ ô này là tội phạm và $i-1$ ô đầu đã đủ $k-1$. Do đó
+Để giữ kích thước công thức tăng đa thức trên mọi cỡ bàn và hỗ trợ luôn phép so sánh giữa hai vùng, lớp `Encoder` xây dựng bảng quy hoạch động các biến ngưỡng unary. Gọi $T(i,k)$ là mệnh đề “có ít nhất $k$ tội phạm trong $i$ ô đầu tiên của vùng”, với điều kiện cơ sở $T(i,0)=\mathrm{True}$ và $T(i,k)=\mathrm{False}$ khi $k>i$. Khi xét thêm ô thứ $i$ (ứng với biến $C_i$), ngưỡng $k$ đạt được khi $i-1$ ô trước đã đủ $k$ tội phạm, hoặc đã đủ $k-1$ tội phạm và bản thân $C_i$ là tội phạm:
 
 $$
 T(i,k)\leftrightarrow T(i-1,k)\lor\bigl(C_i\land T(i-1,k-1)\bigr).
 $$
 
-Mỗi trạng thái của bảng tam giác cần nhiều nhất một cổng AND và một cổng OR hai đầu vào. Tổng số cổng và mệnh đề cho một vùng là $O(n^2)$. `Encoder` tái sử dụng bộ ngưỡng theo bộ ô đã sắp thứ tự và cổng theo loại cùng các literal đầu vào. Bộ cấp biến chung bắt đầu tại $N^2+1$. Hằng, literal trùng và hai literal đối nhau được rút gọn trước khi cấp biến.
+Mỗi ô trạng thái $(i,k)$ chỉ tạo tối đa một cổng `AND` và một cổng `OR` hai đầu vào, nên số biến phụ và số mệnh đề cho vùng $n$ ô chỉ có độ phức tạp $O(n^2)$. Các biến phụ được cấp phát liên tiếp từ $N^2+1$ trong cùng một `Encoder` của $KB_t$. Trước khi cấp biến mới, hàm `gate()` tự rút gọn hằng Boolean, khử literal trùng, triệt tiêu cặp đối dấu và tra bảng băm để dùng lại biến phụ cho các biểu thức con trùng nhau.
 
-Theo phép biến đổi Tseitin [5], mỗi đầu ra phụ $z$ được ràng buộc theo cả hai chiều. Ví dụ với $z\leftrightarrow(a\land b)$ và $w\leftrightarrow(a\lor b)$, ta có
+Theo phép biến đổi Tseitin [5], mỗi biến phụ đầu ra được ràng buộc tương đương hai chiều với cổng logic của nó để vẫn giữ nguyên ngữ nghĩa khi đặt dưới phép phủ định. Với $z\leftrightarrow(a\land b)$ và $w\leftrightarrow(a\lor b)$, các mệnh đề tương ứng là:
 
 $$
 \begin{aligned}
@@ -152,54 +175,63 @@ $$
 \end{aligned}
 $$
 
+<<<<<<< HEAD
 Đặt $T_R(k)=T(|R|,k)$. Ba ràng buộc “ít nhất”, “nhiều nhất” và “đúng bằng” lần lượt nhận literal hoặc biểu thức $T_R(k)$, $\neg T_R(k+1)$ và $T_R(k)\land\neg T_R(k+1)$. Trong cài đặt thực tế, cả các manh mối hai ngôi như `SAME` và `DIFFERENT` cũng được biểu diễn qua `Encoder.gate` để kết hợp trực tiếp bên trong manh mối điều kiện. Bộ mã hóa buộc đầu ra của mỗi manh mối công khai bằng một mệnh đề đơn; đầu ra hằng sai sinh mệnh đề rỗng, còn đầu ra hằng đúng không cần thêm mệnh đề.
+=======
+Ký hiệu $T_R(k)=T(|R|,k)$ tại dòng cuối của vùng $R$. Khi đó `AT_LEAST`, `AT_MOST` và `EXACTLY` lần lượt trả về $T_R(k)$, $\neg T_R(k+1)$ và cổng hội của $T_R(k)$ với $\neg T_R(k+1)$. Ở mức ngoài cùng của mỗi lời khai đã mở, bộ mã hóa thêm mệnh đề đơn ép đầu ra của lời khai mang giá trị đúng (nếu biểu thức rút gọn thành hằng `False` thì sinh mệnh đề rỗng để báo mâu thuẫn).
+>>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
 
-### Mã hóa các manh mối mở rộng
+### Mã hóa các manh mối mở rộng và kiểm chứng độc lập
 
-Số tội phạm trong $R_1$ lớn hơn hoặc bằng số trong $R_2$ khi mọi ngưỡng đạt ở $R_2$ đều đạt ở $R_1$. Quan hệ này tương đương
+Với manh mối `COMPARISON`, số tội phạm trong vùng $R_1$ lớn hơn hoặc bằng vùng $R_2$ khi và chỉ khi mọi mức ngưỡng $k\ge 1$ đạt được trên $R_2$ cũng đồng thời đạt được trên $R_1$:
 
 $$
 \bigwedge_{k=1}^{|R_2|}\bigl(\neg T_{R_2}(k)\lor T_{R_1}(k)\bigr).
 $$
 
-Đổi hai vùng cho quan hệ $\le$, lấy hội hai chiều cho dấu bằng, rồi phủ định quan hệ tương ứng cho $\ne$, $<$ hoặc $>$. Với điều kiện lồng, bộ mã hóa xây hai đầu ra $r_{\mathrm{if}},r_{\mathrm{then}}$ rồi tạo cổng cho $\neg r_{\mathrm{if}}\lor r_{\mathrm{then}}$. Độc lập với CNF, `evaluate()` tính giá trị luật trực tiếp trên phép gán hoàn chỉnh bằng so sánh Boolean, đếm ô hoặc đánh giá đệ quy hai vế. Các kiểm thử đối chiếu hai cách tính.
+Từ biểu thức $\ge$ này, chương trình suy ra $\le$ bằng cách hoán vị hai vùng, tạo dấu $=$ bằng hội hai chiều, và lấy phủ định để biểu diễn $\ne$, $<$ cùng $>$. Với `CONDITIONAL`, bộ mã hóa đệ quy sinh literal đại diện cho hai vế $r_{\mathrm{if}},r_{\mathrm{then}}$ rồi ghép cổng $\neg r_{\mathrm{if}}\lor r_{\mathrm{then}}$. Song song với nhánh CNF, mỗi lớp manh mối đều cài đặt hàm `evaluate()` kiểm tra trực tiếp tính đúng/sai trên phép gán đầy đủ bằng phép đếm và so sánh Python thuần để bộ kiểm thử đối chiếu chéo hai cách cài đặt.
 
 ## 4. Thuật toán DPLL, suy luận phản chứng và kiểm tra nghiệm duy nhất
 
-### Tìm mô hình bằng DPLL
+### Thủ tục tìm mô hình DPLL
 
-Bộ giải tự cài đặt theo DPLL [6]. Trước khi tìm kiếm, chương trình loại literal lặp trong mỗi mệnh đề, bỏ mệnh đề hằng đúng và thêm các giả định dưới dạng mệnh đề đơn. Mỗi lời gọi đệ quy chỉ kế thừa phép gán trên nhánh hiện tại.
+Bộ giải SAT trong `sat.py` được nhóm tự cài đặt theo thuật toán Davis–Putnam–Logemann–Loveland [6]. Ở bước tiền xử lý, hàm `solve()` loại bỏ các literal trùng trong cùng một mệnh đề, lược bỏ các mệnh đề hằng đúng (chứa cả $v$ và $-v$) và nối các giả định tạm thời (`assumptions`) dưới dạng các mệnh đề đơn. Trong cây đệ quy, mỗi nhánh con thao tác trên bản sao phép gán riêng để khi quay lui không làm ảnh hưởng nhánh anh em.
 
 **DPLL-Solve với hai chiến lược chọn biến**
 
 ```text
-Đầu vào: CNF F, tổng số biến m, phép gán A (ban đầu rỗng), chiến lược h
+Đầu vào: Công thức CNF F, tổng số biến m, phép gán A (khởi tạo rỗng), chiến lược h
 Lặp
-  Kiểm tra cờ hủy và hạn thời gian. Nếu có mệnh đề rỗng, trả UNSAT.
-  Lấy tập U các literal trong mệnh đề đơn. Nếu U=∅, thoát vòng lặp.
-  Với mỗi ℓ∈ U
-    Nếu ℓ xung đột với A, trả UNSAT. Nếu mới, gán và tăng số lan truyền.
-  Rút gọn F theo A: bỏ mệnh đề đúng và xóa literal sai.
+  Kiểm tra cờ hủy và hạn thời gian; nếu F chứa mệnh đề rỗng thì trả UNSAT.
+  Thu thập danh sách U các literal nằm trong mệnh đề đơn; nếu U = ∅ thì thoát vòng lặp.
+  Với mỗi ℓ ∈ U
+    Nếu ℓ ngược giá trị đã có trong A thì trả UNSAT; nếu biến chưa gán thì ghi vào A và cộng 1 vào bộ đếm lan truyền.
+  Rút gọn F theo A: xóa mệnh đề đã thỏa và bỏ các literal sai khỏi mệnh đề còn lại.
 Nếu F rỗng
-  Điền False cho mọi biến chưa gán trong 1,…,m. Trả SAT và mô hình.
-Đếm số lần xuất hiện của mỗi biến còn trong F, gộp cả hai dấu.
-Với ordered, lấy ID nhỏ nhất. Với frequency, lấy tần suất cao nhất, hòa chọn ID nhỏ nhất. Gọi biến được chọn là v.
-Tăng số quyết định một lần.
-Với b theo thứ tự True, False
-  Sao chép A, gán v=b, rút gọn F và gọi DPLL-Solve đệ quy.
-  Nếu nhánh trả SAT, trả mô hình. Nếu nhánh thất bại, tăng số quay lui.
+  Gán mặc định False cho các biến tự do chưa có trong 1,…,m; trả SAT kèm mô hình.
+Thống kê số lần xuất hiện (gộp cả hai chiều âm dương) của từng biến còn lại trong F.
+Nếu h = ordered chọn biến có chỉ số nhỏ nhất; nếu h = frequency chọn biến có tần suất cao nhất (hòa chọn chỉ số nhỏ nhất). Gọi biến được chọn là v.
+Cộng 1 vào bộ đếm quyết định.
+Với b lần lượt nhận giá trị True, False
+  Tạo bản sao A' = A ∪ {v ↦ b}, rút gọn F theo A' và gọi đệ quy DPLL-Solve.
+  Nếu nhánh con trả SAT thì trả ngay mô hình; nếu thất bại thì cộng 1 vào bộ đếm quay lui.
 Trả UNSAT.
 ```
 
-Hai mệnh đề đơn đối nhau tạo xung đột ngay trong một đợt lan truyền. Khi tất cả mệnh đề đã đúng, điền False cho các biến tự do vẫn bảo toàn nghiệm. Bộ đếm quyết định ghi số nút phân nhánh, còn số quay lui ghi từng nhánh con thất bại. Thời gian được đo riêng cho từng truy vấn SAT.
+Nếu hai mệnh đề đơn mang literal đối nhau xuất hiện trong cùng đợt lan truyền, xung đột được phát hiện ngay khi gán vào $A$. Khi mọi mệnh đề đều đã thỏa mãn, các biến chưa xuất hiện hoặc đã được khử có thể nhận giá trị `False` tùy ý mà không làm sai công thức. Phép gán tại nút phân nhánh được áp trực tiếp vào $A'$ thay vì chèn mệnh đề đơn giả, nhờ đó bộ đếm `propagations` chỉ phản ánh đúng các phép gán bị ép buộc.
 
-### Chứng minh một phán quyết bằng phản chứng
+### Kiểm chứng phán quyết bằng phản chứng và lưu mô hình nhân chứng
 
+<<<<<<< HEAD
 Trước hết phải xác nhận $KB$ khả thỏa. Khi đó, $KB\land\neg C_i$ vô nghiệm chứng minh ô $i$ là tội phạm; ngược lại nếu $KB\land C_i$ vô nghiệm thì ô đó vô tội. Nếu cả hai đều khả thỏa, mỗi mô hình đóng vai trò nhân chứng (*witness*) cho một khả năng và ô vẫn ở trạng thái `UNKNOWN`.
+=======
+Để tránh suy diễn sai từ một cơ sở tri thức mâu thuẫn, `LogicAgent` luôn kiểm tra $KB_t$ khả thỏa trước tiên. Khi $KB_t$ khả thỏa, giả thiết phủ định $KB_t\land\neg C_i$ vô nghiệm chứng tỏ mọi mô hình hợp lệ đều có $C_i=\mathrm{True}$, nên ô $i$ chắc chắn là tội phạm; ngược lại $KB_t\land C_i$ vô nghiệm chứng tỏ ô $i$ vô tội. Nếu cả hai truy vấn đều khả thỏa, mỗi mô hình tìm được là một phản ví dụ cụ thể cho thấy trạng thái của ô $i$ vẫn còn `UNKNOWN`.
+>>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
 
-**Phân loại có lưu nhân chứng và kiểm chứng đề nghị**
+**Phân loại các ô chưa mở và kiểm chứng đề nghị**
 
 ```text
+<<<<<<< HEAD
 Đầu vào: Trạng thái công khai, chế độ phân loại hoặc kiểm chứng literal đề nghị p
 Dựng KB, giải một lần. Nếu UNSAT, trả INCONSISTENT.
 Nếu chế độ verify
@@ -207,42 +239,62 @@ Nếu chế độ verify
   Nếu KB ∧ p là UNSAT, trả CONTRADICTED.
   Trả NOT_PROVABLE.
 Từ mô hình cơ sở, ghi nhận dấu đã thấy của từng biến chính.
+=======
+Đầu vào: Trạng thái công khai PublicState; chế độ phân loại hoặc kiểm chứng literal đề nghị p
+Dựng KB_t và gọi DPLL không giả định; nếu UNSAT thì trả INCONSISTENT.
+Nếu chế độ verify
+  Nếu KB_t ∧ ¬p trả UNSAT thì trả ACCEPTED.
+  Nếu KB_t ∧ p trả UNSAT thì trả CONTRADICTED; ngược lại trả NOT_PROVABLE.
+Từ mô hình cơ sở ban đầu, đánh dấu giá trị chân trị (True/False) đã xuất hiện của mọi biến chính.
+>>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
 Với mỗi ô chưa mở theo thứ tự hàng
-  Nếu đã thấy cả hai dấu của C_i, xuất UNKNOWN và xét ô tiếp theo.
-  Gọi ℓ là dấu chưa thấy. Giải KB ∧ ℓ.
+  Nếu biến C_i đã xuất hiện đủ cả hai giá trị True và False trong các mô hình trước đó, kết luận UNKNOWN và chuyển sang ô kế tiếp.
+  Gọi ℓ là chiều giá trị chưa có mô hình nhân chứng; giải KB_t ∧ ℓ.
   Nếu kết quả là UNSAT
+<<<<<<< HEAD
     Xuất CRIMINAL nếu ℓ=¬C_i, ngược lại xuất INNOCENT.
+=======
+    Kết luận CRIMINAL nếu ℓ = ¬C_i, ngược lại kết luận INNOCENT.
+>>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
   Ngược lại
-    Ghi dấu của mọi biến chính trong mô hình mới, xuất UNKNOWN.
+    Cập nhật giá trị chân trị của toàn bộ biến chính từ mô hình mới và kết luận UNKNOWN.
 ```
 
+<<<<<<< HEAD
 Trong `LogicAgent._verdicts`, mô hình cơ sở cung cấp ít nhất một dấu cho mọi ô, nhờ đó sau truy vấn chung, mỗi ô chỉ cần tối đa một truy vấn bổ sung (đôi khi bằng không). Bộ nhớ nhân chứng này chỉ tồn tại trong phạm vi một lần duyệt KB, còn hàm `verify` kiểm tra độc lập từng đề nghị gửi lên nên có thể cần cả hai truy vấn giả định.
+=======
+Nhờ tận dụng lại các mô hình trả về trong hàm `LogicAgent._verdicts`, mô hình cơ sở đầu tiên đã cung cấp sẵn ít nhất một giá trị thỏa mãn cho mọi biến chính trên bàn. Do đó với mỗi ô chưa mở, bộ giải chỉ tốn tối đa một truy vấn SAT bổ sung (và không tốn thêm truy vấn nào nếu hai mô hình trước đó đã cho cả hai giá trị trái ngược ở ô ấy). Hai tập đánh dấu này chỉ dùng nội bộ trong lượt duyệt $KB_t$ hiện hành, còn hàm `verify()` khi kiểm tra nước đi lẻ của người chơi vẫn thực hiện độc lập các truy vấn cần thiết.
+>>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
 
-Ví dụ, với $KB=(A\lor B)\land(\neg A\lor B)$, giả sử $\neg B$ tạo hai mệnh đề đơn $A$ và $\neg A$. Do đó $B$ là tội phạm. Cả hai giá trị của $A$ đều đi cùng $B$ đúng, nên tác tử để thẻ $A$ úp. Nếu ngay từ đầu $KB$ chứa cả $A$ và $\neg A$, kết quả là `INCONSISTENT`.
+Xét ví dụ đề bài với $KB=(C_A\lor C_B)\land(\neg C_A\lor C_B)$: khi thêm giả định $\neg C_B$, lan truyền đơn thu được đồng thời $C_A$ và $\neg C_A$ gây mâu thuẫn, nên $B$ bắt buộc là tội phạm. Ngược lại, cả hai phép gán $(C_A=\mathrm{True}, C_B=\mathrm{True})$ và $(C_A=\mathrm{False}, C_B=\mathrm{True})$ đều thỏa $KB$, nên trạng thái của $A$ vẫn là `UNKNOWN` và thẻ $A$ được giữ nguyên úp.
 
-### Vòng suy luận, nhật ký và tính duy nhất
+### Vòng lặp mở thẻ, nhật ký suy luận và kiểm tra nghiệm duy nhất
 
+<<<<<<< HEAD
 `next_verdict` dừng tại ô bắt buộc đầu tiên; `hint` trả lại gợi ý, còn `step` gửi phán quyết cho engine kiểm chứng. Khi chấp nhận, engine ghi số bước, ô, phán quyết, ID các lời khai đang hoạt động, truy vấn SAT và lời khai mới, rồi dùng trạng thái công khai đã cập nhật cho bước kế tiếp. Khi tất cả ô chưa mở đều còn hai khả năng, vòng tự giải dừng ở UNKNOWN và giữ nguyên bàn.
+=======
+Trong chế độ giải từng bước, `next_verdict()` dừng ngay tại nhân vật đầu tiên tìm được kết luận chắc chắn: `hint()` chỉ báo vị trí ô này cho người chơi, còn `step()` chuyển phán quyết qua `submit()` để xác minh lại và lật thẻ. Mỗi bước được chấp nhận đều lưu vào `trace` đầy đủ số thứ tự bước, tọa độ ô, phán quyết, danh sách ID lời khai đang mở trước bước đó, chi tiết từng truy vấn SAT và nội dung lời khai mới vừa lật. Nếu toàn bộ các ô còn lại đều trả về `UNKNOWN`, vòng tự giải dừng an toàn mà không đoán mò.
+>>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
 
-Nhật ký `case-3x3-01` với `ordered` cho thấy tại bước 1 chỉ có lời khai B1 và C1. KB có 9 biến chính, 39 biến phụ và 123 mệnh đề. Truy vấn cơ sở SAT, còn giả định $-7$ cho UNSAT sau 46 phép lan truyền và không cần phân nhánh. Engine chấp nhận A3 là tội phạm rồi mới mở lời khai A3. Bước 2 đã có ba lời khai để xét A1.
+Đối chiếu tệp nhật ký thực tế của màn `case-3x3-01` với cấu hình `ordered`: ở bước 1 chỉ có hai lời khai mở sẵn là B1 và C1, tạo thành $KB_1$ gồm 9 biến chính, 39 biến phụ và 123 mệnh đề. Truy vấn kiểm tra $KB_1$ cho kết quả SAT, sau đó truy vấn giả định $-7$ (giả sử nhân vật ở A3 vô tội) trả về UNSAT sau 46 phép lan truyền đơn mà không cần phân nhánh, từ đó chứng minh A3 là tội phạm và mở lời khai A3 cho bước thứ hai.
 
-Để kiểm tra bộ dữ liệu ngoại tuyến, `check_uniqueness` dựng $F$ từ toàn bộ lời khai. Nếu $F$ vô nghiệm, trả `INCONSISTENT`. Nếu có mô hình $M$, thêm mệnh đề chặn trên $P$, tập ID lấy từ `kb.primary.values()`: 
+Khác với vòng chơi trực tuyến chỉ đọc dữ liệu công khai, hàm ngoại tuyến `check_uniqueness()` kiểm tra xem toàn bộ $N^2$ lời khai của tệp câu đố có xác định duy nhất một nghiệm nhân vật hay không. Sau khi mã hóa tất cả lời khai thành công thức $F$ và tìm mô hình đầu tiên $M$ (nếu vô nghiệm thì trả `INCONSISTENT`), chương trình ghép thêm mệnh đề chặn $B_M$ chỉ lấy trên tập biến chính $P=\text{kb.primary.values()}$:
 
 $$
 B_M=\bigvee_{v\in P}\begin{cases}\neg v,&M(v)=\mathrm{True},\\v,&M(v)=\mathrm{False}.\end{cases}
 $$
 
-Mọi nghiệm của $F\land B_M$ phải khác $M$ ở ít nhất một ô. Truy vấn thứ hai trả UNSAT xác nhận `UNIQUE`, còn SAT xác nhận `MULTIPLE`. Việc chỉ chặn biến chính bảo đảm khác biệt ở biến phụ không bị tính thành lời giải thứ hai. Tính duy nhất của toàn bộ lời khai và khả năng đi tiếp từ một trạng thái công khai là hai phép kiểm tra riêng.
+Mệnh đề $B_M$ ép mọi nghiệm mới của $F\land B_M$ phải khác $M$ tại ít nhất một nhân vật trên bàn. Nếu truy vấn thứ hai trả UNSAT thì câu đố đạt `UNIQUE`, ngược lại nếu trả SAT thì câu đố bị đa nghiệm (`MULTIPLE`). Việc giới hạn $B_M$ trên tập biến chính giúp tránh đếm nhầm hai mô hình chỉ khác nhau ở giá trị biến phụ Tseitin không ràng buộc. Cần lưu ý rằng một câu đố đạt `UNIQUE` khi gộp đủ mọi thẻ vẫn có thể bị tắc ở giữa chừng nếu thiếu điểm mở đầu, nên khả năng giải tuần tự từ tập thẻ mở sẵn luôn được kiểm tra riêng bằng vòng suy luận công khai.
 
-### Kiểm thử tự động
+### Bộ kiểm thử tự động
 
-Lệnh `python -B -m unittest discover -s tests -v` chạy đạt 87/87 kiểm thử trong 13 mô-đun. Các kiểm thử lõi đối chiếu hàm đánh giá trực tiếp với CNF trên phép gán, kiểm tra giả định, quay lui, điều kiện lồng, vùng rỗng và đăng ký luật mới. Nhóm kiểm thử phiên chơi bao phủ tính duy nhất, từ chối phán quyết, hủy công việc nền và bộ đo thực nghiệm. Các mô-đun giao diện kiểm tra nhật ký, bản địa hóa, tương tác và sự ổn định của ảnh động.
+Toàn bộ dự án được kiểm tra hồi quy qua lệnh `python -B -m unittest discover -s tests -v` với 87 bài kiểm thử thuộc 13 mô-đun đều vượt qua. Các bài kiểm thử lõi đối chiếu vét cạn hàm `evaluate()` với kết quả giải CNF trên mọi phép gán biến chính, đồng thời kiểm tra lan truyền đơn, quay lui, điều kiện lồng nhiều cấp, vùng rỗng và đăng ký luật mới. Các mô-đun còn lại kiểm tra tính bất biến của `PublicState`, từ chối nước đi đoán mò, hủy tác vụ trên worker nền, chạy bộ thực nghiệm và hiển thị giao diện.
 
-## 5. Thực nghiệm và đánh giá Ordered, Frequency
+## 5. Thực nghiệm và đánh giá hai chiến lược chọn biến
 
-Hai cấu hình tự giải cùng sáu tệp câu đố theo thứ tự cố định, mỗi cấu hình chạy một lượt cho mỗi màn. Môi trường đo là Windows 11, Python 3.14.6 và CPU Intel Core i5-12450HX. Cột N là số hàng, cũng là số cột. Hai bảng ghép theo mã màn và chiến lược chọn biến.
+Nhóm đánh giá hệ thống bằng cách chạy tự động cả hai chiến lược phân nhánh của DPLL (`ordered` và `frequency`) trên cùng bộ sáu câu đố chuẩn theo thứ tự cố định, gồm hai màn $3\times3$, hai màn $4\times4$ và hai màn kiểm tra tải $5\times5$. Toàn bộ 12 lượt chạy chính thức được thực hiện trên cùng một máy tính dùng Windows 11, Python 3.14.6 và vi xử lý Intel Core i5-12450HX.
 
-**Trạng thái kết thúc, kích thước KB cuối và số bước mở thẻ**
+**Trạng thái kết thúc, quy mô KB cuối phiên và số bước suy luận**
 
 | Màn | Chiến lược | N | Trạng thái | Nghiệm | Biến chính | Biến phụ | Mệnh đề | Bước |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -259,10 +311,11 @@ Hai cấu hình tự giải cùng sáu tệp câu đố theo thứ tự cố đ�
 | case-5x5-02 | ordered | 5 | SOLVED | UNIQUE | 25 | 654 | 2045 | 22 |
 | case-5x5-02 | frequency | 5 | SOLVED | UNIQUE | 25 | 654 | 2045 | 22 |
 
-**Chi phí của vòng suy luận và kiểm chứng theo từng lượt chạy**
+**Chi phí tìm kiếm DPLL và thời gian chạy của từng cấu hình**
 
 | Màn | Chiến lược | Gọi SAT | Quyết định | Lan truyền | Quay lui | Thời gian (s) |
 | --- | --- | --- | --- | --- | --- | --- |
+<<<<<<< HEAD
 | case-3x3-01 | ordered | 34 | 48 | 2944 | 4 | 0,047 |
 | case-3x3-01 | frequency | 33 | 40 | 2942 | 4 | 0,060 |
 | case-3x3-02 | ordered | 30 | 34 | 2802 | 15 | 0,071 |
@@ -277,70 +330,106 @@ Hai cấu hình tự giải cùng sáu tệp câu đố theo thứ tự cố đ�
 | case-5x5-02 | frequency | 182 | 647 | 53655 | 37 | 5,540 |
 
 Tổng truy vấn gồm cả tác tử đề xuất và engine kiểm chứng; thời gian bao gồm dựng KB và thực hiện vòng mở thẻ (làm tròn đến ba chữ số thập phân từ kết quả gốc tại `output/experiments/results.json`). Các phép giải ngoại tuyến để kiểm tra nghiệm duy nhất diễn ra sau khi dừng đồng hồ và được loại khỏi cả bốn bộ đếm.
+=======
+| case-3x3-01 | ordered | 34 | 48 | 2944 | 4 | 0.0469 |
+| case-3x3-01 | frequency | 33 | 40 | 2942 | 4 | 0.0598 |
+| case-3x3-02 | ordered | 30 | 34 | 2802 | 15 | 0.0708 |
+| case-3x3-02 | frequency | 30 | 27 | 2693 | 9 | 0.0511 |
+| case-4x4-01 | ordered | 84 | 518 | 29666 | 444 | 1.0145 |
+| case-4x4-01 | frequency | 85 | 287 | 18887 | 8 | 0.5043 |
+| case-4x4-02 | ordered | 93 | 168 | 12568 | 7 | 1.1509 |
+| case-4x4-02 | frequency | 91 | 158 | 12567 | 16 | 1.0898 |
+| case-5x5-01 | ordered | 162 | 193 | 43608 | 18 | 3.4830 |
+| case-5x5-01 | frequency | 164 | 247 | 44288 | 45 | 3.5915 |
+| case-5x5-02 | ordered | 182 | 752 | 55976 | 113 | 6.4323 |
+| case-5x5-02 | frequency | 182 | 647 | 53655 | 37 | 5.5400 |
 
-### Chi phí tìm kiếm trên cùng một câu đố
+Số lần gọi SAT và ba bộ đếm DPLL cộng gộp cả các truy vấn dò bước đi của `LogicAgent` lẫn các truy vấn xác minh độc lập trong `GameEngine.submit`. Cột thời gian đo trọn vòng dựng KB và mở thẻ (làm tròn $10^{-4}$ giây từ tệp gốc `output/experiments/results.json`); riêng bước kiểm tra `check_uniqueness` chạy sau khi dừng đồng hồ nên không tính vào chi phí phiên giải.
+>>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
 
-![Quyết định và quay lui của DPLL. Hai trục ngang có thang đo riêng.](report_assets/chart_decisions_backtracks.png)
+### So sánh hành vi phân nhánh trên cùng câu đố
 
-*Quyết định và quay lui của DPLL. Hai trục ngang có thang đo riêng.*
+![Số quyết định phân nhánh và số lần quay lui của hai chiến lược.](report_assets/chart_decisions_backtracks.png)
 
+*Số quyết định phân nhánh và số lần quay lui của hai chiến lược (hai biểu đồ dùng thang trục ngang riêng).*
+
+<<<<<<< HEAD
 Trên màn 4×4-01, chuyển sang `frequency` giúp giảm từ 518 xuống 287 quyết định và từ 444 xuống 8 lần quay lui, dù số lần gọi SAT tăng nhẹ từ 84 lên 85. Trong lần giải KB ban đầu, `ordered` chọn biến số 1 (xuất hiện 4 lần trong công thức đã rút gọn), trong khi `frequency` chọn biến số 11 — một biến ô trên bàn 4×4 xuất hiện tới 24 lần. Gán biến liên quan đến nhiều mệnh đề có thể buộc thêm các ngưỡng đếm và làm lộ xung đột sớm.
+=======
+Sự khác biệt rõ nhất xuất hiện ở màn `case-4x4-01`: khi chuyển từ `ordered` sang `frequency`, số quyết định phân nhánh giảm từ 518 xuống 287 và số lần quay lui giảm mạnh từ 444 xuống chỉ còn 8 lần, dù tổng số truy vấn SAT nhích từ 84 lên 85. Kiểm tra tại KB mở đầu cho thấy `ordered` phân nhánh ngay vào biến số 1 (chỉ xuất hiện 4 lần trong công thức đã rút gọn), trong khi `frequency` chọn biến số 11 (biến chính của một ô nằm giao nhiều vùng đếm, xuất hiện tới 24 lần). Việc gán sớm biến tham gia nhiều ràng buộc giúp kích hoạt dây chuyền lan truyền đơn qua các ngưỡng đếm và phát hiện nhánh vô nghiệm sớm hơn.
+>>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
 
-Các biến phụ Tseitin cũng tham gia chọn nhánh. Một đầu ra ngưỡng dùng chung ở nhiều cổng có thể có tần suất cao và ảnh hưởng nhiều ràng buộc cùng lúc. Tuy nhiên, số liệu tổng không xác định cổng nào gây ra từng lần cắt nhánh. Trên màn 5×5-02, với cùng 182 truy vấn, frequency giảm từ 752 xuống 647 quyết định và từ 113 xuống 37 lần quay lui, kéo thời gian chạy từ khoảng 6,432 giây xuống 5,540 giây.
+Trong cách cài đặt hiện tại, các biến phụ Tseitin cũng được tính tần suất cùng với biến chính. Một biến ngưỡng dùng chung ở nhiều cổng so sánh thường xuất hiện dày trong mệnh đề và khi được gán sẽ kéo theo nhiều ràng buộc con. Trên màn tải nặng `case-5x5-02`, với cùng 182 lần gọi SAT, `frequency` hạ số quyết định từ 752 xuống 647, giảm số lần quay lui từ 113 xuống 37 và rút ngắn thời gian chạy từ 6,4323 giây xuống còn 5,5400 giây.
 
-Màn 5×5-01 cho kết quả ngược lại. Ordered cần 193 quyết định và 18 lần quay lui, frequency cần 247 và 45. Ngay ở KB đầu tiên, ordered chọn biến số 4 và tìm được mô hình sau hai quyết định. Frequency ưu tiên biến số 18, cần ba quyết định và một lần quay lui. Vì cả hai cùng thử True trước, chọn biến xuất hiện nhiều vẫn có thể đưa bộ giải vào một nhánh thất bại.
+Tuy nhiên, ưu tiên tần suất cao không phải lúc nào cũng thắng thế. Ở màn `case-5x5-01`, `ordered` chỉ tốn 193 quyết định và 18 lần quay lui, còn `frequency` tăng lên 247 quyết định và 45 lần quay lui. Ngay ở truy vấn đầu tiên của màn này, `ordered` chọn biến số 4 và tìm ra nghiệm thỏa mãn sau hai lần rẽ nhánh, trong khi `frequency` chọn biến số 18 nhưng nhánh thử `True` đầu tiên lại dẫn vào ngõ cụt phải quay lui. Vì cả hai chiến lược đều cố định thứ tự thử `True` trước `False`, việc chọn biến có mặt ở nhiều mệnh đề vẫn có thể đẩy bộ giải đi sâu vào một nhánh vô nghiệm trước khi đảo giá trị.
 
-### Thời gian chạy, quy mô CNF và giới hạn
+### Thời gian chạy, quy mô CNF và hạn chế của hệ thống
 
-![Thời gian toàn phiên và số mệnh đề trong KB cuối. Hai cấu hình sinh cùng một CNF cuối cho từng màn.](report_assets/chart_runtime_clauses.png)
+![Thời gian giải toàn màn và tổng số mệnh đề trong KB cuối phiên.](report_assets/chart_runtime_clauses.png)
 
-*Thời gian toàn phiên và số mệnh đề trong KB cuối. Hai cấu hình sinh cùng một CNF cuối cho từng màn.*
+*Thời gian giải toàn màn và tổng số mệnh đề trong KB cuối phiên.*
 
-Cỡ bàn không quyết định toàn bộ chi phí. Hai màn 5×5 cùng cần 22 bước và có số mệnh đề cuối gần nhau (2 068 và 2 045), nhưng màn thứ hai cần nhiều quyết định hơn ở cả hai chiến lược. Thời gian phản ánh chuỗi KB từ lúc mở màn đến khi hoàn tất: ở 4×4-01 giảm từ 1,015 xuống 0,504 giây, còn ở 5×5-01 tăng nhẹ từ 3,483 lên 3,591 giây với frequency. Mỗi lượt chịu ảnh hưởng của tải hệ thống, chi phí xử lý mệnh đề và thứ tự tìm mô hình.
+Kích thước bàn cờ không phải yếu tố duy nhất quyết định thời gian chạy. Hai màn $5\times5$ đều mở 22 thẻ và kết thúc với quy mô KB xấp xỉ nhau (2 068 và 2 045 mệnh đề), nhưng `case-5x5-02` đòi hỏi nhiều phép phân nhánh hơn hẳn nên tốn khoảng 5,54–6,43 giây so với mức 3,48–3,59 giây của `case-5x5-01`. Trên `case-4x4-01`, việc cắt giảm gần như toàn bộ quay lui giúp `frequency` giảm một nửa thời gian (từ 1,0145 xuống 0,5043 giây), trong khi ở các màn $3\times3$ thời gian dưới 0,08 giây nên chênh lệch chủ yếu đến từ chi phí đếm lại tần suất biến và dao động hệ điều hành.
 
-Khi mô hình trả về khác nhau, các dấu mà tác tử đã có nhân chứng cũng có thể khác. Điều này giải thích vì sao số lần gọi SAT đôi khi thay đổi dù hai cấu hình mở cùng số thẻ. Ở màn 4×4-02, frequency dùng ít quyết định hơn (158 so với 168) nhưng quay lui nhiều hơn (16 so với 7). Một chỉ số đơn lẻ không mô tả đủ chi phí của một phiên.
+Ngoài ra, khi hai chiến lược tìm ra các mô hình thỏa mãn khác nhau ở bước đầu, tập giá trị `True`/`False` ghi nhận sẵn cho các biến chính cũng khác nhau, dẫn tới số truy vấn SAT có thể chênh 1–2 lần dù cả hai vẫn mở cùng thứ tự thẻ. Chẳng hạn tại `case-4x4-02`, `frequency` giảm nhẹ số quyết định (158 so với 168) và số lần gọi SAT (91 so với 93) nhưng lại quay lui nhiều hơn (16 so với 7), cho thấy cần quan sát đồng thời nhiều chỉ số thay vì chỉ nhìn riêng số bước hay số mệnh đề.
 
-Cả 12 lượt đều trả SOLVED, và phép kiểm tra ngoại tuyến cho UNIQUE trên cả sáu màn. UNKNOWN có thể xuất hiện khi tri thức công khai cho phép hai giá trị ở mọi ô còn lại. INCONSISTENT xuất hiện khi chính KB vô nghiệm. Bộ đo giữ các trạng thái dừng và TIMEOUT trong kết quả. Hạn mặc định cho một màn là 30 giây, được kiểm tra giữa các bước, kèm hạn riêng cho từng truy vấn SAT.
+Về các trường hợp biên và thất bại theo mục 4.5, cả 12 lượt chạy chuẩn đều đạt `SOLVED` và kiểm định ngoại tuyến đạt `UNIQUE`. Khi gặp câu đố thiếu dữ kiện mở đường hoặc mâu thuẫn, vòng lặp trả về `UNKNOWN` hoặc `INCONSISTENT` và giữ nguyên dòng kết quả trong tệp xuất thay vì loại bỏ. Hạn thời gian mặc định của bộ thực nghiệm là 30 giây cho mỗi màn (kiểm tra giữa các bước mở thẻ, kết hợp hạn riêng trên từng truy vấn SAT) để ghi nhận trạng thái `TIMEOUT` nếu quá hạn.
 
-DPLL hiện quét lại danh sách mệnh đề khi lan truyền và khi rút gọn nhánh. Kỹ thuật theo dõi hai literal trong mỗi mệnh đề (two-watched literals) có thể giảm số mệnh đề cần xét. Bộ giải cũng chưa học mệnh đề từ xung đột hay quay lui không tuần tự như CDCL. Trên sáu màn với một lần đo mỗi cấu hình, có thể so sánh hành vi tìm kiếm cụ thể, nhưng chưa thể ước lượng phân bố thời gian hay chọn một chiến lược tối ưu cho mọi màn.
+Hạn chế chính của bộ giải hiện tại nằm ở cấu trúc dữ liệu của DPLL thuần Python: mỗi bước lan truyền đơn và rút gọn nhánh đều duyệt lại danh sách mệnh đề và sao chép các bộ literal, chưa áp dụng kỹ thuật hai literal canh (*two-watched literals*) hay cơ chế học mệnh đề xung đột và quay lui phi tuần tự như các bộ giải CDCL hiện đại. Bên cạnh đó, mỗi cấu hình mới đo một lượt trên sáu màn đại diện nên phù hợp để phân tích hành vi cắt nhánh tất định hơn là kết luận thống kê cho các lưới kích thước lớn hơn $5\times5$.
 
 ## 6. Giao diện người dùng Desktop Cozy Harbor
 
-### Chọn màn và chơi thủ công
+### Chọn hồ sơ vụ án và chơi thủ công
 
-Cozy Harbor hiển thị tọa độ, tên, nghề nghiệp, trạng thái đã chứng minh và lời khai trên thẻ đang mở. Từ menu hồ sơ, người chơi chọn một trong sáu màn hoặc mở tệp JSON. Chọn một thẻ úp để gửi phán quyết tội phạm hoặc vô tội. Khi chứng minh thành công, thẻ lật để lộ lời khai tiếp theo.
+Giao diện Desktop được thiết kế theo phong cách phố biển sáng (Cozy Harbor), hiển thị trực quan nhãn cột/hàng, chân dung pixel, tên, nghề nghiệp, huy hiệu trạng thái đã chứng minh và nội dung lời khai trên từng thẻ mở. Từ nút chọn vụ án trên thanh tiêu đề, người chơi chuyển nhanh giữa sáu màn chuẩn chia theo ba cỡ bàn hoặc nạp một tệp câu đố JSON bên ngoài. Khi bấm vào thẻ nghi phạm đang úp, hai nút phán quyết xuất hiện ngay trên thẻ; chỉ khi suy luận phản chứng thành công, thẻ mới lật mở lời khai tiếp theo.
 
-![Menu hồ sơ trên bàn 3×3. Các màn được nhóm theo kích thước bàn.](report_assets/ui_3x3_casemenu.png)
+![Menu chọn hồ sơ vụ án trên bàn 3×3, phân nhóm theo kích thước bàn cờ.](report_assets/ui_3x3_casemenu.png)
 
-*Menu hồ sơ trên bàn 3×3. Các màn được nhóm theo kích thước bàn.*
+*Menu chọn hồ sơ vụ án trên bàn 3×3, phân nhóm theo kích thước bàn cờ.*
 
+<<<<<<< HEAD
 Gợi ý xác định nhân vật có thể chứng minh tiếp theo từ cùng trạng thái công khai. Nút “Xem nhân vật” dẫn người chơi đến thẻ cần xét, và thao tác xem gợi ý giữ nguyên số thẻ đã mở.
+=======
+Nút “Gợi ý” gọi `GameEngine.hint()` trên trạng thái công khai hiện thời để tìm nhân vật đầu tiên đã đủ cơ sở chứng minh mà không chạm tới đáp án ẩn. Hộp thoại gợi ý có nút “Xem nhân vật” đưa tiêu điểm tới ô tương ứng nhưng giữ nguyên thẻ ở trạng thái úp để người chơi tự suy nghĩ và ra quyết định.
+>>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
 
-![Hộp gợi ý chỉ đến Gwen, thủ thư ở A3, khi các lời khai đã đủ để xác định trạng thái của cô.](report_assets/ui_hint_modal.png)
+![Hộp thoại gợi ý chỉ tới Gwen (thủ thư tại ô A3) khi các lời khai hiện có đã buộc được trạng thái của ô này.](report_assets/ui_hint_modal.png)
 
-*Hộp gợi ý chỉ đến Gwen, thủ thư ở A3, khi các lời khai đã đủ để xác định trạng thái của cô.*
+*Hộp thoại gợi ý chỉ tới Gwen (thủ thư tại ô A3) khi các lời khai hiện có đã buộc được trạng thái của ô này.*
 
-### Đọc lời khai và theo dõi quá trình giải
+### Tô sáng vùng tham chiếu và theo dõi Sổ giải
 
-![Bàn 4×4 khi chọn lời khai. Viền màu xác định các ô thuộc vùng tham chiếu, còn các ô ngoài vùng được làm mờ.](report_assets/ui_4x4_highlights.png)
+![Bàn 4×4 khi chọn đọc một lời khai: viền màu làm nổi bật vùng tham chiếu, các thẻ ngoài vùng được làm mờ nhẹ.](report_assets/ui_4x4_highlights.png)
 
-*Bàn 4×4 khi chọn lời khai. Viền màu xác định các ô thuộc vùng tham chiếu, còn các ô ngoài vùng được làm mờ.*
+*Bàn 4×4 khi chọn đọc một lời khai: viền màu làm nổi bật vùng tham chiếu, các thẻ ngoài vùng được làm mờ nhẹ.*
 
+<<<<<<< HEAD
 Với lời khai nhiều vùng, màu của từng cụm từ khớp với đường viền trên bàn; chọn hoặc ghim một vùng giúp đọc đúng toán hạng của phép so sánh. Nút “Chạy tự động” (đổi thành “Chạy tiếp” khi tạm dừng) trong sổ tay lần lượt thực hiện các bước đã chứng minh, còn “Làm lại” khởi tạo lại màn từ những thẻ mở ban đầu.
+=======
+Đối với những lời khai ghép nhiều vùng hoặc có điều kiện lồng, mỗi cụm từ chỉ vùng hay nhân vật trong câu chữ đều mang màu khớp với viền khung trên bàn cờ. Người chơi có thể di chuột qua hoặc bấm ghim từng cụm từ để tách riêng toán hạng trái, toán hạng phải của phép so sánh. Nút “Tự động giải” mở lần lượt các bước đã chứng minh, còn nút “Làm lại” đưa màn chơi về các thẻ mở ban đầu.
+>>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
 
-![Bàn 5×5 bên cạnh sổ tay suy luận. Mỗi mục ghi ô vừa được xác định và có nút xem chi tiết.](report_assets/ui_5x5_solver.png)
+![Bàn 5×5 mở kèm bảng Sổ giải ở cạnh phải, ghi lại từng bước chứng minh và truy vấn DPLL.](report_assets/ui_5x5_solver.png)
 
-*Bàn 5×5 bên cạnh sổ tay suy luận. Mỗi mục ghi ô vừa được xác định và có nút xem chi tiết.*
+*Bàn 5×5 mở kèm bảng Sổ giải ở cạnh phải, ghi lại từng bước chứng minh và truy vấn DPLL.*
 
 ### Điều phối luồng nền, nạp tệp JSON và xuất nhật ký
 
-Cửa sổ chính tổ chức bàn chơi trên `QMainWindow` và gắn sổ tay suy luận dưới dạng bảng neo `QDockWidget` ở cạnh phải [7]. Sổ tay ẩn mặc định để ưu tiên diện tích bàn khi chơi thủ công, và chỉ mở khi người chơi chọn “Sổ giải” hoặc “Tự động giải”. Khi đóng sổ tay, đồng hồ tự giải lập tức tạm dừng để không tự mở thêm thẻ ngoài tầm quan sát.
+Cửa sổ chính đặt bàn chơi trên `QMainWindow` và bố trí Sổ giải dưới dạng bảng neo `QDockWidget` ở cạnh phải [7]. Bảng này ẩn mặc định để dành trọn không gian cho bàn cờ khi người chơi tự suy luận, và chỉ mở ra khi bấm “Sổ giải” hoặc “Tự động giải”. Nếu đóng Sổ giải khi chế độ tự động đang chạy, bộ hẹn giờ sẽ tự tạm dừng ngay để tránh mở tiếp các thẻ khi người dùng không theo dõi.
 
+<<<<<<< HEAD
 Bộ điều phối `GameController` cấp một mã phiên (`generation`) cho mỗi lần nạp hoặc làm lại màn và một mã yêu cầu tăng dần cho từng thao tác gợi ý, phán quyết hoặc giải tiếp. Trên worker nền, mỗi yêu cầu thao tác trên bản sao `GameEngine.fork()` trước khi phát tín hiệu hoàn tất kèm thông số KB mới. Nếu người chơi đổi màn khi phép giải đang chạy, cả cờ hủy trong DPLL lẫn bước kiểm tra mã phiên đều ngăn kết quả cũ ghi đè lên phiên mới.
 
 Khi mở tệp câu đố ngoài qua hộp thoại tệp, `load_puzzle` kiểm tra phiên bản định dạng (`schema_version`), kích thước $N\in\{3,4,5\}$, thứ tự tên nhân vật theo bảng chữ cái từng hàng, tính hợp lệ của mọi vùng tham chiếu và tính đúng của từng lời khai dưới nghiệm ẩn trước khi thay thế phiên hiện tại. Một tệp hỏng hoặc mâu thuẫn sẽ hiển thị hộp cảnh báo và giữ nguyên màn đang chơi.
 
 Ở chân sổ tay, nút “Thông số KB” bật tắt dòng tổng hợp số biến chính, biến phụ Tseitin và mệnh đề hiện hành, còn nút “Xuất JSON” ghi nguyên vẹn danh sách `engine.trace` ra đĩa. Dữ liệu xuất ra có cùng cấu trúc JSON với các tệp nhật ký trong `output/experiments/`, giúp đối chiếu trực tiếp từng truy vấn SAT giữa phiên tương tác trên giao diện và bộ thực nghiệm dòng lệnh.
+=======
+Lớp `GameController` quản lý đồng bộ giữa giao diện và luồng tính toán bằng cách gắn một mã phiên (`generation`) cho mỗi lần nạp hoặc khởi động lại màn, kèm mã yêu cầu tăng dần cho từng thao tác gợi ý, gửi phán quyết hay giải từng bước. Trên luồng `EngineWorker`, mọi phép gọi SAT đều thực hiện trên bản sao `GameEngine.fork()` rồi mới gửi kết quả cùng số liệu KB về luồng giao diện. Nhờ kết hợp cờ hủy trong DPLL với kiểm tra mã phiên ở đầu nhận, việc chuyển nhanh sang màn khác khi đang giải bàn lớn không gây xung đột dữ liệu.
+
+Khi người dùng nạp tệp JSON tùy chỉnh từ hộp thoại mở tệp, hàm `load_puzzle` kiểm tra đầy đủ phiên bản cấu trúc, kích thước $N\in\{3,4,5\}$, quy tắc xếp tên theo thứ tự bảng chữ cái từng hàng, tính hợp lệ của các vùng và sự nhất quán của toàn bộ lời khai đối với nghiệm chuẩn trước khi khởi tạo phiên mới. Nếu tệp đầu vào sai định dạng hoặc chứa lời khai mâu thuẫn, chương trình báo lỗi rõ vị trí trường hỏng và giữ nguyên ván chơi hiện tại.
+
+Ở cuối Sổ giải, nút “Thông số KB” cho xem nhanh số biến chính, biến phụ Tseitin và tổng số mệnh đề CNF ở trạng thái hiện hành, còn nút “Xuất JSON” lưu toàn bộ danh sách `engine.trace` ra tệp ngoài. Định dạng tệp xuất trùng khớp với các tệp nhật ký trong `output/experiments/`, thuận tiện cho việc kiểm tra lại từng giả định UNSAT của một bước giải bất kỳ.
+>>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
 
 ## Tài liệu tham khảo
 
@@ -357,22 +446,34 @@ Khi mở tệp câu đố ngoài qua hộp thoại tệp, `load_puzzle` kiểm t
 11. TranTai35. [Griductive Solver](https://github.com/TranTai35/griductive-solver).
 12. WadeWartz. [Griductive-Solver](https://github.com/WadeWartz/Griductive-Solver).
 
-## A. Phụ lục về AI tạo sinh và cách kiểm chứng
+## A. Phụ lục về việc sử dụng công cụ AI tạo sinh
 
-### Lập trình, tích hợp và soạn báo cáo
+### Hỗ trợ tra cứu kỹ thuật, giao diện và kiểm thử biên
 
+<<<<<<< HEAD
 Trong quá trình thực hiện, nhóm tự thiết kế kiến trúc ranh giới công khai/ẩn, đặc tả luật và trực tiếp cài đặt các thuật toán lõi (phân giải vùng, đánh giá ngữ nghĩa, mã hóa CNF và bộ giải DPLL). Nhóm sử dụng Codex và Antigravity như công cụ hỗ trợ gợi ý khung kiểm thử, đối chiếu biên điều kiện và rà soát tính nhất quán cho giao diện cũng như báo cáo. Khi đặt yêu cầu cho công cụ, nhóm luôn nêu rõ ranh giới dữ liệu công khai, đầu ra mong đợi và các trường hợp phải từ chối.
 
 Chẳng hạn, khi rà soát phần suy luận, nhóm đặt yêu cầu: “Chỉ truyền `PublicState` cho tác tử; với mỗi phán quyết, thử giả định phủ định và làm rõ điều kiện trả về `UNKNOWN` hoặc `INCONSISTENT`.” Tương tự, với nhóm luật mở rộng, yêu cầu nêu đủ cả sáu toán tử so sánh và cho phép `CONDITIONAL` nhận hai cây manh mối bất kỳ. Mọi phần mã và gợi ý thu được đều do nhóm kiểm chứng lại bằng phản ví dụ, đối chiếu phép gán hoàn chỉnh, bộ kiểm thử tự động và nhật ký thực nghiệm chạy trực tiếp trên máy.
+=======
+Theo quy định của đề bài, toàn bộ các mô-đun thuật toán cốt lõi trong `griductive/engine/` — gồm phân giải vùng, đánh giá ngữ nghĩa trực tiếp, mã hóa CNF bằng cổng Tseitin với quy hoạch động đếm ngưỡng unary, bộ giải DPLL và cơ chế suy luận phản chứng của `LogicAgent` — đều do các thành viên trong nhóm tự thiết kế, cài đặt và đối chiếu theo phân công tại Bảng 1. Trong quá trình phát triển phần phụ trợ, nhóm sử dụng mô hình ngôn ngữ lớn như một trợ lý tra cứu API giao diện PySide6 (tổ chức bố cục co giãn, vẽ thẻ tùy biến, giao tiếp `QThread` qua signal), gợi ý thêm các ca kiểm thử biên và rà soát lỗi trình bày tài liệu.
 
-### Đồ họa, sửa ảnh có mặt nạ và nghiệm thu
+Khi đặt câu hỏi cho công cụ AI, nhóm luôn nêu rõ ràng buộc đầu vào công khai và tự kiểm tra lại bằng mã kiểm thử độc lập thay vì chép nguyên đoạn mã sinh tự động. Chẳng hạn, một yêu cầu gợi ý ca kiểm thử biên được đặt như sau: *“Đề xuất các trường hợp biên dễ sót khi kiểm thử bộ phân giải vùng tập hợp (UNION, INTERSECTION, DIFFERENCE) và manh mối CONDITIONAL lồng nhau trên lưới $N\times N$, sao cho có thể kiểm tra chéo giữa hàm evaluate() trực tiếp và nghiệm của công thức CNF.”* Từ danh sách gợi ý, nhóm chọn lọc và tự viết các bài kiểm thử vét cạn bảng chân trị trên bàn nhỏ, kiểm tra vùng hiệu rỗng, giới hạn độ sâu lồng 12 cấp và đối chiếu từng bước trên nhật ký thực nghiệm thật.
+>>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
 
+### Tạo tài sản đồ họa nhân vật và kiểm định khung hình
+
+<<<<<<< HEAD
 Nhật ký `docs/AI-PROMPTS.md` lưu các prompt tạo atlas, ảnh tham chiếu, lỗi cần chỉnh sửa và thứ tự khung hình. Ở bản phác thảo biểu cảm ban đầu (9 khung cho Ada), nhóm yêu cầu khóa căn chỉnh khung hình với đoạn trích nguyên văn: “keep face center, eye line, head scale, hair silhouette and shoulders in exactly same position across all nine frames”, nhằm tránh tình trạng nhân vật bị nhảy vị trí khi chuyển biểu cảm.
 
 Khi chuyển sang phong cách pixel chính thức với 7 khung hình cho mỗi nhân vật, nhóm chỉ định rõ số hàng/cột, nền RGBA trong suốt, phần trang phục thay đổi, biên mỗi ô và vùng cần để trống cho ImageGen. Với hiệu ứng chớp mắt, Stable Diffusion 1.5 Inpainting chỉ tái tạo vùng mặt nạ quanh mắt, giữ nguyên pixel ngoài mặt nạ và kênh alpha gốc [8]. Khi cập nhật lại 7 khung của nhân vật Finn, nhóm đối chiếu 24 hàng nhân vật còn lại theo từng byte, đồng thời kiểm tra mép alpha và chiều cao tư thế. Toàn bộ ảnh giao diện ở mục 6 là ảnh chụp trực tiếp từ chương trình đang chạy.
+=======
+Để xây dựng bộ hình ảnh thống nhất cho 25 nhân vật và 25 nghề nghiệp mà không lấy tài sản từ trò chơi thương mại, nhóm sử dụng công cụ sinh ảnh kết hợp chỉnh sửa vùng chọn (*inpainting*) và lưu lại nhật ký câu lệnh trong `docs/AI-PROMPTS.md`. Một đoạn câu lệnh tiếng Anh dùng để giữ cố định vị trí khuôn mặt giữa các khung biểu cảm của nhân vật Ada là: *“keep face center, eye line, head scale, hair silhouette and shoulders in exactly same position across all frames, transparent RGBA background”*.
 
-### Thuyết minh và nguồn đối chiếu
+Với các khung nhắm mắt chớp tự nhiên, nhóm dùng mô hình Stable Diffusion 1.5 Inpainting [8] kèm mặt nạ chỉ khoanh vùng mí mắt để giữ nguyên toàn bộ điểm ảnh trang phục và kênh alpha bên ngoài mặt nạ. Sau bước đóng gói vào atlas `assets/characters/pixel/sprites.png` ($25\times7$ ô kích thước $256\times256$), nhóm viết mô-đun `test_sprite_registration.py` kiểm tra tự động đường viền trong suốt 8 pixel ở bốn cạnh mỗi ô và độ lệch chiều cao giữa các tư thế không vượt quá ngưỡng cho phép. Toàn bộ hình chụp trong mục 6 đều được chụp trực tiếp từ cửa sổ chương trình khi đang chạy thật.
+>>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
 
-ElevenLabs TTS chuyển kịch bản tiếng Việt thành từng đoạn thoại để khớp với thao tác trên bàn. Quy trình đo thời lượng từng tệp âm thanh, ghép đoạn vào trục hình 24 khung/giây và dùng các khoảng ngắt giọng để căn phụ đề. Các cảnh chọn màn, gợi ý, phán quyết bị từ chối và tự giải được kiểm tra theo trạng thái cửa sổ và thông báo của engine. Âm thanh và hình minh họa phục vụ trình bày, còn phán quyết trong phần mềm luôn xuất phát từ DPLL.
+### Tổng hợp giọng đọc thuyết minh và đối chiếu nguồn tham khảo
 
-Tài liệu `docs/REFERENCES.md` ghi phạm vi đã khảo sát. Nhóm tham khảo hướng dẫn thiết kế giao diện trò chơi [9], đọc phần mô hình và điều phối của clues-by-sam-solver [10], đồng thời khảo sát README và cấu trúc hai dự án Griductive [11], [12]. Khi đối chiếu một ý tưởng từ nguồn ngoài, nhóm dùng luật của đề và kết quả thử trên chính mã Python của nhóm để quyết định cách áp dụng.
+Trong khâu dựng video trình diễn, nhóm viết kịch bản thuyết minh tiếng Việt theo sáu phần tương ứng với các thao tác trên giao diện, sau đó dùng dịch vụ chuyển văn bản thành giọng nói (ElevenLabs TTS) để sinh 16 đoạn âm thanh khớp thời lượng với hình quay màn hình 24 khung/giây và chèn phụ đề tiếng Việt. Công cụ âm thanh và hình ảnh chỉ phục vụ phần trình bày trực quan; mọi kết quả gợi ý, từ chối phán quyết hay tự giải xuất hiện trên video đều do chính bộ giải DPLL của chương trình tính toán trực tiếp.
+
+Danh sách đầy đủ các tài liệu và kho mã mở mà nhóm đã đọc khảo sát được ghi nhận tại `docs/REFERENCES.md`, bao gồm bộ hướng dẫn bố cục trò chơi giải đố [9] và ba dự án mã mở cùng chủ đề [10], [11], [12]. Qua khảo sát, nhóm nhận thấy có dự án ngoài dùng thư viện Z3 hoặc còn chứa màn chơi đa nghiệm, do đó nhóm chỉ tham khảo cách tổ chức trạng thái tổng quát và tự xây dựng toàn bộ bộ câu đố cũng như thuật toán CNF/DPLL đáp ứng đúng yêu cầu của học phần.

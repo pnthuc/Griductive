@@ -1,8 +1,8 @@
 \section{Biểu diễn logic tự động và chuyển đổi sang CNF}
 
-\subsection{Từ quan hệ hai ngôi đến mệnh đề}
+\subsection{Biến đổi các manh mối quan hệ hai ngôi}
 
-Mã hóa SAME bắt đầu từ hai chiều kéo theo. Mỗi chiều loại một khả năng trái với điều kiện “cùng trạng thái”. Thay phép kéo theo bằng phép tuyển cho hai mệnh đề sau.
+Mọi lời khai đang mở đều được biên dịch tự động sang CNF thay vì viết sẵn công thức theo màn. Với \texttt{SAME}, quan hệ tương đương $C_A\leftrightarrow C_B$ được tách thành hai chiều kéo theo rồi áp dụng $p\to q\equiv \neg p\lor q$:
 
 \[
 \begin{aligned}
@@ -12,7 +12,7 @@ Mã hóa SAME bắt đầu từ hai chiều kéo theo. Mỗi chiều loại mộ
 \end{aligned}
 \]
 
-Với DIFFERENT, ít nhất một biến phải đúng và ít nhất một biến phải sai. Hai mệnh đề này lần lượt loại trường hợp cả hai vô tội và cả hai là tội phạm.
+Với \texttt{DIFFERENT}, điều kiện hai người trái trạng thái tương đương có ít nhất một người là tội phạm và không thể cả hai cùng là tội phạm:
 
 \[
 \begin{aligned}
@@ -22,9 +22,9 @@ Với DIFFERENT, ít nhất một biến phải đúng và ít nhất một bi�
 \end{aligned}
 \]
 
-\subsection{Đếm trực tiếp trên ba ô}
+\subsection{Ví dụ mã hóa đếm tổ hợp trực tiếp trên vùng nhỏ}
 
-Viết $A,B,C$ cho ba biến của vùng. Để có ít nhất hai tội phạm, mọi cặp ô đều phải chứa một tội phạm. Để có nhiều nhất hai, bộ ba phải chứa một người vô tội. Lấy hội của hai điều kiện thu được
+Xét vùng ba biến $\{A,B,C\}$ với yêu cầu đúng $k=2$ tội phạm. Để có ít nhất 2 tội phạm thì mọi cặp 2 ô đều phải chứa ít nhất một biến đúng; để có nhiều nhất 2 thì cả 3 ô không thể cùng đúng:
 
 \[
 \begin{aligned}
@@ -34,22 +34,22 @@ Viết $A,B,C$ cho ba biến của vùng. Để có ít nhất hai tội phạm,
 \end{aligned}
 \]
 
-Tổng quát, mỗi tập con cỡ $n-k+1$ cho một mệnh đề dương và mỗi tập con cỡ $k+1$ cho một mệnh đề âm. Vì $\binom{n}{n-k+1}=\binom{n}{k-1}$, số mệnh đề là $\binom{n}{k-1}+\binom{n}{k+1}$, quy ước hệ số bằng 0 ngoài miền. Với $n=25,\ k=12$, riêng một manh mối đã cần $9\,657\,700$ mệnh đề.
+Tổng quát trên vùng $n$ ô, mã hóa tổ hợp trực tiếp sinh $\binom{n}{n-k+1}=\binom{n}{k-1}$ mệnh đề dương và $\binom{n}{k+1}$ mệnh đề âm, cộng lại là $\binom{n}{k-1}+\binom{n}{k+1}$ mệnh đề (bằng 0 ngoài miền chỉ số). Với $n=25,\ k=12$, riêng một lời khai đã cần $9\,657\,700$ mệnh đề nên không phù hợp cho bàn lớn.
 
 \clearpage
 \begingroup\setstretch{1.25}
 
-\subsection{Bộ đếm ngưỡng unary và cổng Tseitin}
+\subsection{Quy hoạch động đếm ngưỡng unary và cổng Tseitin}
 
-Gọi $T(i,k)$ là mệnh đề “ít nhất $k$ trong $i$ ô đầu là tội phạm”. Ngưỡng 0 luôn đúng, còn $k>i$ luôn sai. Khi thêm ô thứ $i$, ngưỡng $k$ hoặc đã đạt trước đó, hoặc vừa đạt nhờ ô này là tội phạm và $i-1$ ô đầu đã đủ $k-1$. Do đó
+Để giữ kích thước CNF bậc đa thức $O(n^2)$ và tái sử dụng cho phép so sánh vùng, \texttt{Encoder} lập bảng quy hoạch động các ngưỡng unary $T(i,k)$ — mệnh đề “ít nhất $k$ trong $i$ ô đầu của vùng là tội phạm”, với $T(i,0)=\mathrm{True}$ và $T(i,k)=\mathrm{False}$ khi $k>i$. Khi thêm ô thứ $i$ ($C_i$), ngưỡng $k$ đạt được nếu $i-1$ ô trước đã đạt $k$, hoặc đã đạt $k-1$ và $C_i$ đúng:
 
 \[
 T(i,k)\leftrightarrow T(i-1,k)\lor\bigl(C_i\land T(i-1,k-1)\bigr).
 \]
 
-Mỗi trạng thái của bảng tam giác cần nhiều nhất một cổng AND và một cổng OR hai đầu vào. Tổng số cổng và mệnh đề cho một vùng là $O(n^2)$. \texttt{Encoder} tái sử dụng bộ ngưỡng theo bộ ô đã sắp thứ tự và cổng theo loại cùng các literal đầu vào. Bộ cấp biến chung bắt đầu tại $N^2+1$. Hằng, literal trùng và hai literal đối nhau được rút gọn trước khi cấp biến.
+Mỗi ô $(i,k)$ tạo tối đa một cổng \texttt{AND} và một cổng \texttt{OR} hai đầu vào. Biến phụ được cấp từ $N^2+1$ trong một \texttt{Encoder} chung cho cả $KB_t$; hàm \texttt{gate()} rút gọn hằng, khử literal lặp, triệt tiêu cặp đối dấu và tra bảng băm để dùng lại cổng trùng nhau.
 
-Theo phép biến đổi Tseitin \cite{tseitin1983complexity}, mỗi đầu ra phụ $z$ được ràng buộc theo cả hai chiều. Ví dụ với $z\leftrightarrow(a\land b)$ và $w\leftrightarrow(a\lor b)$, ta có
+Theo phép biến đổi Tseitin \cite{tseitin1983complexity}, đầu ra phụ được ràng buộc hai chiều để an toàn cả dưới phép phủ định. Với $z\leftrightarrow(a\land b)$ và $w\leftrightarrow(a\lor b)$, ta có:
 
 \[
 \begin{aligned}
@@ -58,16 +58,20 @@ Theo phép biến đổi Tseitin \cite{tseitin1983complexity}, mỗi đầu ra p
 \end{aligned}
 \]
 
+<<<<<<< HEAD
 Đặt $T_R(k)=T(|R|,k)$. Ba ràng buộc “ít nhất”, “nhiều nhất” và “đúng bằng” lần lượt nhận literal hoặc biểu thức $T_R(k)$, $\neg T_R(k+1)$ và $T_R(k)\land\neg T_R(k+1)$. Trong cài đặt thực tế, cả các manh mối hai ngôi như \texttt{SAME} và \texttt{DIFFERENT} cũng được biểu diễn qua \texttt{Encoder.gate} để kết hợp trực tiếp bên trong manh mối điều kiện. Bộ mã hóa buộc đầu ra của mỗi manh mối công khai bằng một mệnh đề đơn; đầu ra hằng sai sinh mệnh đề rỗng, còn đầu ra hằng đúng không cần thêm mệnh đề.
+=======
+Đặt $T_R(k)=T(|R|,k)$. Ba mẫu \texttt{AT\_LEAST}, \texttt{AT\_MOST} và \texttt{EXACTLY} lần lượt trả về $T_R(k)$, $\neg T_R(k+1)$ và $T_R(k)\land\neg T_R(k+1)$. Đầu ra mỗi lời khai công khai được ép bằng một mệnh đề đơn (nếu hằng sai thì thêm mệnh đề rỗng, hằng đúng thì bỏ qua).
+>>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
 
-\subsection{Mã hóa các manh mối mở rộng}
+\subsection{Mã hóa các manh mối mở rộng và kiểm chứng độc lập}
 
-Số tội phạm trong $R_1$ lớn hơn hoặc bằng số trong $R_2$ khi mọi ngưỡng đạt ở $R_2$ đều đạt ở $R_1$. Quan hệ này tương đương
+Trong \texttt{COMPARISON}, số tội phạm của $R_1$ lớn hơn hoặc bằng $R_2$ khi mọi ngưỡng $k\ge 1$ đạt ở $R_2$ đều đạt ở $R_1$:
 
 \[
 \bigwedge_{k=1}^{|R_2|}\bigl(\neg T_{R_2}(k)\lor T_{R_1}(k)\bigr).
 \]
 
-Đổi hai vùng cho quan hệ $\le$, lấy hội hai chiều cho dấu bằng, rồi phủ định quan hệ tương ứng cho $\ne$, $<$ hoặc $>$. Với điều kiện lồng, bộ mã hóa xây hai đầu ra $r_{\mathrm{if}},r_{\mathrm{then}}$ rồi tạo cổng cho $\neg r_{\mathrm{if}}\lor r_{\mathrm{then}}$. Độc lập với CNF, \texttt{evaluate()} tính giá trị luật trực tiếp trên phép gán hoàn chỉnh bằng so sánh Boolean, đếm ô hoặc đánh giá đệ quy hai vế. Các kiểm thử đối chiếu hai cách tính.
+Hoán vị hai vùng cho $\le$, lấy hội hai chiều cho $=$, và phủ định để được $\ne$, $<$ hoặc $>$. Với \texttt{CONDITIONAL}, bộ mã hóa đệ quy lấy hai đầu ra $r_{\mathrm{if}},r_{\mathrm{then}}$ rồi ghép cổng $\neg r_{\mathrm{if}}\lor r_{\mathrm{then}}$. Độc lập với CNF, mỗi lớp đều có hàm \texttt{evaluate()} tính trực tiếp trên phép gán đầy đủ để kiểm thử chéo.
 
 \par\endgroup

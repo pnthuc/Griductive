@@ -61,7 +61,7 @@ class NoticePanel(QFrame):
 
 
 class PortraitVignette(QWidget):
-    """Cute framed chibi character vignette inside Hint / Notice modals."""
+    """Framed character portrait vignette inside Hint and Notice modals."""
 
     def __init__(self, portrait, cell_text='', parent=None):
         super().__init__(parent)
@@ -78,7 +78,7 @@ class PortraitVignette(QWidget):
         p.setPen(QPen(QColor('#BDD3DF'), 1.6))
         p.drawRoundedRect(box, 12.0, 12.0)
 
-        # Clip cute pixel sprite cleanly inside vignette (no stray background oval!)
+        # Clip pixel portrait inside the rounded vignette bounds
         p.save()
         clip = QPainterPath()
         clip.addRoundedRect(box.adjusted(2, 2, -2, -2), 10.0, 10.0)

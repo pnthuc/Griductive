@@ -1,10 +1,14 @@
 \section{Kế hoạch dự án, phân công và kiến trúc hệ thống}
 
+<<<<<<< HEAD
 Một lượt chơi chỉ hợp lệ khi người chơi hoặc tác tử chứng minh được trạng thái của một nhân vật từ những lá bài đã mở. Nhóm triển khai cùng một quy tắc cho chế độ chơi thủ công, chức năng gợi ý và chế độ tự động giải, theo yêu cầu của đồ án CSC14003 \cite{csc14003_spec}. Cách lật thẻ và chọn lời khai tham khảo Griductive và Clues by Sam \cite{griductive_game,cluesbysam}.
+=======
+Trong Griductive, người chơi chỉ mở được một thẻ nghi phạm khi trạng thái của nhân vật đó là hệ quả logic bắt buộc từ các dữ kiện đã mở. Nhóm xây dựng chương trình áp dụng chung quy tắc không đoán mò này cho thao tác chơi tay, gợi ý và tự động giải theo đề bài CSC14003 \cite{csc14003_spec}, kết hợp tham khảo cách lật thẻ và tô sáng vùng của Griductive và Clues by Sam \cite{griductive_game,cluesbysam}.
+>>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
 
-\subsection{Kế hoạch và mức hoàn thành}
+\subsection{Kế hoạch thực hiện và mức độ hoàn thành}
 
-Nhóm thống nhất giao diện dữ liệu giữa bàn chơi và tác tử trước khi phát triển song song ba mô-đun lõi. Sau khi tích hợp bộ mã hóa, bộ giải SAT và cơ chế mở thẻ, nhóm tích hợp giao diện Desktop, chạy kiểm thử, đo sáu màn chơi rồi đối chiếu nhật ký để lập báo cáo và dựng video.
+Nhóm thống nhất trước giao diện dữ liệu giữa bàn chơi và bộ suy luận để phát triển song song ba mô-đun lõi (hệ thống vùng, mã hóa CNF và DPLL). Sau khi ghép nối và đối chiếu với bộ đánh giá ngữ nghĩa trực tiếp, nhóm hoàn thiện giao diện Desktop, đo thực nghiệm sáu màn chơi rồi tổng hợp báo cáo và dựng video.
 
 \begin{table}[H]
 \centering\small\singlespacing
@@ -15,16 +19,20 @@ Nhóm thống nhất giao diện dữ liệu giữa bàn chơi và tác tử tr�
 \toprule
 \textbf{Thành viên} & \textbf{MSSV} & \textbf{Phần việc phụ trách} & \textbf{Hoàn thành} \\
 \midrule
-Phan Ngọc Thức & 24120228 & Kiến trúc chung, giao diện Desktop Cozy Harbor, thực nghiệm, báo cáo và video. & 100\% \\
-Nguyễn Lê Minh Quân & 24120219 & Tổ chức thực nghiệm, so sánh hai chiến lược chọn biến, phân tích số liệu, báo cáo và video. & 100\% \\
-Tống Phúc Thiện & 24120141 & Phân giải vùng và phép tập hợp, đánh giá ngữ nghĩa, điều phối GameEngine và kiểm tra nghiệm duy nhất. & 100\% \\
-Bùi Phương Nam & 24120502 & Bộ giải DPLL với hai chiến lược chọn biến và suy luận phản chứng của LogicAgent. & 100\% \\
-Phan Gia Phúc & 24120503 & Cổng Tseitin, bộ đếm ngưỡng bằng quy hoạch động và mã hóa tất cả dạng manh mối sang CNF. & 100\% \\
+Phan Ngọc Thức & 24120228 & Kiến trúc dự án, giao diện Desktop Cozy Harbor, thực nghiệm, báo cáo và video. & 100\% \\
+Nguyễn Lê Minh Quân & 24120219 & Chạy thực nghiệm, đối sánh hai chiến lược chọn biến, phân tích số liệu, báo cáo và video. & 100\% \\
+Tống Phúc Thiện & 24120141 & Hệ thống vùng và phép tập hợp, hàm đánh giá ngữ nghĩa, \texttt{GameEngine} và kiểm tra nghiệm duy nhất. & 100\% \\
+Bùi Phương Nam & 24120502 & Bộ giải DPLL với hai chiến lược chọn biến và suy luận phản chứng của \texttt{LogicAgent}. & 100\% \\
+Phan Gia Phúc & 24120503 & Cổng Tseitin, bộ đếm ngưỡng quy hoạch động và biên dịch toàn bộ mẫu manh mối sang CNF. & 100\% \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
+<<<<<<< HEAD
 Tỷ lệ hoàn thành trong bảng được các thành viên thống nhất và ghi nhận tại \texttt{docs/team.json}. Theo công thức tính điểm cá nhân bằng điểm nhóm nhân với tỷ lệ hoàn thành, với mức 100\%, mỗi thành viên nhận trọn điểm nhóm.
+=======
+Bảng trên khớp với \texttt{docs/team.json}. Điểm cá nhân bằng điểm nhóm nhân với tỷ lệ hoàn thành (ví dụ điểm nhóm 9,0 với mức 90\% nhận 8,1 điểm). Cả năm thành viên hoàn thành trọn phần việc nên cùng đạt 100\%.
+>>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
 
 \begin{center}\fbox{\begin{minipage}{.91\linewidth}
 \textbf{Video trình diễn trên Google Drive}\\
@@ -33,27 +41,40 @@ Liên kết xem:\par{\footnotesize\url{https://drive.google.com/file/d/1Y-84FGh_
 
 \clearpage
 
-\subsection{Quyền truy cập dữ liệu và luồng xử lý}
+\subsection{Phân tách dữ liệu ẩn, công khai và luồng xử lý}
 
 \begin{table}[H]
 \centering\small\singlespacing
-\caption{Trách nhiệm và dữ liệu qua từng thành phần}
+\caption{Trách nhiệm và phạm vi dữ liệu của từng thành phần}
 \smallskip
 \renewcommand{\arraystretch}{1.23}
 \begin{tabularx}{\linewidth}{@{}l >{\raggedright\arraybackslash}X@{}}
 \toprule
-\textbf{Thành phần} & \textbf{Dữ liệu và trách nhiệm} \\
+\textbf{Thành phần} & \textbf{Dữ liệu nắm giữ và nhiệm vụ} \\
 \midrule
+<<<<<<< HEAD
 \texttt{GameEngine} & Giữ \texttt{PrivatePuzzle}, nghiệm đầy đủ, lời khai chưa mở và nhật ký các bước đã chấp nhận; tạo bản sao trạng thái công khai để kiểm tra từng yêu cầu. \\
 \texttt{PublicState} & Đối tượng bất biến chứa thông tin bàn, nhân vật, các trạng thái đã biết và lời khai đã mở; các cấu trúc dữ liệu lồng bên trong cũng ở dạng bất biến (\texttt{freeze}). \\
 \texttt{LogicAgent} & Chỉ nhận trạng thái công khai và bộ xử lý luật; dựng KB, gọi SAT và chứng minh hoặc từ chối phán quyết. \\
 Giao diện Desktop & Cửa sổ PySide6 (Cozy Harbor) điều phối phiên trên worker nền và vẽ lại bàn từ dữ liệu công khai. \\
+=======
+\texttt{GameEngine} & Giữ đối tượng \texttt{PrivatePuzzle} gồm đáp án ẩn, các lời khai chưa mở và nhật ký nước đi hợp lệ. Trích xuất trạng thái công khai ở mỗi lượt kiểm tra. \\
+\texttt{PublicState} & Cấu trúc bất biến chứa kích thước bàn, danh sách nhân vật, các trạng thái đã chứng minh và lời khai đã lật. Các từ điển và danh sách con đều bị khóa sửa đổi. \\
+\texttt{LogicAgent} & Chỉ nhận \texttt{PublicState} và bộ đăng ký luật chơi để tạo công thức CNF, gọi DPLL và kết luận chấp nhận hay bác bỏ phán quyết. \\
+Giao diện Desktop & Ứng dụng PySide6 (Cozy Harbor) gửi yêu cầu suy luận qua luồng nền và cập nhật hiển thị hoàn toàn dựa trên dữ liệu công khai. \\
+>>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
 \bottomrule
 \end{tabularx}
 \end{table}
 
+<<<<<<< HEAD
 Khi người chơi gửi một phán quyết, engine chuyển trạng thái công khai hiện tại cho một tác tử kiểm chứng độc lập. Chỉ sau khi có chứng minh, engine mới đối chiếu nghiệm riêng để phát hiện dữ liệu bất nhất, ghi trạng thái, mở lời khai và thêm một bước vào nhật ký; mọi đề nghị bị bác đều không làm lộ nội dung thẻ.
 
 Trong giao diện, \texttt{EngineWorker} chạy hàng đợi tuần tự trong \texttt{QThread} và gửi kết quả về cửa sổ qua signal của Qt \cite{qtforpython6}. Mỗi tác vụ chạy trên bản sao \texttt{GameEngine.fork()}, dùng chung câu đố bất biến nhưng tách riêng trạng thái, lời khai đã mở và danh sách nhật ký. Khi đổi màn hoặc hủy yêu cầu, cờ hủy được kiểm tra cả trong DPLL lẫn trước khi ghi phán quyết để \texttt{SolverCancelled} dừng phép tìm kiếm cũ, đồng thời mã phiên (\texttt{generation}) và mã yêu cầu giúp cửa sổ bỏ qua các kết quả đến muộn.
+=======
+Khi người chơi chọn phán quyết cho một ô đang úp, \texttt{GameEngine} trích xuất \texttt{PublicState} hiện thời chuyển cho một \texttt{LogicAgent} kiểm chứng độc lập. Chỉ khi phán quyết được chứng minh là bắt buộc, engine mới đối chiếu đáp án gốc để phòng dữ liệu lỗi, mở lời khai của ô đó và ghi thêm một bước vào nhật ký. Mọi nước đi chưa đủ cơ sở hoặc mâu thuẫn đều giữ nguyên bàn và không làm lộ lời khai ẩn.
 
-Mọi thao tác trên cửa sổ, bộ thực nghiệm dòng lệnh và bộ kiểm thử đều gọi chung lõi kiểm chứng này. Vì vậy, lời giải và nhật ký có thể đối chiếu trực tiếp từ cùng một tập đầu vào.
+Để giao diện không bị khựng trên bàn $5\times5$, \texttt{EngineWorker} xử lý tuần tự các yêu cầu trong \texttt{QThread} riêng và báo kết quả qua signal của Qt \cite{qtforpython6}. Mỗi tác vụ chạy trên bản sao \texttt{GameEngine.fork()}, chia sẻ câu đố gốc nhưng tách riêng trạng thái và nhật ký. Khi đổi màn hoặc bấm làm lại giữa chừng, cờ hủy dừng DPLL bằng \texttt{SolverCancelled}, còn cặp mã phiên và mã yêu cầu giúp cửa sổ bỏ qua kết quả cũ đến muộn.
+>>>>>>> e95a2af30fd2e650472e82590bb55816b145db80
+
+Giao diện đồ họa, công cụ thực nghiệm dòng lệnh và bộ kiểm thử tự động đều gọi chung lớp kiểm chứng này nên thứ tự mở thẻ và nhật ký suy luận luôn khớp nhau trên cùng tệp câu đố.

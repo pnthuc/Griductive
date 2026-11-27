@@ -52,7 +52,7 @@ class ReferenceFocus:
 
 
 def inspect_references(markup, parts, theme, source=None, pinned=None, preview=None):
-    """Resolve the same clue text, border colors and focused cells for both UIs."""
+    """Resolve clue markup, region border colors, and focused cells."""
     role_colors = {'result': theme.gold, 'a': theme.operand_a,
                    'b': theme.operand_b, 'anchor': theme.anchor}
     links = CLUE_LINK.findall(markup)
