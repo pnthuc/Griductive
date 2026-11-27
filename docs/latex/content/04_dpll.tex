@@ -37,13 +37,13 @@ Hai mệnh đề đơn đối nhau tạo xung đột ngay trong một đợt lan
 
 \subsection{Chứng minh một phán quyết bằng phản chứng}
 
-Trước hết phải xác nhận $KB$ khả thỏa. Khi đó, $KB\land\neg C_i$ vô nghiệm chứng minh ô $i$ là tội phạm. Nếu $KB\land C_i$ vô nghiệm, ô đó vô tội. Nếu cả hai khả thỏa, mỗi mô hình làm nhân chứng cho một khả năng và ô còn \texttt{UNKNOWN}.
+Trước hết phải xác nhận $KB$ khả thỏa. Khi đó, $KB\land\neg C_i$ vô nghiệm chứng minh ô $i$ là tội phạm; ngược lại nếu $KB\land C_i$ vô nghiệm thì ô đó vô tội. Nếu cả hai đều khả thỏa, mỗi mô hình đóng vai trò nhân chứng (\textit{witness}) cho một khả năng và ô vẫn ở trạng thái \texttt{UNKNOWN}.
 
 \begin{algorithm}[H]
 \small\singlespacing
 \caption{Phân loại có lưu nhân chứng và kiểm chứng đề nghị}
 \begin{algorithmic}[1]
-\Require Ảnh chụp công khai, chế độ phân loại hoặc kiểm chứng literal đề nghị $p$
+\Require Trạng thái công khai, chế độ phân loại hoặc kiểm chứng literal đề nghị $p$
 \State Dựng $KB$, giải một lần. Nếu UNSAT, trả \texttt{INCONSISTENT}.
 \If{chế độ \texttt{verify}}
 \State Nếu $KB\land\neg p$ là UNSAT, trả \texttt{ACCEPTED}.
@@ -63,7 +63,7 @@ Trước hết phải xác nhận $KB$ khả thỏa. Khi đó, $KB\land\neg C_i$
 \end{algorithmic}
 \end{algorithm}
 
-Trong \texttt{LogicAgent.\_verdicts}, mô hình cơ sở cung cấp ít nhất một dấu cho mọi ô. Do đó sau truy vấn chung, mỗi ô cần tối đa một truy vấn bổ sung, đôi khi bằng không. Bộ nhớ nhân chứng chỉ sống trong lần duyệt KB hiện tại. Hàm \texttt{verify} kiểm tra độc lập đề nghị gửi lên nên có thể cần cả hai truy vấn giả định.
+Trong \texttt{LogicAgent.\_verdicts}, mô hình cơ sở cung cấp ít nhất một dấu cho mọi ô, nhờ đó sau truy vấn chung, mỗi ô chỉ cần tối đa một truy vấn bổ sung (đôi khi bằng không). Bộ nhớ nhân chứng này chỉ tồn tại trong phạm vi một lần duyệt KB, còn hàm \texttt{verify} kiểm tra độc lập từng đề nghị gửi lên nên có thể cần cả hai truy vấn giả định.
 
 Ví dụ, với $KB=(A\lor B)\land(\neg A\lor B)$, giả sử $\neg B$ tạo hai mệnh đề đơn $A$ và $\neg A$. Do đó $B$ là tội phạm. Cả hai giá trị của $A$ đều đi cùng $B$ đúng, nên tác tử để thẻ $A$ úp. Nếu ngay từ đầu $KB$ chứa cả $A$ và $\neg A$, kết quả là \texttt{INCONSISTENT}.
 
@@ -71,7 +71,7 @@ Ví dụ, với $KB=(A\lor B)\land(\neg A\lor B)$, giả sử $\neg B$ tạo hai
 
 \subsection{Vòng suy luận, nhật ký và tính duy nhất}
 
-\texttt{next\_verdict} dừng tại ô bắt buộc đầu tiên. \texttt{hint} trả lại gợi ý, còn \texttt{step} gửi phán quyết cho engine kiểm chứng. Khi chấp nhận, engine ghi số bước, ô, phán quyết, ID các lời khai đang hoạt động, truy vấn SAT và lời khai mới. Lần suy luận tiếp theo dùng ảnh chụp mới. Khi tất cả ô chưa mở đều còn hai khả năng, vòng tự giải dừng ở UNKNOWN và giữ nguyên bàn.
+\texttt{next\_verdict} dừng tại ô bắt buộc đầu tiên; \texttt{hint} trả lại gợi ý, còn \texttt{step} gửi phán quyết cho engine kiểm chứng. Khi chấp nhận, engine ghi số bước, ô, phán quyết, ID các lời khai đang hoạt động, truy vấn SAT và lời khai mới, rồi dùng trạng thái công khai đã cập nhật cho bước kế tiếp. Khi tất cả ô chưa mở đều còn hai khả năng, vòng tự giải dừng ở UNKNOWN và giữ nguyên bàn.
 
 Nhật ký \texttt{case-3x3-01} với \texttt{ordered} cho thấy tại bước 1 chỉ có lời khai B1 và C1. KB có 9 biến chính, 39 biến phụ và 123 mệnh đề. Truy vấn cơ sở SAT, còn giả định $-7$ cho UNSAT sau 46 phép lan truyền và không cần phân nhánh. Engine chấp nhận A3 là tội phạm rồi mới mở lời khai A3. Bước 2 đã có ba lời khai để xét A1.
 

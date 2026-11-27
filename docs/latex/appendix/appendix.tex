@@ -2,15 +2,15 @@
 
 \subsection{Lập trình, tích hợp và soạn báo cáo}
 
-Nhóm dùng Codex hỗ trợ phân tích yêu cầu, triển khai mô-đun, viết kiểm thử và tái chạy thực nghiệm. Antigravity hỗ trợ chuẩn bị yêu cầu theo đầu việc và tổ chức các lượt rà soát giao diện, báo cáo và video. Khi giao việc cho công cụ, nhóm chỉ rõ đầu vào công khai, kiểu kết quả mong đợi và trường hợp phải từ chối. Các ví dụ dưới đây diễn giải nội dung yêu cầu, trừ chỗ ghi rõ là trích nguyên văn.
+Trong quá trình thực hiện, nhóm tự thiết kế kiến trúc ranh giới công khai/ẩn, đặc tả luật và trực tiếp cài đặt các thuật toán lõi (phân giải vùng, đánh giá ngữ nghĩa, mã hóa CNF và bộ giải DPLL). Nhóm sử dụng Codex và Antigravity như công cụ hỗ trợ gợi ý khung kiểm thử, đối chiếu biên điều kiện và rà soát tính nhất quán cho giao diện cũng như báo cáo. Khi đặt yêu cầu cho công cụ, nhóm luôn nêu rõ ranh giới dữ liệu công khai, đầu ra mong đợi và các trường hợp phải từ chối.
 
-Ví dụ yêu cầu về suy luận là “Chỉ truyền PublicState cho tác tử. Với mỗi phán quyết, thử giả định phủ định và giải thích khi nào trả UNKNOWN hoặc INCONSISTENT.” Yêu cầu về luật mở rộng xác định cả sáu toán tử so sánh và cho phép một điều kiện nhận hai cây manh mối bất kỳ. Nhóm kiểm chứng bằng phản ví dụ, phép gán hoàn chỉnh, kiểm thử hồi quy và nhật ký ngay trước khi mở lời khai. Kết quả thực nghiệm trong báo cáo lấy từ lần chạy chương trình.
+Chẳng hạn, khi rà soát phần suy luận, nhóm đặt yêu cầu: “Chỉ truyền \texttt{PublicState} cho tác tử; với mỗi phán quyết, thử giả định phủ định và làm rõ điều kiện trả về \texttt{UNKNOWN} hoặc \texttt{INCONSISTENT}.” Tương tự, với nhóm luật mở rộng, yêu cầu nêu đủ cả sáu toán tử so sánh và cho phép \texttt{CONDITIONAL} nhận hai cây manh mối bất kỳ. Mọi phần mã và gợi ý thu được đều do nhóm kiểm chứng lại bằng phản ví dụ, đối chiếu phép gán hoàn chỉnh, bộ kiểm thử tự động và nhật ký thực nghiệm chạy trực tiếp trên máy.
 
 \subsection{Đồ họa, sửa ảnh có mặt nạ và nghiệm thu}
 
-Nhật ký \texttt{docs/AI-PROMPTS.md} lưu yêu cầu tạo atlas, ảnh tham chiếu, lỗi cần sửa và thứ tự khung. Một trích đoạn cho Ada là “keep face center, eye line, head scale, hair silhouette and shoulders in exactly same position across all nine frames”. Việc khóa vị trí khuôn mặt và thứ tự biểu cảm giúp thẻ chuyển khung mà nhân vật không bị nhảy vị trí.
+Nhật ký \texttt{docs/AI-PROMPTS.md} lưu các prompt tạo atlas, ảnh tham chiếu, lỗi cần chỉnh sửa và thứ tự khung hình. Ở bản phác thảo biểu cảm ban đầu (9 khung cho Ada), nhóm yêu cầu khóa căn chỉnh khung hình với đoạn trích nguyên văn: “keep face center, eye line, head scale, hair silhouette and shoulders in exactly same position across all nine frames”, nhằm tránh tình trạng nhân vật bị nhảy vị trí khi chuyển biểu cảm.
 
-Với ImageGen, nhóm chỉ định số hàng/cột, nền RGBA, phần trang phục thay đổi, giới hạn mỗi ô và vùng cần để trống. Khi có quầng nền hoặc áo sai, yêu cầu sửa tập trung vào đúng lỗi và giữ nguyên phần còn lại. Với chớp mắt, Stable Diffusion 1.5 Inpainting chỉ tái tạo vùng có mặt nạ quanh mắt, giữ pixel ngoài mặt nạ và kênh alpha gốc \cite{inpainting}. Khi thay bảy khung của Finn, nhóm đối chiếu 24 hàng nhân vật khác theo byte, kiểm tra mép alpha và chiều cao tư thế. Các ảnh giao diện trong mục 6 là ảnh chụp chương trình.
+Khi chuyển sang phong cách pixel chính thức với 7 khung hình cho mỗi nhân vật, nhóm chỉ định rõ số hàng/cột, nền RGBA trong suốt, phần trang phục thay đổi, biên mỗi ô và vùng cần để trống cho ImageGen. Với hiệu ứng chớp mắt, Stable Diffusion 1.5 Inpainting chỉ tái tạo vùng mặt nạ quanh mắt, giữ nguyên pixel ngoài mặt nạ và kênh alpha gốc \cite{inpainting}. Khi cập nhật lại 7 khung của nhân vật Finn, nhóm đối chiếu 24 hàng nhân vật còn lại theo từng byte, đồng thời kiểm tra mép alpha và chiều cao tư thế. Toàn bộ ảnh giao diện ở mục 6 là ảnh chụp trực tiếp từ chương trình đang chạy.
 
 \subsection{Thuyết minh và nguồn đối chiếu}
 

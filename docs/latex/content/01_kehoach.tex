@@ -1,6 +1,6 @@
 \section{Kế hoạch dự án, phân công và kiến trúc hệ thống}
 
-Một lượt chơi chỉ thành công khi nhóm chứng minh được trạng thái của một nhân vật từ những lá bài đã mở. Nhóm triển khai cùng một quy tắc cho người chơi, chức năng gợi ý và chế độ tự giải, theo yêu cầu của đồ án CSC14003 \cite{csc14003_spec}. Cách lật thẻ và chọn lời khai tham khảo Griductive và Clues by Sam \cite{griductive_game,cluesbysam}.
+Một lượt chơi chỉ hợp lệ khi người chơi hoặc tác tử chứng minh được trạng thái của một nhân vật từ những lá bài đã mở. Nhóm triển khai cùng một quy tắc cho chế độ chơi thủ công, chức năng gợi ý và chế độ tự động giải, theo yêu cầu của đồ án CSC14003 \cite{csc14003_spec}. Cách lật thẻ và chọn lời khai tham khảo Griductive và Clues by Sam \cite{griductive_game,cluesbysam}.
 
 \subsection{Kế hoạch và mức hoàn thành}
 
@@ -24,7 +24,7 @@ Phan Gia Phúc & 24120503 & Cổng Tseitin, bộ đếm ngưỡng bằng quy ho�
 \end{tabularx}
 \end{table}
 
-Tỷ lệ trong bảng lấy từ hồ sơ nhóm \texttt{docs/team.json}. Điểm cá nhân bằng điểm nhóm nhân với tỷ lệ hoàn thành của thành viên. Theo ví dụ trong đề, điểm nhóm 9,0 và tỷ lệ 90\% cho điểm cá nhân 8,1. Với tỷ lệ 100\%, mỗi thành viên nhận điểm nhóm.
+Tỷ lệ hoàn thành trong bảng được các thành viên thống nhất và ghi nhận tại \texttt{docs/team.json}. Theo công thức tính điểm cá nhân bằng điểm nhóm nhân với tỷ lệ hoàn thành, với mức 100\%, mỗi thành viên nhận trọn điểm nhóm.
 
 \begin{center}\fbox{\begin{minipage}{.91\linewidth}
 \textbf{Video trình diễn trên Google Drive}\\
@@ -44,16 +44,16 @@ Liên kết xem:\par{\footnotesize\url{https://drive.google.com/file/d/1Y-84FGh_
 \toprule
 \textbf{Thành phần} & \textbf{Dữ liệu và trách nhiệm} \\
 \midrule
-\texttt{GameEngine} & Giữ \texttt{PrivatePuzzle}, nghiệm đầy đủ, lời khai chưa mở và nhật ký các bước đã chấp nhận. Tạo ảnh chụp công khai để kiểm tra từng yêu cầu. \\
-\texttt{PublicState} & Đối tượng bất biến chứa thông tin bàn, nhân vật, các trạng thái đã biết và lời khai đã mở. Các cấu trúc lồng cũng được đóng băng. \\
-\texttt{LogicAgent} & Chỉ nhận ảnh chụp công khai và bộ xử lý luật. Dựng KB, hỏi SAT, chứng minh hoặc từ chối phán quyết. \\
+\texttt{GameEngine} & Giữ \texttt{PrivatePuzzle}, nghiệm đầy đủ, lời khai chưa mở và nhật ký các bước đã chấp nhận; tạo bản sao trạng thái công khai để kiểm tra từng yêu cầu. \\
+\texttt{PublicState} & Đối tượng bất biến chứa thông tin bàn, nhân vật, các trạng thái đã biết và lời khai đã mở; các cấu trúc dữ liệu lồng bên trong cũng ở dạng bất biến (\texttt{freeze}). \\
+\texttt{LogicAgent} & Chỉ nhận trạng thái công khai và bộ xử lý luật; dựng KB, gọi SAT và chứng minh hoặc từ chối phán quyết. \\
 Giao diện Desktop & Cửa sổ PySide6 (Cozy Harbor) điều phối phiên trên worker nền và vẽ lại bàn từ dữ liệu công khai. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-Khi người chơi gửi một phán quyết, engine chuyển trạng thái công khai hiện tại cho một tác tử kiểm chứng độc lập. Chỉ sau khi có chứng minh, engine mới đối chiếu nghiệm riêng để phát hiện dữ liệu bất nhất, ghi trạng thái, mở lời khai và thêm một bước vào nhật ký. Một đề nghị bị bác không làm lộ nội dung thẻ.
+Khi người chơi gửi một phán quyết, engine chuyển trạng thái công khai hiện tại cho một tác tử kiểm chứng độc lập. Chỉ sau khi có chứng minh, engine mới đối chiếu nghiệm riêng để phát hiện dữ liệu bất nhất, ghi trạng thái, mở lời khai và thêm một bước vào nhật ký; mọi đề nghị bị bác đều không làm lộ nội dung thẻ.
 
-Trong giao diện, \texttt{EngineWorker} chạy hàng đợi tuần tự trong \texttt{QThread} và gửi kết quả về cửa sổ qua signal của Qt \cite{qtforpython6}. Mỗi tác vụ chạy trên \texttt{GameEngine.fork()}. Bản sao dùng chung câu đố bất biến nhưng có trạng thái, lời khai đã mở và danh sách nhật ký riêng. Khi đổi màn hoặc hủy yêu cầu, cờ hủy được kiểm tra cả trong DPLL lẫn trước khi ghi phán quyết. \texttt{SolverCancelled} kết thúc phép tìm kiếm cũ. Mã phiên và mã yêu cầu giúp cửa sổ bỏ qua kết quả đến muộn.
+Trong giao diện, \texttt{EngineWorker} chạy hàng đợi tuần tự trong \texttt{QThread} và gửi kết quả về cửa sổ qua signal của Qt \cite{qtforpython6}. Mỗi tác vụ chạy trên bản sao \texttt{GameEngine.fork()}, dùng chung câu đố bất biến nhưng tách riêng trạng thái, lời khai đã mở và danh sách nhật ký. Khi đổi màn hoặc hủy yêu cầu, cờ hủy được kiểm tra cả trong DPLL lẫn trước khi ghi phán quyết để \texttt{SolverCancelled} dừng phép tìm kiếm cũ, đồng thời mã phiên (\texttt{generation}) và mã yêu cầu giúp cửa sổ bỏ qua các kết quả đến muộn.
 
 Mọi thao tác trên cửa sổ, bộ thực nghiệm dòng lệnh và bộ kiểm thử đều gọi chung lõi kiểm chứng này. Vì vậy, lời giải và nhật ký có thể đối chiếu trực tiếp từ cùng một tập đầu vào.

@@ -58,7 +58,7 @@ Theo phép biến đổi Tseitin \cite{tseitin1983complexity}, mỗi đầu ra p
 \end{aligned}
 \]
 
-Đặt $T_R(k)=T(|R|,k)$. Ba ràng buộc “ít nhất”, “nhiều nhất” và “đúng bằng” lần lượt nhận literal hoặc biểu thức $T_R(k)$, $\neg T_R(k+1)$ và $T_R(k)\land\neg T_R(k+1)$. Bộ mã hóa buộc đầu ra của mỗi manh mối công khai bằng một mệnh đề đơn. Đầu ra hằng sai sinh mệnh đề rỗng, đầu ra hằng đúng không cần thêm mệnh đề.
+Đặt $T_R(k)=T(|R|,k)$. Ba ràng buộc “ít nhất”, “nhiều nhất” và “đúng bằng” lần lượt nhận literal hoặc biểu thức $T_R(k)$, $\neg T_R(k+1)$ và $T_R(k)\land\neg T_R(k+1)$. Trong cài đặt thực tế, cả các manh mối hai ngôi như \texttt{SAME} và \texttt{DIFFERENT} cũng được biểu diễn qua \texttt{Encoder.gate} để kết hợp trực tiếp bên trong manh mối điều kiện. Bộ mã hóa buộc đầu ra của mỗi manh mối công khai bằng một mệnh đề đơn; đầu ra hằng sai sinh mệnh đề rỗng, còn đầu ra hằng đúng không cần thêm mệnh đề.
 
 \subsection{Mã hóa các manh mối mở rộng}
 

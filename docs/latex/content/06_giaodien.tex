@@ -11,7 +11,7 @@ Cozy Harbor hiển thị tọa độ, tên, nghề nghiệp, trạng thái đã 
 \caption{Menu hồ sơ trên bàn $3\times3$. Các màn được nhóm theo kích thước bàn.}
 \end{figure}
 
-Gợi ý xác định nhân vật có thể chứng minh tiếp theo từ cùng ảnh chụp công khai. Nút “Xem nhân vật” dẫn người chơi đến thẻ cần xét. Thao tác xem gợi ý giữ nguyên số thẻ đã mở.
+Gợi ý xác định nhân vật có thể chứng minh tiếp theo từ cùng trạng thái công khai. Nút “Xem nhân vật” dẫn người chơi đến thẻ cần xét, và thao tác xem gợi ý giữ nguyên số thẻ đã mở.
 
 \begin{figure}[H]
 \centering
@@ -29,7 +29,7 @@ Gợi ý xác định nhân vật có thể chứng minh tiếp theo từ cùng 
 \caption{Bàn $4\times4$ khi chọn lời khai. Viền màu xác định các ô thuộc vùng tham chiếu, còn các ô ngoài vùng được làm mờ.}
 \end{figure}
 
-Với lời khai nhiều vùng, màu của từng cụm từ khớp với đường viền trên bàn. Chọn hoặc ghim một vùng giúp đọc đúng toán hạng của phép so sánh. “Tự giải” lần lượt thực hiện các bước đã chứng minh. “Làm lại” khởi tạo lại màn từ những thẻ mở ban đầu.
+Với lời khai nhiều vùng, màu của từng cụm từ khớp với đường viền trên bàn; chọn hoặc ghim một vùng giúp đọc đúng toán hạng của phép so sánh. Nút “Chạy tự động” (đổi thành “Chạy tiếp” khi tạm dừng) trong sổ tay lần lượt thực hiện các bước đã chứng minh, còn “Làm lại” khởi tạo lại màn từ những thẻ mở ban đầu.
 
 \begin{figure}[H]
 \centering
@@ -43,10 +43,10 @@ Với lời khai nhiều vùng, màu của từng cụm từ khớp với đư�
 
 Cửa sổ chính tổ chức bàn chơi trên \texttt{QMainWindow} và gắn sổ tay suy luận dưới dạng bảng neo \texttt{QDockWidget} ở cạnh phải \cite{qtforpython_widgets}. Sổ tay ẩn mặc định để ưu tiên diện tích bàn khi chơi thủ công, và chỉ mở khi người chơi chọn “Sổ giải” hoặc “Tự động giải”. Khi đóng sổ tay, đồng hồ tự giải lập tức tạm dừng để không tự mở thêm thẻ ngoài tầm quan sát.
 
-Bộ điều phối \texttt{GameController} cấp một mã thế hệ (\texttt{generation}) cho mỗi lần nạp hoặc làm lại màn và một mã yêu cầu tăng dần cho từng thao tác gợi ý, phán quyết hoặc giải tiếp. Trên worker nền, mỗi yêu cầu thao tác trên bản sao \texttt{GameEngine.fork()} trước khi phát tín hiệu hoàn tất kèm thông số KB mới. Nếu người chơi đổi màn khi phép giải đang chạy, cả cờ hủy trong DPLL lẫn bước kiểm tra mã thế hệ đều ngăn kết quả cũ ghi đè lên phiên mới.
+Bộ điều phối \texttt{GameController} cấp một mã phiên (\texttt{generation}) cho mỗi lần nạp hoặc làm lại màn và một mã yêu cầu tăng dần cho từng thao tác gợi ý, phán quyết hoặc giải tiếp. Trên worker nền, mỗi yêu cầu thao tác trên bản sao \texttt{GameEngine.fork()} trước khi phát tín hiệu hoàn tất kèm thông số KB mới. Nếu người chơi đổi màn khi phép giải đang chạy, cả cờ hủy trong DPLL lẫn bước kiểm tra mã phiên đều ngăn kết quả cũ ghi đè lên phiên mới.
 
-Khi mở tệp câu đố ngoài qua hộp thoại tệp, \texttt{load\_puzzle} kiểm tra phiên bản lược đồ, kích thước $N\in\{3,4,5\}$, thứ tự tên nhân vật theo bảng chữ cái từng hàng, tính hợp lệ của mọi vùng tham chiếu và tính đúng của từng lời khai dưới nghiệm ẩn trước khi thay thế phiên hiện tại. Một tệp hỏng hoặc mâu thuẫn sẽ hiển thị hộp cảnh báo và giữ nguyên màn đang chơi.
+Khi mở tệp câu đố ngoài qua hộp thoại tệp, \texttt{load\_puzzle} kiểm tra phiên bản định dạng (\texttt{schema\_version}), kích thước $N\in\{3,4,5\}$, thứ tự tên nhân vật theo bảng chữ cái từng hàng, tính hợp lệ của mọi vùng tham chiếu và tính đúng của từng lời khai dưới nghiệm ẩn trước khi thay thế phiên hiện tại. Một tệp hỏng hoặc mâu thuẫn sẽ hiển thị hộp cảnh báo và giữ nguyên màn đang chơi.
 
-Ở chân sổ tay, nút “Thông số KB” bật tắt dòng tổng hợp số biến chính, biến phụ Tseitin và mệnh đề hiện hành, còn nút “Xuất JSON” ghi nguyên vẹn danh sách \texttt{engine.trace} ra đĩa. Dữ liệu xuất ra có cùng lược đồ với các tệp nhật ký trong \texttt{output/experiments/}, giúp đối chiếu trực tiếp từng truy vấn SAT giữa phiên tương tác trên giao diện và bộ thực nghiệm dòng lệnh.
+Ở chân sổ tay, nút “Thông số KB” bật tắt dòng tổng hợp số biến chính, biến phụ Tseitin và mệnh đề hiện hành, còn nút “Xuất JSON” ghi nguyên vẹn danh sách \texttt{engine.trace} ra đĩa. Dữ liệu xuất ra có cùng cấu trúc JSON với các tệp nhật ký trong \texttt{output/experiments/}, giúp đối chiếu trực tiếp từng truy vấn SAT giữa phiên tương tác trên giao diện và bộ thực nghiệm dòng lệnh.
 
 \par\endgroup
