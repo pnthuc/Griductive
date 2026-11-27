@@ -121,14 +121,14 @@ Cả hai giao diện Desktop ([griductive/ui/](griductive/ui/)) và Web ([griduc
 Module [griductive/experiments.py](griductive/experiments.py) chạy tự động cả hai chiến lược chọn biến của DPLL (`ordered` và `frequency`) trên cùng 6 màn chơi chuẩn (`3×3`, `4×4`, `5×5` — tổng cộng 12 lượt chạy):
 
 ```powershell
-# Ghi kết quả vào output/experiments/ (hạn thời gian mặc định 30 giây/màn)
+# Ghi kết quả vào output/experiments/ (--timeout mặc định 30 giây, kiểm tra giữa các bước)
 .\.venv\Scripts\python.exe -B -m griductive.experiments
 
 # Hoặc xuất ra thư mục tạm để đối chiếu mà không ghi đè số liệu gốc trong kho:
 .\.venv\Scripts\python.exe -B -m griductive.experiments --output output/experiments_recheck --timeout 30
 ```
 
-Đầu ra gồm [output/experiments/results.json](output/experiments/results.json), [output/experiments/results.csv](output/experiments/results.csv) và 12 tệp nhật ký chi tiết `output/experiments/<puzzle>-<heuristic>-trace.json`.
+Đầu ra gồm [output/experiments/results.json](output/experiments/results.json), [output/experiments/results.csv](output/experiments/results.csv) và 12 tệp nhật ký chi tiết `output/experiments/<puzzle>-<heuristic>-trace.json`. Tham số `--timeout T` (mặc định `30` giây) được kiểm tra **giữa các bước mở thẻ**; bên trong mỗi bước, `LogicAgent` dùng hạn `min(10, T)` giây cho từng truy vấn SAT, còn `GameEngine.submit` xác minh độc lập với hạn riêng `10` giây/truy vấn (hàm ngoại tuyến `check_uniqueness` dùng `min(10, T)` giây), nên thời gian đo thực tế khi xảy ra `TIMEOUT` có thể vượt quá `T` cho tới khi truy vấn/bước đang chạy hoàn tất.
 
 ### 4.3. Tóm tắt số liệu thực nghiệm gốc
 
@@ -149,7 +149,7 @@ Số liệu lưu tại [output/experiments/results.json](output/experiments/resu
 | `case-5x5-02` | `ordered` | 5 | `SOLVED` | `UNIQUE` | 25 | 654 | 2045 | 22 | 182 | 752 | 55976 | 113 | 6.432318 |
 | `case-5x5-02` | `frequency` | 5 | `SOLVED` | `UNIQUE` | 25 | 654 | 2045 | 22 | 182 | 647 | 53655 | 37 | 5.540037 |
 
-*(Giá trị `runtime` đầy đủ độ chính xác dấu phẩy động nằm trong [output/experiments/results.json](output/experiments/results.json). Tất cả các cột đếm logic từ `Biến chính` đến `Quay lui` đều hoàn toàn tất định khi chạy lại trên mọi máy; chỉ `Thời gian (s)` phụ thuộc tốc độ phần cứng.)*
+*(Giá trị `runtime` đầy đủ độ chính xác dấu phẩy động nằm trong [output/experiments/results.json](output/experiments/results.json). Với các lượt chạy hoàn tất không gặp `TIMEOUT`, tất cả các cột đếm logic từ `Biến chính` đến `Quay lui` đều tất định trên mọi máy; riêng `Thời gian (s)` — cũng như bước dừng và bộ đếm nếu đặt `--timeout` nhỏ gây `TIMEOUT` giữa chừng — phụ thuộc tốc độ phần cứng.)*
 
 ---
 
