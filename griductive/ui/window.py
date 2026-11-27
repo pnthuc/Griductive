@@ -498,7 +498,7 @@ class Window(QMainWindow):
         self.restart_button.setIconSize(QSize(15, 15))
         self.solver_button.setIcon(icon('play', '#143B2A'))
         self.solver_button.setIconSize(QSize(15, 15))
-        self.tools_button.setIcon(QIcon(str(ROOT / 'public/pixel/gear.png')))
+        self.tools_button.setIcon(QIcon(str(ROOT / 'assets/ui/gear.png')))
         self.tools_button.setIconSize(QSize(20, 20))
         self.solver.set_theme(self.theme)
         for card in self.cards.values():

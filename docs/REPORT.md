@@ -15,13 +15,13 @@ Một lượt chơi chỉ thành công khi nhóm chứng minh được trạng t
 
 ### Kế hoạch và mức hoàn thành
 
-Nhóm thống nhất giao diện dữ liệu giữa bàn chơi và tác tử trước khi phát triển song song ba mô-đun lõi. Sau khi tích hợp bộ mã hóa, bộ giải SAT và cơ chế mở thẻ, nhóm nối hai giao diện, chạy kiểm thử, đo sáu màn chơi rồi đối chiếu nhật ký để lập báo cáo và dựng video.
+Nhóm thống nhất giao diện dữ liệu giữa bàn chơi và tác tử trước khi phát triển song song ba mô-đun lõi. Sau khi tích hợp bộ mã hóa, bộ giải SAT và cơ chế mở thẻ, nhóm tích hợp giao diện Desktop, chạy kiểm thử, đo sáu màn chơi rồi đối chiếu nhật ký để lập báo cáo và dựng video.
 
 **Phân công theo mô-đun và tỷ lệ hoàn thành**
 
 | Thành viên | MSSV | Phần việc phụ trách | Hoàn thành |
 | --- | --- | --- | --- |
-| Phan Ngọc Thức | 24120228 | Kiến trúc chung, Desktop Cozy Harbor, Web Dash, thực nghiệm, báo cáo và video. | 100% |
+| Phan Ngọc Thức | 24120228 | Kiến trúc chung, giao diện Desktop Cozy Harbor, thực nghiệm, báo cáo và video. | 100% |
 | Nguyễn Lê Minh Quân | 24120219 | Tổ chức thực nghiệm, so sánh hai chiến lược chọn biến, phân tích số liệu, báo cáo và video. | 100% |
 | Tống Phúc Thiện | 24120141 | Phân giải vùng và phép tập hợp, đánh giá ngữ nghĩa, điều phối GameEngine và kiểm tra nghiệm duy nhất. | 100% |
 | Bùi Phương Nam | 24120502 | Bộ giải DPLL với hai chiến lược chọn biến và suy luận phản chứng của LogicAgent. | 100% |
@@ -41,13 +41,13 @@ Tỷ lệ trong bảng lấy từ hồ sơ nhóm `docs/team.json`. Điểm cá n
 | `GameEngine` | Giữ `PrivatePuzzle`, nghiệm đầy đủ, lời khai chưa mở và nhật ký các bước đã chấp nhận. Tạo ảnh chụp công khai để kiểm tra từng yêu cầu. |
 | `PublicState` | Đối tượng bất biến chứa thông tin bàn, nhân vật, các trạng thái đã biết và lời khai đã mở. Các cấu trúc lồng cũng được đóng băng. |
 | `LogicAgent` | Chỉ nhận ảnh chụp công khai và bộ xử lý luật. Dựng KB, hỏi SAT, chứng minh hoặc từ chối phán quyết. |
-| Desktop và Web | PySide6 và Plotly Dash gọi cùng lõi Python. Mỗi phiên quản lý tiến độ riêng. Giao diện vẽ lại bàn từ dữ liệu công khai. |
+| Giao diện Desktop | Cửa sổ PySide6 (Cozy Harbor) điều phối phiên trên worker nền và vẽ lại bàn từ dữ liệu công khai. |
 
 Khi người chơi gửi một phán quyết, engine chuyển trạng thái công khai hiện tại cho một tác tử kiểm chứng độc lập. Chỉ sau khi có chứng minh, engine mới đối chiếu nghiệm riêng để phát hiện dữ liệu bất nhất, ghi trạng thái, mở lời khai và thêm một bước vào nhật ký. Một đề nghị bị bác không làm lộ nội dung thẻ.
 
-Trên Desktop, `EngineWorker` chạy hàng đợi tuần tự trong `QThread` và gửi kết quả về cửa sổ qua signal của Qt [4]. Mỗi tác vụ chạy trên `GameEngine.fork()`. Bản sao dùng chung câu đố bất biến nhưng có trạng thái, lời khai đã mở và danh sách nhật ký riêng. Khi đổi màn hoặc hủy yêu cầu, cờ hủy được kiểm tra cả trong DPLL lẫn trước khi ghi phán quyết. `SolverCancelled` kết thúc phép tìm kiếm cũ. Mã phiên và mã yêu cầu giúp cửa sổ bỏ qua kết quả đến muộn.
+Trong giao diện, `EngineWorker` chạy hàng đợi tuần tự trong `QThread` và gửi kết quả về cửa sổ qua signal của Qt [4]. Mỗi tác vụ chạy trên `GameEngine.fork()`. Bản sao dùng chung câu đố bất biến nhưng có trạng thái, lời khai đã mở và danh sách nhật ký riêng. Khi đổi màn hoặc hủy yêu cầu, cờ hủy được kiểm tra cả trong DPLL lẫn trước khi ghi phán quyết. `SolverCancelled` kết thúc phép tìm kiếm cũ. Mã phiên và mã yêu cầu giúp cửa sổ bỏ qua kết quả đến muộn.
 
-Web tái dựng phiên theo lịch sử phán quyết và dùng cùng phép kiểm chứng. Vì vậy, lời giải có thể đối chiếu giữa giao diện, bộ thực nghiệm dòng lệnh và bộ kiểm thử từ cùng một tập đầu vào.
+Mọi thao tác trên cửa sổ, bộ thực nghiệm dòng lệnh và bộ kiểm thử đều gọi chung lõi kiểm chứng này. Vì vậy, lời giải và nhật ký có thể đối chiếu trực tiếp từ cùng một tập đầu vào.
 
 ## 2. Mô hình hóa bài toán và ngôn ngữ manh mối
 
@@ -237,7 +237,7 @@ Mọi nghiệm của $F\land B_M$ phải khác $M$ ở ít nhất một ô. Truy
 
 ### Kiểm thử tự động
 
-Lệnh `python -B -m unittest discover -s tests -v` chạy đạt 87/87 kiểm thử trong 13 mô-đun. Các kiểm thử lõi đối chiếu hàm đánh giá trực tiếp với CNF trên phép gán, kiểm tra giả định, quay lui, điều kiện lồng, vùng rỗng và đăng ký luật mới. Nhóm kiểm thử phiên chơi bao phủ tính duy nhất, từ chối phán quyết, hủy công việc nền và tái dựng lịch sử Web. Các mô-đun giao diện kiểm tra nhật ký, bản địa hóa, tương tác và sự ổn định của ảnh động.
+Lệnh `python -B -m unittest discover -s tests -v` chạy đạt 87/87 kiểm thử trong 13 mô-đun. Các kiểm thử lõi đối chiếu hàm đánh giá trực tiếp với CNF trên phép gán, kiểm tra giả định, quay lui, điều kiện lồng, vùng rỗng và đăng ký luật mới. Nhóm kiểm thử phiên chơi bao phủ tính duy nhất, từ chối phán quyết, hủy công việc nền và bộ đo thực nghiệm. Các mô-đun giao diện kiểm tra nhật ký, bản địa hóa, tương tác và sự ổn định của ảnh động.
 
 ## 5. Thực nghiệm và đánh giá Ordered, Frequency
 
@@ -305,7 +305,7 @@ Cả 12 lượt đều trả SOLVED, và phép kiểm tra ngoại tuyến cho UN
 
 DPLL hiện quét lại danh sách mệnh đề khi lan truyền và khi rút gọn nhánh. Kỹ thuật theo dõi hai literal trong mỗi mệnh đề (two-watched literals) có thể giảm số mệnh đề cần xét. Bộ giải cũng chưa học mệnh đề từ xung đột hay quay lui không tuần tự như CDCL. Trên sáu màn với một lần đo mỗi cấu hình, có thể so sánh hành vi tìm kiếm cụ thể, nhưng chưa thể ước lượng phân bố thời gian hay chọn một chiến lược tối ưu cho mọi màn.
 
-## 6. Giao diện người dùng Desktop Cozy Harbor và Web Dash
+## 6. Giao diện người dùng Desktop Cozy Harbor
 
 ### Chọn màn và chơi thủ công
 
@@ -333,15 +333,15 @@ Với lời khai nhiều vùng, màu của từng cụm từ khớp với đư�
 
 *Bàn 5×5 bên cạnh sổ tay suy luận. Mỗi mục ghi ô vừa được xác định và có nút xem chi tiết.*
 
-### Phiên chơi Web Dash
+### Điều phối luồng nền, nạp tệp JSON và xuất nhật ký
 
-Giao diện Web dùng callback của Plotly Dash [7] để nhận thao tác, dựng lại bàn và trả phần hiển thị công khai. Với màn có sẵn, `dcc.Store` ở chế độ `session` lưu mã màn, lịch sử nước đi và lựa chọn hiển thị. Đáp án và manh mối chưa mở nằm ở máy chủ. Nếu người chơi tự nạp tệp JSON, dữ liệu phiên còn giữ bản tệp do chính họ cung cấp để tái dựng màn.
+Cửa sổ chính tổ chức bàn chơi trên `QMainWindow` và gắn sổ tay suy luận dưới dạng bảng neo `QDockWidget` ở cạnh phải [7]. Sổ tay ẩn mặc định để ưu tiên diện tích bàn khi chơi thủ công, và chỉ mở khi người chơi chọn “Sổ giải” hoặc “Tự động giải”. Khi đóng sổ tay, đồng hồ tự giải lập tức tạm dừng để không tự mở thêm thẻ ngoài tầm quan sát.
 
-Mỗi callback tạo một GameEngine cho phiên, kiểm tra kiểu dữ liệu và giới hạn số nước trong lịch sử theo số ô. Máy chủ phát lại từng đề nghị qua `submit`. Một nước thiếu chứng minh hoặc bị sửa sẽ khiến lịch sử bị từ chối. Chỉ sau khi tái dựng thành công, callback mới xử lý thao tác mới. Các phiên có thể đọc cùng bộ câu đố bất biến nhưng không chia sẻ tiến độ chơi.
+Bộ điều phối `GameController` cấp một mã thế hệ (`generation`) cho mỗi lần nạp hoặc làm lại màn và một mã yêu cầu tăng dần cho từng thao tác gợi ý, phán quyết hoặc giải tiếp. Trên worker nền, mỗi yêu cầu thao tác trên bản sao `GameEngine.fork()` trước khi phát tín hiệu hoàn tất kèm thông số KB mới. Nếu người chơi đổi màn khi phép giải đang chạy, cả cờ hủy trong DPLL lẫn bước kiểm tra mã thế hệ đều ngăn kết quả cũ ghi đè lên phiên mới.
 
-Ví dụ, tự thêm A3 vào lịch sử phía trình duyệt chỉ có hiệu lực nếu máy chủ chứng minh được phán quyết tại đúng thời điểm đó. Đoán đúng đáp án ẩn vẫn chưa đủ để mở lá bài. Bộ kiểm thử Web gửi yêu cầu callback thật, kiểm tra từ chối lịch sử giả và xác nhận dữ liệu trả về cho màn tích hợp sẵn không chứa nghiệm ẩn.
+Khi mở tệp câu đố ngoài qua hộp thoại tệp, `load_puzzle` kiểm tra phiên bản lược đồ, kích thước $N\in\{3,4,5\}$, thứ tự tên nhân vật theo bảng chữ cái từng hàng, tính hợp lệ của mọi vùng tham chiếu và tính đúng của từng lời khai dưới nghiệm ẩn trước khi thay thế phiên hiện tại. Một tệp hỏng hoặc mâu thuẫn sẽ hiển thị hộp cảnh báo và giữ nguyên màn đang chơi.
 
-Tệp tùy chỉnh được kiểm tra mã hóa, giới hạn 128 000 byte sau giải mã và được đọc qua một tệp tạm trước khi đưa vào bộ nạp câu đố chung. Cả Desktop và Web đều dùng chung phép chứng minh và điều kiện chấp nhận. Desktop giữ phiên trên worker, còn Web trả chi phí phát lại lịch sử để có thể xử lý yêu cầu kế tiếp trong tiến trình mới.
+Ở chân sổ tay, nút “Thông số KB” bật tắt dòng tổng hợp số biến chính, biến phụ Tseitin và mệnh đề hiện hành, còn nút “Xuất JSON” ghi nguyên vẹn danh sách `engine.trace` ra đĩa. Dữ liệu xuất ra có cùng lược đồ với các tệp nhật ký trong `output/experiments/`, giúp đối chiếu trực tiếp từng truy vấn SAT giữa phiên tương tác trên giao diện và bộ thực nghiệm dòng lệnh.
 
 ## Tài liệu tham khảo
 
@@ -351,7 +351,7 @@ Tệp tùy chỉnh được kiểm tra mã hóa, giới hạn 128 000 byte sau g
 4. The Qt Company. [Qt for Python 6: QThread](https://doc.qt.io/qtforpython-6/PySide6/QtCore/QThread.html).
 5. G. S. Tseitin. Automation of Reasoning, tập 2, Springer, 1983, tr. 466–483. [On the Complexity of Derivation in Propositional Calculus](https://doi.org/10.1007/978-3-642-81955-1_28).
 6. Martin Davis, George Logemann và Donald Loveland. Communications of the ACM, 5(7), 1962, tr. 394–397. [A Machine Program for Theorem-Proving](https://doi.org/10.1145/368273.368557).
-7. Plotly. [Dash Documentation: Basic Callbacks](https://dash.plotly.com/basic-callbacks).
+7. The Qt Company. [Qt for Python 6: QMainWindow and QDockWidget](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QMainWindow.html).
 8. Stable Diffusion v1.5. [Stable Diffusion Inpainting: Model Card](https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-inpainting).
 9. gamedev-skills. [Awesome Gamedev Agent Skills](https://github.com/gamedev-skills/awesome-gamedev-agent-skills).
 10. safina57. [Clues by Sam Solver](https://github.com/safina57/clues-by-sam-solver).

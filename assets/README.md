@@ -1,14 +1,9 @@
-# Game artwork
+# Tài nguyên đồ họa giao diện Desktop (`assets/`)
 
-The desktop uses the 25 characters in `characters/characters.json`. The pixel
-atlas in `../public/pixel/sprites.png` has seven 256×256 frames per character.
-`sprites.json` gives the frame order and `../public/pixel/sprites-muted.png` contains the two
-unrevealed poses. Each character uses the same scale across poses.
+- `characters/characters.json`: Danh sách 25 nhân vật và nghề nghiệp dùng cho các màn chơi.
+- `characters/pixel/sprites.png` và `sprites.json`: Atlas 25 hàng × 7 khung biểu cảm (`256×256` RGBA mỗi ô) có cùng tỉ lệ căn chỉnh trên từng nhân vật.
+- `characters/pixel/sprites-muted.png`: Atlas bóng mờ 2 khung cho các thẻ nghi phạm chưa mở.
+- `scenery/catalog.json` và `scenery/pixel-profession-props.png`: Bản đồ cắt 25 ô đạo cụ nghề nghiệp (`5×5`).
+- `ui/harbor.png`, `ui/glyphs.png`, `ui/gear.png`: Nền bến cảng Cozy Harbor, mặt nạ biểu tượng HUD và biểu tượng bánh răng cài đặt.
 
-`../public/pixel/harbor.png` is the desktop background. `scenery/catalog.json` maps the
-25 professions to tiles in `../public/images/pixel-profession-props.png`.
-`../public/pixel/glyphs.png` contains the desktop glyph masks, in the order listed in
-`griductive/ui/icons.py`. The settings gear has its own 24×24 image.
-
-Desktop and web use the same pixel assets. Legacy SVG URLs are served from
-`../public/images/`. Artwork provenance is in `../docs/AI-PROMPTS.md`.
+Nhật ký prompt tạo sinh và chỉnh sửa có mặt nạ xem tại [../docs/AI-PROMPTS.md](../docs/AI-PROMPTS.md).

@@ -8,7 +8,7 @@ ROOT=Path(__file__).resolve().parents[2]
 
 
 SCENERY=ROOT/'assets/scenery'
-IMAGES=ROOT/'public/images'
+IMAGES=SCENERY
 
 
 @lru_cache(maxsize=1)

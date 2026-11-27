@@ -10,7 +10,7 @@ Công thức tính điểm cá nhân theo đề bài: $\text{Điểm cá nhân} 
 
 | Thành viên | MSSV | Phần việc phụ trách chính | Tỷ lệ hoàn thành | Trạng thái & Commit tiêu biểu |
 | --- | --- | --- | ---: | --- |
-| **Phan Ngọc Thức** | `24120228` | Kiến trúc dự án, giao diện Desktop Cozy Harbor & Web Dash, thực nghiệm, báo cáo & video demo | 100% | ✅ Đã hoàn thành (`8a64909`, `65a0f41`) |
+| **Phan Ngọc Thức** | `24120228` | Kiến trúc dự án, giao diện Desktop Cozy Harbor, thực nghiệm, báo cáo & video demo | 100% | ✅ Đã hoàn thành (`8a64909`, `65a0f41`) |
 | **Nguyễn Lê Minh Quân** | `24120219` | Thực nghiệm hệ thống, phân tích so sánh 2 heuristic (`ordered` vs `frequency`), báo cáo kỹ thuật & video demo | 100% | ✅ Đã hoàn thành (`aada27b`) |
 | **Tống Phúc Thiện** | `24120141` | Hệ thống vùng (`Regions` & phép toán tập hợp), đánh giá ngữ nghĩa trực tiếp (`evaluate`) & luồng `GameEngine` / `check_uniqueness` | 100% | ✅ Đã hoàn thành (`a56b700`) |
 | **Bùi Phương Nam** | `24120502` | Bộ giải DPLL SAT Solver (`ordered` & `frequency`) & suy luận phản chứng `LogicAgent` | 100% | ✅ Đã hoàn thành (`edcd1c8`) |
@@ -69,9 +69,9 @@ Công thức tính điểm cá nhân theo đề bài: $\text{Điểm cá nhân} 
 
 ---
 
-### 🔹 Phần 4: Phan Ngọc Thức (`24120228`) & Nguyễn Lê Minh Quân (`24120219`) — Kiến trúc, Giao diện, Thực nghiệm, Báo cáo & Video
-1. **Kiến trúc, Dữ liệu câu đố & Hai giao diện ([griductive/ui/](griductive/ui/), [griductive/web.py](griductive/web.py), [griductive/web_game.py](griductive/web_game.py), [puzzles/](puzzles/)):**
-   - Thiết kế mô hình dữ liệu bất biến `PublicState` / `PrivatePuzzle`, luồng nền `EngineWorker` có cơ chế `fork()` và hủy an toàn trên Desktop Cozy Harbor, phiên chơi Web Dash tái dựng lịch sử không trạng thái, bộ dựng câu tiếng Việt [wording_vi.py](griductive/presentation/wording_vi.py), 6 hồ sơ câu đố chuẩn (`3×3`, `4×4`, `5×5`) và bộ 87 bài kiểm thử tự động.
+### 🔹 Phần 4: Phan Ngọc Thức (`24120228`) & Nguyễn Lê Minh Quân (`24120219`) — Kiến trúc, Giao diện Desktop, Thực nghiệm, Báo cáo & Video
+1. **Kiến trúc, Dữ liệu câu đố & Giao diện Desktop ([griductive/ui/](griductive/ui/), [griductive/presentation/](griductive/presentation/), [puzzles/](puzzles/)):**
+   - Thiết kế mô hình dữ liệu bất biến `PublicState` / `PrivatePuzzle`, luồng nền `EngineWorker` có cơ chế `fork()` và hủy an toàn trên Desktop Cozy Harbor, bộ dựng câu tiếng Việt [wording_vi.py](griductive/presentation/wording_vi.py), 6 hồ sơ câu đố chuẩn (`3×3`, `4×4`, `5×5`) và bộ 87 bài kiểm thử tự động.
 2. **Thực nghiệm hệ thống, Báo cáo HCMUS & Video trình diễn ([griductive/experiments.py](griductive/experiments.py), [output/experiments/](output/experiments/)):**
    - Đo kiểm 12 lượt chạy đối sánh `ordered` và `frequency` trên cùng 6 màn chơi (môi trường đo chính thức trên máy Quân: `Windows 11, Python 3.14.6, CPU Intel Core i5-12450HX`), xuất đầy đủ CSV/JSON/12 tệp trace, phân tích số liệu & biểu đồ 300 DPI, biên soạn báo cáo LaTeX 22 trang chuẩn mẫu HCMUS (`Report.pdf`) và dựng video thuyết minh tiếng Việt `Demo.mp4`.
 

@@ -12,7 +12,7 @@ GLYPHS = ('check', 'cross', 'hint', 'warning', 'step', 'export', 'pause', 'play'
 
 @lru_cache(maxsize=1)
 def _atlas():
-    return QPixmap(str(ROOT / 'public/pixel/glyphs.png'))
+    return QPixmap(str(ROOT / 'assets/ui/glyphs.png'))
 
 
 @lru_cache(maxsize=128)

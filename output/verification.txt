@@ -1,9 +1,0 @@
-...................................................................................
-----------------------------------------------------------------------
-Ran 83 tests in 54.958s
-
-OK
-
-- Desktop and web both load the single shared image set in public/images.
-- All three artwork files were moved byte-for-byte without changes.
-- Web gameplay uses the same Python solver and does not expose hidden solution data.

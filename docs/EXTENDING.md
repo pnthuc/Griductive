@@ -1,6 +1,6 @@
 # Hướng dẫn Mở rộng Vùng (`Region`) và Manh mối (`Clue`)
 
-Lõi suy luận trong `griductive/engine/` gồm 6 tệp: [models.py](../griductive/engine/models.py), [regions.py](../griductive/engine/regions.py), [clues.py](../griductive/engine/clues.py), [cnf.py](../griductive/engine/cnf.py), [sat.py](../griductive/engine/sat.py) và [game.py](../griductive/engine/game.py). Nhờ cơ chế đăng ký qua decorator, khi cần bổ sung một loại vùng hoặc mẫu manh mối mới, bạn chỉ cần định nghĩa lớp xử lý tại `regions.py` hoặc `clues.py` (hoặc đăng ký cục bộ cho riêng một phiên chơi) mà **không cần sửa đổi** bộ biên dịch CNF, bộ giải DPLL, `GameEngine` hay giao diện Desktop/Web.
+Lõi suy luận trong `griductive/engine/` gồm 6 tệp: [models.py](../griductive/engine/models.py), [regions.py](../griductive/engine/regions.py), [clues.py](../griductive/engine/clues.py), [cnf.py](../griductive/engine/cnf.py), [sat.py](../griductive/engine/sat.py) và [game.py](../griductive/engine/game.py). Nhờ cơ chế đăng ký qua decorator, khi cần bổ sung một loại vùng hoặc mẫu manh mối mới, bạn chỉ cần định nghĩa lớp xử lý tại `regions.py` hoặc `clues.py` (hoặc đăng ký cục bộ cho riêng một phiên chơi) mà **không cần sửa đổi** bộ biên dịch CNF, bộ giải DPLL, `GameEngine` hay giao diện Desktop.
 
 ---
 

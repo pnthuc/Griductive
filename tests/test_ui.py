@@ -159,41 +159,36 @@ class InteractionTest(unittest.TestCase):
         self.assertFalse(any(c.dimmed for c in self.window.cards.values()))
         self.assertIn('href=',self.window.cards['B2'].clue_text.text())
 
-    def test_reference_highlights_match_web_for_conditional_clues(self):
-        from griductive.web import CLUE_LINK, render_board
+    def test_reference_highlights_for_conditional_clues(self):
+        from griductive.engine.clues import clue_parts
+        from griductive.presentation.references import CLUE_LINK, inspect_references
+        from griductive.presentation.wording_vi import clue_html
 
         self.assertTrue(self.window.load(ROOT/'puzzles/case-3x3-01.json'))
         for _ in range(4):
             self.window.solve_step()
             self.wait_engine()
 
+        names = {person.cell: person.name for person in self.window.state.characters}
         for source, pinned in [('C1', None), ('B2', None), ('B2', 'then.region')]:
             with self.subTest(source=source, pinned=pinned):
                 self.window.select_person(source)
                 if pinned:
                     self.window.pin_part(pinned)
-                grid = render_board(self.window.state, self.window.clues,
-                                    {'selected': source, 'focus': pinned})
                 expected_links = [color for _, color, _ in
                                   CLUE_LINK.findall(self.window.cards[source].active_html)]
                 self.assertEqual(len(expected_links), len(set(expected_links)))
-                for slot in grid.children:
-                    if getattr(slot, 'className', None) != 'slot':
-                        continue
-                    web_card = slot.children
-                    card = self.window.cards[getattr(web_card, 'data-cell')]
-                    style = web_card.style
-                    self.assertEqual(card.dimmed, style.get('opacity') == 0.28)
-                    if card.source:
-                        statement = web_card.children[1].children[2]
-                        self.assertEqual(expected_links, [link.style['color'] for link in
-                                         statement.children if not isinstance(link, str)])
-                    elif card.region_colors:
-                        self.assertEqual(style['--rim'], card.region_colors[0])
-                        for color in card.region_colors[1:]:
-                            self.assertIn(color, style['--rim-fill'])
-                    else:
-                        self.assertNotIn('--edge', style)
+                spec = self.window.state.clues[source]
+                parts = {p.key: p for p in clue_parts(spec, self.window.state.board, self.window.clues)}
+                markup = clue_html(spec, self.window.state.board, self.window.clues, self.window.paper_theme, names)
+                rendered, focus = inspect_references(
+                    markup, parts, self.window.paper_theme, source=source, pinned=pinned,
+                )
+                self.assertEqual(self.window.cards[source].active_html, rendered)
+                for cell, card in self.window.cards.items():
+                    self.assertEqual(card.dimmed, cell not in focus.focused)
+                    if not card.source:
+                        self.assertEqual(card.region_colors, focus.colors_for(cell))
 
     def test_clues_scroll_without_resizing_any_card(self):
         self.window.resize(1050,760);QTest.qWait(80)
