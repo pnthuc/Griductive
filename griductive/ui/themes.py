@@ -1,4 +1,4 @@
-"""Cozy Harbor x Coastal Detective palette and Qt stylesheet."""
+"""Color palette and Qt stylesheet for the Cozy Harbor desktop UI."""
 from dataclasses import dataclass
 from ..presentation.references import ANCHOR, OPERAND_A, OPERAND_B, SELECTED
 
@@ -38,13 +38,13 @@ THEMES = {
         ANCHOR,
         OPERAND_A,
         OPERAND_B,
-        '#2BA368',  # cozy meadow-sea green
-        '#DE5260',  # warm coral-berry red
-        '#F3ECE0',  # warm sand badge tint
-        '#1E5B88',  # harbor cerulean-navy primary
-        '#FCF9F2',  # card_unknown: cozy warm ivory
-        '#F2FAF5',  # card_innocent: soft mint-ivory
-        '#FDF4F3',  # card_criminal: soft rose-ivory
+        '#2BA368',  # innocent green
+        '#DE5260',  # criminal red
+        '#F3ECE0',  # badge tint
+        '#1E5B88',  # primary blue
+        '#FCF9F2',  # card_unknown: warm ivory
+        '#F2FAF5',  # card_innocent: mint ivory
+        '#FDF4F3',  # card_criminal: rose ivory
     ),
 }
 

@@ -207,7 +207,7 @@ class Window(QMainWindow):
         layout.setContentsMargins(28, 10, 30, 26)
         layout.setSpacing(8)
 
-        # Cozy Harbor Floating Capsule Header HUD
+        # Top header bar
         self.header = HeaderBar()
         self.header.setObjectName('header')
         self.header.setFixedHeight(50)
@@ -239,7 +239,7 @@ class Window(QMainWindow):
 
         hl.addStretch(1)
 
-        # Tactile Cozy Harbor Action Keycaps
+        # Header action buttons
         self.hint_button = HudButton(variant='amber')
         self.hint_button.setText('Gợi ý')
         self.hint_button.setObjectName('hint')

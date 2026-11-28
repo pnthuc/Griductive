@@ -12,7 +12,7 @@ from .widgets import InlineClue, CardFadeEffect
 
 
 class VerdictButton(QPushButton):
-    """Cozy tactile 3D keycap for Innocent / Criminal verdicts."""
+    """Verdict button for Innocent / Criminal choices."""
 
     def __init__(self, text='', parent=None):
         super().__init__(text, parent)

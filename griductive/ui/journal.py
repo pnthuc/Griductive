@@ -193,7 +193,7 @@ class NotebookShell(QFrame):
 
 
 class DockDuskWrap(QWidget):
-    """Matches DeskSurface's coastal dusk gradient so the floating notebook blends seamlessly."""
+    """Background wrapper matching DeskSurface behind the dock panel."""
 
     def paintEvent(self, event):
         p = QPainter(self)

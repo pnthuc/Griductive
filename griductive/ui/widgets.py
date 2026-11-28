@@ -1,4 +1,4 @@
-"""Cozy Harbor desktop widgets: tactile keycaps, header capsule, translucent menus, and badges."""
+"""Desktop UI widgets: buttons, header bar, menus, and coordinate labels."""
 import os
 from pathlib import Path
 from PySide6.QtCore import Qt, QRectF, QPointF, Signal, QSize
@@ -299,7 +299,7 @@ class ProgressPill(QWidget):
 
 
 class HudButton(QToolButton):
-    """Tactile Cozy Harbor HUD keycap."""
+    """Raised HUD button."""
 
     def __init__(self, variant='cream', parent=None):
         super().__init__(parent)
@@ -385,7 +385,7 @@ class PixelLabel(QLabel):
 
 
 class PixelHintButton(QPushButton):
-    """Tactile Cozy Harbor action button used in Dialogs and Solver Journal."""
+    """Action button used in dialogs and Solver Journal."""
 
     def __init__(self, value='', slot=None, variant='cream'):
         super().__init__(value)
