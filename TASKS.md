@@ -6,8 +6,6 @@ Tài liệu này ghi nhận phân công nhiệm vụ, tỷ lệ hoàn thành c�
 
 ## 1. Bảng phân công tổng quan và tỷ lệ hoàn thành
 
-Công thức tính điểm cá nhân theo đề bài: $\text{Điểm cá nhân} = \text{Điểm nhóm} \times \text{Tỷ lệ hoàn thành}$. Với mức hoàn thành **100%** ở cả 5 thành viên, mỗi thành viên nhận trọn điểm nhóm.
-
 | Thành viên | MSSV | Phần việc phụ trách chính | Tỷ lệ hoàn thành | Trạng thái & Commit tiêu biểu |
 | --- | --- | --- | ---: | --- |
 | **Phan Ngọc Thức** | `24120228` | Kiến trúc dự án, giao diện Desktop Cozy Harbor, thực nghiệm, báo cáo & video demo | 100% | Hoàn thành (`8a64909`, `65a0f41`) |
