@@ -27,8 +27,6 @@ Trước khi chia nhánh cài đặt, nhóm thống nhất cấu trúc dữ li�
 | Bùi Phương Nam | 24120502 | Bộ giải DPLL với hai chiến lược chọn biến và cơ chế suy luận phản chứng của `LogicAgent`. | 100% |
 | Phan Gia Phúc | 24120503 | Cổng Tseitin, bộ đếm ngưỡng quy hoạch động và biên dịch toàn bộ mẫu manh mối sang CNF. | 100% |
 
-Bảng phân công trên được các thành viên thống nhất và ghi nhận tại `docs/team.json`. Theo quy định chấm điểm của đề bài, điểm cá nhân bằng điểm nhóm nhân với tỷ lệ hoàn thành (chẳng hạn nhóm đạt 9,0 điểm thì thành viên hoàn thành 90% nhận 8,1 điểm). Cả năm thành viên trong nhóm đều hoàn thành đầy đủ phần việc được giao nên cùng đạt mức 100%.
-
 > **Video trình diễn trên Google Drive**  
 > Liên kết xem: [https://drive.google.com/file/d/1Y-84FGh__BUx-dtXgX3oKmJwhWga77Ou/view?usp=sharing](https://drive.google.com/file/d/1Y-84FGh__BUx-dtXgX3oKmJwhWga77Ou/view?usp=sharing)
 
